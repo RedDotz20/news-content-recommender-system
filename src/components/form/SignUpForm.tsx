@@ -20,7 +20,7 @@ import { useToast } from '@/hooks/use-toast';
 
 const FormSchema = z
 	.object({
-		username: z.string().min(1, 'Username is required').max(100),
+		name: z.string().min(1, 'Account Username is required').max(100),
 		email: z.string().min(1, 'Email is required').email('Invalid email'),
 		password: z
 			.string()
@@ -40,7 +40,7 @@ const SignUpForm = () => {
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
-			username: '',
+			name: '',
 			email: '',
 			password: '',
 			confirmPassword: '',
@@ -55,7 +55,7 @@ const SignUpForm = () => {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				username: values.username,
+				name: values.name,
 				email: values.email,
 				password: values.password,
 			}),
@@ -82,13 +82,13 @@ const SignUpForm = () => {
 				<div className="space-y-2">
 					<FormField
 						control={form.control}
-						name="username"
+						name="name"
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel>Username</FormLabel>
 								<FormControl>
 									<Input
-										placeholder="johndoe"
+										placeholder="John Does"
 										{...field}
 									/>
 								</FormControl>
@@ -157,6 +157,7 @@ const SignUpForm = () => {
 			<div className="mx-auto my-4 flex w-full items-center justify-evenly before:mr-4 before:block before:h-px before:flex-grow before:bg-stone-400 after:ml-4 after:block after:h-px after:flex-grow after:bg-stone-400">
 				or
 			</div>
+
 			{/* <GoogleSignInButton>Sign up with Google</GoogleSignInButton> */}
 			<p className="text-center text-sm text-gray-600 mt-2">
 				If you don&apos;t have an account, please&nbsp;

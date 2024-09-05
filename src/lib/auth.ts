@@ -35,7 +35,6 @@ export const authOptions: NextAuthOptions = {
 			},
 		}),
 		CredentialsProvider({
-			// The name to display on the sign in form (e.g. "Sign in with...")
 			name: 'Credentials',
 			// `credentials` is used to generate a form on the sign in page.
 			// You can specify which fields should be submitted, by adding keys to the `credentials` object.
@@ -64,18 +63,19 @@ export const authOptions: NextAuthOptions = {
 					return null;
 				}
 
-				const passwordMatch = await compare(
-					credentials.password,
-					existingUser.password
-				);
-
-				if (!passwordMatch) {
-					return null;
+				if (existingUser.password) {
+					const passwordMatch = await compare(
+						credentials.password,
+						existingUser.password
+					);
+					if (!passwordMatch) {
+						return null;
+					}
 				}
 
 				return {
 					id: existingUser.id.toString(),
-					username: existingUser.username,
+					name: existingUser.name,
 					email: existingUser.email,
 				};
 			},
@@ -84,11 +84,31 @@ export const authOptions: NextAuthOptions = {
 	callbacks: {
 		async jwt({ token, user, account, profile }) {
 			if (user) {
+				console.log('this is user', user);
 				return {
 					...token,
-					username: user.username,
+					id: user.id.toString(),
+					name: user.name,
 				};
 			}
+
+			if (profile?.email) {
+				const existingUser = await db.user.findUnique({
+					where: {
+						email: profile.email,
+					},
+				});
+
+				if (existingUser) {
+					return {
+						...token,
+						id: existingUser.id.toString(),
+						name: existingUser.name,
+						email: existingUser.email,
+					};
+				}
+			}
+
 			return token;
 		},
 		async session({ session, token, user }) {
@@ -96,7 +116,8 @@ export const authOptions: NextAuthOptions = {
 				...session,
 				user: {
 					...session.user,
-					username: token.username,
+					name: token.name,
+					id: token.id,
 				},
 			};
 		},
