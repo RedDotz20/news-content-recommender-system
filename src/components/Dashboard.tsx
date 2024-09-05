@@ -4,9 +4,17 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import React from 'react';
 
 export default function Dashboard() {
-	const { data: session } = useSession();
+	const { data: session, status } = useSession();
 
-	if (!session) {
+	const signInHandler = (provider: 'google' | 'github') => {
+		return signIn(provider, { callbackUrl: '/' });
+	};
+
+	if (status === 'loading') {
+		return <h1>Loading...</h1>;
+	}
+
+	if (status !== 'authenticated') {
 		return (
 			<div className="flex flex-col items-center">
 				<h1 className="text-3xl text-red-500 font-bold mb-4">
@@ -15,7 +23,8 @@ export default function Dashboard() {
 				<div className="flex space-x-5">
 					<button
 						className="flex items-center transition duration-200 ease-in-out border border-white rounded-lg px-4 py-2 hover:bg-gray-700 hover:text-white"
-						onClick={() => signIn('google')}
+						onClick={() => signInHandler('google')}
+						// onClick={() => signIn('google', null, { prompt: 'login' })}
 					>
 						<img
 							className="h-6 w-6 mr-2"
@@ -26,7 +35,7 @@ export default function Dashboard() {
 					</button>
 					<button
 						className="flex items-center transition duration-200 ease-in-out border border-white rounded-lg px-4 py-2 hover:bg-gray-700 hover:text-white"
-						onClick={() => signIn('github')}
+						onClick={() => signInHandler('github')}
 					>
 						<img
 							className="h-6 w-6 mr-2"
@@ -54,10 +63,27 @@ export default function Dashboard() {
 
 			<button
 				className="transition duration-200 ease-in-out border border-white rounded-lg px-4 py-2 hover:bg-gray-700 hover:text-white"
-				onClick={() => signOut({ callbackUrl: '/' })}
+				onClick={() =>
+					signOut({
+						//  callbackUrl: '/',
+						redirect: false,
+					})
+				}
 			>
 				Sign Out
 			</button>
+			{/* <button
+				className="transition duration-200 ease-in-out border border-white rounded-lg px-4 py-2 hover:bg-gray-700 hover:text-white mt-4"
+				onClick={() => signInHandler('google')}
+			>
+				Switch to another Google account
+			</button>
+			<button
+				className="transition duration-200 ease-in-out border border-white rounded-lg px-4 py-2 hover:bg-gray-700 hover:text-white mt-4"
+				onClick={() => signInHandler('github')}
+			>
+				Switch to another Github account
+			</button> */}
 		</div>
 	);
 }
