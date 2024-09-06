@@ -1,27 +1,23 @@
-import { FC, ReactNode } from 'react';
 import { signIn } from 'next-auth/react';
 import { Button } from './ui/button';
 
-interface GoogleSignInButtonProps {
-	children: ReactNode;
-}
-const GoogleSignInButton: FC<GoogleSignInButtonProps> = ({ children }) => {
-	const loginWithGoogle = () =>
-		signIn('google', {
-			callbackUrl: '/admin',
-		});
+const GoogleSignInButton = () => {
+	const loginWithGoogle = () => {
+		signIn('google', { callbackUrl: '/admin' });
+	};
 
 	return (
 		<Button
+			variant="outline"
 			onClick={loginWithGoogle}
-			className="w-full"
+			className="w-full hover:bg-gray-100 dark:hover:bg-gray-800"
 		>
 			<img
 				className="h-4 w-4 mr-2"
 				src="https://cdn-icons-png.flaticon.com/512/281/281764.png"
 				alt="Google logo"
 			/>
-			{children}
+			Sign in with Google
 		</Button>
 	);
 };

@@ -5,7 +5,6 @@ import { AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 
 const AdminPage = async () => {
 	const session = await getServerSession(authOptions);
-	console.log(session);
 
 	if (session?.user) {
 		return (

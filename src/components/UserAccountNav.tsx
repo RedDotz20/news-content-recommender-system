@@ -9,7 +9,7 @@ const UserAccountNav = () => {
 			onClick={() =>
 				signOut({
 					redirect: true,
-					callbackUrl: '/sign-in',
+					callbackUrl: '/auth',
 				})
 			}
 			variant="destructive"

@@ -1,12 +1,15 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Chivo } from 'next/font/google';
 import './globals.css';
 
 import SessionWrapper from '@/components/SessionWrapper';
 import Navbar from '@/components/Navbar';
 import { Toaster } from '@/components/ui/toaster';
 
-const inter = Inter({ subsets: ['latin'] });
+const chivo = Chivo({
+	subsets: ['latin'],
+	display: 'swap',
+});
 
 export const metadata: Metadata = {
 	title: 'Create Next App',
@@ -21,7 +24,7 @@ export default function RootLayout({
 	return (
 		<SessionWrapper>
 			<html lang="en">
-				<body className={inter.className}>
+				<body className={chivo.className}>
 					<Navbar />
 					<main className="flex justify-center items-center h-screen">
 						{children}

@@ -1,5 +1,3 @@
-// import Dashboard from '../../components/Dashboard';
-
 import { buttonVariants } from '@/components/ui/button';
 import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
@@ -11,7 +9,6 @@ export default async function Home() {
 
 	return (
 		<div className="flex flex-col gap-2 items-center">
-			{/* <Dashboard /> */}
 			<h1>Home Page</h1>
 			<Link
 				className={buttonVariants()}
@@ -19,7 +16,6 @@ export default async function Home() {
 			>
 				Open My Admin
 			</Link>
-
 			<div>
 				<h2>Client Session:</h2>
 				<User />
