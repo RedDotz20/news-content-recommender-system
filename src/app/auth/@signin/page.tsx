@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import * as z from 'zod';
@@ -12,19 +14,17 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from '../ui/form';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
-import { useRouter } from 'next/navigation';
+} from '@/components/ui/form';
+import { Loader2 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useShowHidePass, ShowHideIconWrapper } from '@/hooks/useShowHidePass';
-import GoogleSignInButton from '../GoogleSignInButton';
+import GoogleSignInButton from '@/components/GoogleSignInButton';
 import {
 	RememberMeCheckboxWrapper,
 	useRememberMeCheckBox,
-} from '../RememberMeCheckbox';
-import { Loader2 } from 'lucide-react';
-import { useState } from 'react';
+} from '@/components/RememberMeCheckbox';
 
 const FormSchema = z.object({
 	email: z.string().min(1, 'Email is required').email('Invalid email'),
@@ -35,8 +35,9 @@ const FormSchema = z.object({
 });
 
 const SignInForm = () => {
-	const { status } = useSession();
+	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
+	const { status } = useSession();
 	const { isPasswordVisible, togglePasswordVisibility } = useShowHidePass();
 	const { toast } = useToast();
 
@@ -50,8 +51,6 @@ const SignInForm = () => {
 
 	const { rememberMe, handleCheckboxChange, handleRememberMeStorage } =
 		useRememberMeCheckBox({ useFormReturn: form });
-
-	const [isLoading, setIsLoading] = useState(false);
 
 	const onSubmit = async (values: z.infer<typeof FormSchema>) => {
 		try {
@@ -73,7 +72,7 @@ const SignInForm = () => {
 				});
 			} else {
 				router.refresh();
-				router.push('/admin');
+				router.push('/home');
 			}
 		} catch (error) {
 			console.error(error);

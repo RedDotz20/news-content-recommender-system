@@ -1,11 +1,7 @@
-import { AuthForm } from '@/components/AuthForm';
-
-const AuthPage = () => {
-	return (
-		<div className="flex items-center justify-center h-screen">
-			<AuthForm />
-		</div>
-	);
-};
-
-export default AuthPage;
+/**
+ * This route is a parallel route and does not have a default page.
+ * It's purpose is to group signin and signup pages together.
+ */
+export default function AuthPage() {
+	return null;
+}

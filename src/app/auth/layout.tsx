@@ -4,15 +4,17 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import SignInForm from './SignInForm';
-import SignUpForm from './SignUpForm';
 
 type AuthTabTypes = 'signin' | 'register';
+interface AuthLayoutProps {
+	signin: React.ReactNode;
+	register: React.ReactNode;
+}
 
-export function AuthForm() {
+export default function AuthLayout({ signin, register }: AuthLayoutProps) {
 	const [AuthTabs, setAuthTabs] = useState<AuthTabTypes>('signin');
-	const router = useRouter();
 	const { data: session } = useSession();
+	const router = useRouter();
 
 	const onTabChange = (value: string) => {
 		setAuthTabs(value as AuthTabTypes);
@@ -20,12 +22,12 @@ export function AuthForm() {
 
 	useEffect(() => {
 		if (session) {
-			router.push('/admin');
+			router.push('/home');
 		}
 	}, [session, router]);
 
 	return (
-		<div className="flex flex-wrap-reverseitems-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
+		<div className="h-[100dvh] flex flex-wrap-reverse items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
 			<div className="mx-auto w-full max-w-md space-y-8">
 				<h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-foreground">
 					{AuthTabs === 'signin'
@@ -43,12 +45,8 @@ export function AuthForm() {
 						<TabsTrigger value="signin">Sign In</TabsTrigger>
 						<TabsTrigger value="register">Register</TabsTrigger>
 					</TabsList>
-					<TabsContent value="signin">
-						<SignInForm />
-					</TabsContent>
-					<TabsContent value="register">
-						<SignUpForm />
-					</TabsContent>
+					<TabsContent value="signin">{signin}</TabsContent>
+					<TabsContent value="register">{register}</TabsContent>
 				</Tabs>
 			</div>
 		</div>

@@ -8,13 +8,14 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from '../ui/form';
+} from '../../../components/ui/form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
+import { Input } from '../../../components/ui/input';
+import { Button } from '../../../components/ui/button';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
+import { useShowHidePass, ShowHideIconWrapper } from '@/hooks/useShowHidePass';
 
 const FormSchema = z.object({
 	name: z.string().min(1, 'Account Username is required').max(100),
@@ -28,6 +29,7 @@ const FormSchema = z.object({
 const SignUpForm = () => {
 	const router = useRouter();
 	const { toast } = useToast();
+	const { isPasswordVisible, togglePasswordVisibility } = useShowHidePass();
 
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
@@ -145,14 +147,19 @@ const SignUpForm = () => {
 										New Password
 									</FormLabel>
 									<FormControl>
-										<Input
-											{...field}
-											id="password"
-											type="password"
-											autoComplete="new-password"
-											required
-											className="block w-full appearance-none rounded-md border border-input bg-background px-3 py-2 placeholder-muted-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
-										/>
+										<ShowHideIconWrapper
+											isPasswordVisible={isPasswordVisible}
+											togglePasswordVisibility={togglePasswordVisibility}
+										>
+											<Input
+												{...field}
+												id="password"
+												type={isPasswordVisible ? 'text' : 'password'}
+												autoComplete="new-password"
+												required
+												className="block w-full appearance-none rounded-md border border-input bg-background px-3 py-2 placeholder-muted-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
+											/>
+										</ShowHideIconWrapper>
 									</FormControl>
 									<FormMessage />
 								</FormItem>

@@ -14,7 +14,7 @@ const AdminPage = async () => {
 					<AvatarFallback>
 						<img
 							src="https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png"
-							alt=""
+							alt="P"
 						/>
 					</AvatarFallback>
 				</Avatar>
