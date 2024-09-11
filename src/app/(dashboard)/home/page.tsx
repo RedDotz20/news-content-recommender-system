@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { Avatar } from '@/components/ui/avatar';
 import { AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 
-const AdminPage = async () => {
+const HomePage = async () => {
 	const session = await getServerSession(authOptions);
 
 	if (session?.user) {
@@ -26,4 +26,4 @@ const AdminPage = async () => {
 	return <div>Please Login to see this admin page</div>;
 };
 
-export default AdminPage;
+export default HomePage;

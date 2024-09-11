@@ -27,8 +27,8 @@ export default function AuthLayout({ signin, register }: AuthLayoutProps) {
 	}, [session, router]);
 
 	return (
-		<div className="h-[100dvh] flex flex-wrap-reverse items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
-			<div className="mx-auto w-full max-w-md space-y-8">
+		<div className="h-screen flex flex-wrap-reverse items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
+			<div className="mx-auto min-w-80 max-w-md space-y-8 min-h-[480px]">
 				<h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-foreground">
 					{AuthTabs === 'signin'
 						? 'Sign in to your account'

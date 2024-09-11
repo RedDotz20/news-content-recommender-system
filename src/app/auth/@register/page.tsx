@@ -1,6 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import {
 	Form,
 	FormControl,
@@ -13,13 +16,18 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '../../../components/ui/input';
 import { Button } from '../../../components/ui/button';
-import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { useShowHidePass, ShowHideIconWrapper } from '@/hooks/useShowHidePass';
+import {
+	PersonIcon,
+	EnvelopeClosedIcon,
+	LockClosedIcon,
+} from '@radix-ui/react-icons';
+import { Loader2 } from 'lucide-react';
 
 const FormSchema = z.object({
-	name: z.string().min(1, 'Account Username is required').max(100),
-	email: z.string().min(1, 'Email is required').email('Invalid email'),
+	name: z.string().min(1, 'Account Name is required').max(100),
+	email: z.string().min(1, 'Email is required').email('Invalid Email'),
 	password: z
 		.string()
 		.min(1, 'Password is required')
@@ -27,9 +35,11 @@ const FormSchema = z.object({
 });
 
 const SignUpForm = () => {
-	const router = useRouter();
+	const [isLoading, setIsLoading] = useState(false);
+	const { status } = useSession();
 	const { toast } = useToast();
 	const { isPasswordVisible, togglePasswordVisibility } = useShowHidePass();
+	const router = useRouter();
 
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
@@ -42,27 +52,41 @@ const SignUpForm = () => {
 
 	const onSubmit = async (values: z.infer<typeof FormSchema>) => {
 		console.log(values);
-		const response = await fetch('/api/user', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				name: values.name,
-				email: values.email,
-				password: values.password,
-			}),
-		});
 
-		if (response.ok) {
-			router.push('/sign-in');
-		} else {
-			console.error('Registration Failed');
+		try {
+			setIsLoading(true);
+
+			const response = await fetch('/api/user', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					name: values.name,
+					email: values.email,
+					password: values.password,
+				}),
+			});
+
+			if (response.ok) {
+				router.push('/sign-in');
+			} else {
+				console.error('Registration Failed');
+				toast({
+					title: 'Error',
+					description: 'Oops! Something Went Wrong',
+					variant: 'destructive',
+				});
+			}
+		} catch (error) {
+			console.error(error);
 			toast({
 				title: 'Error',
 				description: 'Oops! Something Went Wrong',
 				variant: 'destructive',
 			});
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -85,7 +109,10 @@ const SignUpForm = () => {
 										htmlFor="name"
 										className="block text-sm font-medium text-muted-foreground"
 									>
-										Name
+										<div className="flex items-center gap-2">
+											<PersonIcon className="h-4 w-4" />
+											<p>Name</p>
+										</div>
 									</FormLabel>
 									<FormControl>
 										<Input
@@ -115,10 +142,14 @@ const SignUpForm = () => {
 										htmlFor="email"
 										className="block text-sm font-medium text-muted-foreground"
 									>
-										Email address
+										<div className="flex items-center gap-2">
+											<EnvelopeClosedIcon className="h-4 w-4" />
+											<p>Email address</p>
+										</div>
 									</FormLabel>
 									<FormControl>
 										<Input
+											{...field}
 											id="email"
 											name="email"
 											type="email"
@@ -144,7 +175,10 @@ const SignUpForm = () => {
 										htmlFor="password"
 										className="block text-sm font-medium text-muted-foreground"
 									>
-										New Password
+										<div className="flex items-center gap-2">
+											<LockClosedIcon className="h-4 w-4" />
+											<p>Password</p>
+										</div>
 									</FormLabel>
 									<FormControl>
 										<ShowHideIconWrapper
@@ -170,104 +204,15 @@ const SignUpForm = () => {
 				<Button
 					type="submit"
 					className="w-full"
+					disabled={status === 'loading' || isLoading}
 				>
-					Register
+					{isLoading ? (
+						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+					) : (
+						'Register'
+					)}
 				</Button>
 			</form>
-
-			{/* <form
-				onSubmit={form.handleSubmit(onSubmit)}
-				className="space-y-6"
-			>
-				<div className="space-y-2">
-					<FormField
-						control={form.control}
-						name="name"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Username</FormLabel>
-								<FormControl>
-									<Input
-										placeholder="John Does"
-										{...field}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name="email"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Email</FormLabel>
-								<FormControl>
-									<Input
-										placeholder="mail@example.com"
-										{...field}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name="password"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Password</FormLabel>
-								<FormControl>
-									<Input
-										type="password"
-										placeholder="Enter your password"
-										{...field}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name="confirmPassword"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Re-Enter your password</FormLabel>
-								<FormControl>
-									<Input
-										placeholder="Re-Enter your password"
-										type="password"
-										{...field}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-				</div>
-				<Button
-					className="w-full mt-6"
-					type="submit"
-				>
-					Sign up
-				</Button>
-			</form>
-			<div className="mx-auto my-4 flex w-full items-center justify-evenly before:mr-4 before:block before:h-px before:flex-grow before:bg-stone-400 after:ml-4 after:block after:h-px after:flex-grow after:bg-stone-400">
-				or
-			</div>
-
-			<GoogleSignInButton>Sign up with Google</GoogleSignInButton>
-			<p className="text-center text-sm text-gray-600 mt-2">
-				If you don&apos;t have an account, please&nbsp;
-				<Link
-					className="text-blue-500 hover:underline"
-					href="/sign-in"
-				>
-					Sign in
-				</Link>
-			</p> */}
 		</Form>
 	);
 };

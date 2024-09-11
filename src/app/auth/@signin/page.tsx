@@ -25,6 +25,7 @@ import {
 	RememberMeCheckboxWrapper,
 	useRememberMeCheckBox,
 } from '@/components/RememberMeCheckbox';
+import { EnvelopeClosedIcon, LockClosedIcon } from '@radix-ui/react-icons';
 
 const FormSchema = z.object({
 	email: z.string().min(1, 'Email is required').email('Invalid email'),
@@ -101,7 +102,10 @@ const SignInForm = () => {
 								htmlFor="email"
 								className="block text-sm font-medium text-muted-foreground"
 							>
-								Email address
+								<div className="flex items-center gap-2">
+									<EnvelopeClosedIcon className="h-4 w-4" />
+									<p>Email address</p>
+								</div>
 							</FormLabel>
 							<FormControl>
 								<Input
@@ -128,10 +132,13 @@ const SignInForm = () => {
 									htmlFor="password"
 									className="block text-sm font-medium text-muted-foreground"
 								>
-									Password
+									<div className="flex items-center gap-2">
+										<LockClosedIcon className="h-4 w-4" />
+										<p> Password</p>
+									</div>
 								</FormLabel>
 								<Link
-									href="#" // TODO: ADD FORGET PASSWORD
+									href="#" // TODO: ADD  PASSWORD
 									className="text-xs font-medium text-muted-foreground hover:text-primary/90"
 									prefetch={false}
 								>
