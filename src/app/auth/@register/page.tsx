@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import {
 	Form,
 	FormControl,
@@ -212,6 +213,31 @@ const SignUpForm = () => {
 						'Register'
 					)}
 				</Button>
+
+				<p className="text-xs">
+					By signing up, you agree to our{' '}
+					<Link
+						href="#"
+						className="text-cyan-500"
+					>
+						terms
+					</Link>
+					,{' '}
+					<Link
+						href="#"
+						className="text-cyan-500"
+					>
+						acceptable use
+					</Link>
+					, and{' '}
+					<Link
+						href="#"
+						className="text-cyan-500"
+					>
+						privacy policy
+					</Link>
+					.
+				</p>
 			</form>
 		</Form>
 	);

@@ -139,7 +139,7 @@ const SignInForm = () => {
 								</FormLabel>
 								<Link
 									href="#" // TODO: ADD  PASSWORD
-									className="text-xs font-medium text-muted-foreground hover:text-primary/90"
+									className="text-xs font-medium text-muted-foreground hover:text-cyan-400/90"
 									prefetch={false}
 								>
 									Forgot your password?
