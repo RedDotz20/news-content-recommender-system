@@ -13,6 +13,16 @@ const config: Config = {
 	],
 	theme: {
 		extend: {
+			animation: {
+				gradient: 'gradient 8s linear infinite',
+			},
+			keyframes: {
+				gradient: {
+					to: {
+						backgroundPosition: 'var(--bg-size) 0',
+					},
+				},
+			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
 				'gradient-conic':

@@ -66,3 +66,26 @@ model VerificationToken {
   @@unique([identifier, token])
   @@map("verificationtokens")
 }
+
+
+model Article {
+  article_id   String
+  title        String
+  link         String
+  keywords     String[]
+  creator      String?
+  video_url    String?
+  description  String?
+  pubDate      String
+  image_url    String
+  source_id    String
+  source_name  String
+  source_url   String
+  source_icon  String
+  language     String
+  country      String[]
+  category     String[]
+
+  @@unique([article_id])
+  @@map("articles")
+}
