@@ -1,18 +1,16 @@
-import { HomeNav } from '@/components/HomeNav';
+import HomeNav from '@/components/HomeNav';
 
 interface DashboardLayoutProps {
 	children: React.ReactNode;
 }
 
-const AuthLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+export default function AuthLayout({ children }: DashboardLayoutProps) {
 	return (
 		<>
 			<HomeNav />
-			<div className="flex items-center justify-center h-screen">
+			<div className="flex items-center justify-center h-screen max-w-4xl mx-auto">
 				{children}
 			</div>
 		</>
 	);
-};
-
-export default AuthLayout;
+}

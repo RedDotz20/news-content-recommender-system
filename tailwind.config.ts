@@ -1,18 +1,31 @@
 import type { Config } from 'tailwindcss';
+import fluid, { extract } from 'fluid-tailwind';
 
 const config: Config = {
 	darkMode: ['class'],
-	content: [
-		'./src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-		'./src/components/**/*.{js,ts,jsx,tsx,mdx}',
-		'./src/app/**/*.{js,ts,jsx,tsx,mdx}',
-		'./components/**/*.{js,ts,jsx,tsx,mdx}',
+	content: {
+		files: [
+			'./src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+			'./src/components/**/*.{js,ts,jsx,tsx,mdx}',
+			'./src/app/**/*.{js,ts,jsx,tsx,mdx}',
+			'./components/**/*.{js,ts,jsx,tsx,mdx}',
 
-		// Or if using `src` directory:
-		'./src/**/*.{js,ts,jsx,tsx,mdx}',
-	],
+			// Or if using `src` directory:
+			'./src/**/*.{js,ts,jsx,tsx,mdx}',
+		],
+		extract,
+	},
 	theme: {
 		extend: {
+			screens: {
+				xs: '20rem', // Extra small screens (320px)
+				sm: '40rem', // Small screens (640px)
+				md: '48rem', // Medium screens (768px)
+				lg: '64rem', // Large screens (1024px)
+				xl: '80rem', // Extra large screens (1280px)
+				'2xl': '96rem', // 2x extra large screens (1536px)
+				'3xl': '120rem', // 3x extra large screens (1920px)
+			},
 			animation: {
 				gradient: 'gradient 8s linear infinite',
 			},
@@ -77,6 +90,6 @@ const config: Config = {
 			},
 		},
 	},
-	plugins: [require('tailwindcss-animate')],
+	plugins: [require('tailwindcss-animate'), fluid],
 };
 export default config;

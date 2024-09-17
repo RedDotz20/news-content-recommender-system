@@ -47,7 +47,7 @@ export const useRememberMeCheckBox = ({
 		}
 
 		setRememberMe(rememberMeChecked);
-	}, []);
+	}, [useFormReturn]);
 
 	return { rememberMe, handleCheckboxChange, handleRememberMeStorage };
 };

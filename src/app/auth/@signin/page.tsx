@@ -35,7 +35,7 @@ const FormSchema = z.object({
 		.min(8, 'Password must have than 8 characters'),
 });
 
-const SignInForm = () => {
+export default function SignInForm() {
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 	const { status } = useSession();
@@ -186,6 +186,4 @@ const SignInForm = () => {
 			</form>
 		</Form>
 	);
-};
-
-export default SignInForm;
+}

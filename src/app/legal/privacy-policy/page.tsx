@@ -1,6 +1,6 @@
 export default function PrivacyPolicy() {
 	return (
-		<div className="max-w-3xl mx-auto py-8 px-4">
+		<div className="max-w-4xl mx-auto py-8 px-4">
 			<h1 className="text-2xl font-bold mb-4">Privacy Policy</h1>
 			<p className="mb-4">
 				Welcome to <span className="font-bold">ArticleHorizon</span>,
@@ -71,7 +71,7 @@ export default function PrivacyPolicy() {
 			</section>
 
 			<section className="mb-6">
-				<h2 className="text-lg font-semibold mb-2">6. Children's Privacy</h2>
+				<h2 className="text-lg font-semibold mb-2">6. Children&apos;s Privacy</h2>
 				<p>
 					Our app is not intended for children under the age of 13. We do not
 					knowingly collect personal information from children under 13.

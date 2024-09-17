@@ -1,6 +1,6 @@
 const AcceptableUsePolicy = () => {
 	return (
-		<div className="max-w-3xl mx-auto py-8 px-4">
+		<div className="max-w-4xl mx-auto py-8 px-4">
 			<h1 className="text-2xl font-bold mb-4">Acceptable Use Policy</h1>
 			<p className="mb-4">
 				This Acceptable Use Policy outlines the rules and guidelines for using{' '}
@@ -24,7 +24,7 @@ const AcceptableUsePolicy = () => {
 						distributing malware.
 					</li>
 					<li className="mb-2">
-						Interfering with the operation of the app or others' use of the app.
+						Interfering with the operation of the app or others&apos; use of the app.
 					</li>
 					<li className="mb-2">
 						Posting or transmitting any content that is unlawful, defamatory, or
