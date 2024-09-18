@@ -1,30 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
-import NextAuthMiddleware, { NextRequestWithAuth } from 'next-auth/middleware';
+import { withAuth, NextRequestWithAuth } from 'next-auth/middleware';
 
 export const API_SECRET_KEY = process.env.API_SECRET_KEY;
 
-export function middleware(request: NextRequestWithAuth) {
-	// Handle authentication routes
-	if (request.nextUrl.pathname.startsWith('/home')) {
-		return NextAuthMiddleware(request);
+const secureApiMiddleware = async (request: NextRequest) => {
+	// Exclude Authentication Routes (for nextauth)
+	if (request.nextUrl.pathname.startsWith('/api/auth')) {
+		return NextResponse.next();
 	}
 
-	// Handle API protection
 	if (request.nextUrl.pathname.startsWith('/api')) {
-		const secretKey = request.headers.get('x-api-secret-key');
-
-		if (secretKey !== API_SECRET_KEY) {
+		const SECRET_KEY = request.headers.get('x-api-secret-key');
+		if (SECRET_KEY !== API_SECRET_KEY) {
 			return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
 		}
 	}
 
-	// Continue to the next middleware or request handler
+	return NextResponse.next();
+};
+
+export default async function middleware(request: NextRequestWithAuth) {
+	// Protect the /api routes with the API Secret Key
+	if (request.nextUrl.pathname.startsWith('/api')) {
+		return secureApiMiddleware(request);
+	}
+
+	// Protect the /home route with NextAuth
+	if (request.nextUrl.pathname.startsWith('/home')) {
+		return withAuth(request);
+	}
+
 	return NextResponse.next();
 }
 
 export const config = {
-	matcher: ['/home(.*)', '/api/:path*'],
+	matcher: ['/api(.*)', '/home(.*)'],
 };
-
-// export { default } from 'next-auth/middleware';
-// export const config = { matcher: ['/home(.*)'] };
