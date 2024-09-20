@@ -18,6 +18,7 @@ interface ArticleCardProps {
 	time: string;
 	category: string[];
 }
+
 export function ArticleCard({
 	image,
 	title,
@@ -52,6 +53,7 @@ export function ArticleCard({
 					<h3 className="text-xl font-bold mb-1">{title}</h3>
 					{/* <p className="text-muted-foreground mb-3">{description}</p> */}
 					<time
+						suppressHydrationWarning
 						className="text-xs float-right px-2 py-1"
 						dateTime="2023-09-12"
 					>

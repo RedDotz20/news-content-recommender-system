@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { Chivo } from 'next/font/google';
 import './globals.css';
 
-import SessionWrapper from '@/components/SessionWrapper';
 import { Toaster } from '@/components/ui/toaster';
+import { SessionWrapper } from '@/components/SessionWrapper';
 import { ThemeProvider } from '@/components/theme/theme-provider';
 
 const chivo = Chivo({
@@ -12,7 +12,7 @@ const chivo = Chivo({
 });
 
 export const metadata: Metadata = {
-	title: 'News Recommender',
+	title: 'ArticleHorizon',
 	description: 'Article Recommender System',
 };
 

@@ -1,18 +1,25 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import { NextResponse } from 'next/server';
-
+import { User } from '@prisma/client';
 import { db } from '@/lib/db';
 
 export async function GET() {
-	const users = await db.user.findMany();
+	try {
+		const users: User[] = await db.user.findMany();
 
-	if (!users) {
+		if (!users) {
+			return NextResponse.json(
+				{ error: 'Failed to load users' },
+				{ status: 400 }
+			);
+		}
+
+		return NextResponse.json({ data: users }, { status: 200 });
+	} catch (error) {
 		return NextResponse.json(
-			{ error: 'Failed to load users' },
-			{ status: 400 }
+			{ error: 'Something went wrong' },
+			{ status: 500 }
 		);
+	} finally {
+		await db.$disconnect();
 	}
-
-	return NextResponse.json({ success: users }, { status: 200 });
 }

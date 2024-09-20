@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import * as z from 'zod';
 import Link from 'next/link';
 import {
 	Form,
@@ -12,11 +13,10 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from '../../../components/ui/form';
-import * as z from 'zod';
+} from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from '../../../components/ui/input';
-import { Button } from '../../../components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useShowHidePass, ShowHideIconWrapper } from '@/hooks/useShowHidePass';
 import {
@@ -35,7 +35,7 @@ const FormSchema = z.object({
 		.min(8, 'Password must have than 8 characters'),
 });
 
-const SignUpForm = () => {
+export default function SignUpForm() {
 	const [isLoading, setIsLoading] = useState(false);
 	const { status } = useSession();
 	const { toast } = useToast();
@@ -52,8 +52,6 @@ const SignUpForm = () => {
 	});
 
 	const onSubmit = async (values: z.infer<typeof FormSchema>) => {
-		console.log(values);
-
 		try {
 			setIsLoading(true);
 
@@ -241,6 +239,4 @@ const SignUpForm = () => {
 			</form>
 		</Form>
 	);
-};
-
-export default SignUpForm;
+}

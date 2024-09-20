@@ -67,7 +67,6 @@ model VerificationToken {
   @@map("verificationtokens")
 }
 
-
 model Article {
   article_id   String
   title        String
@@ -84,8 +83,26 @@ model Article {
   source_icon  String
   language     String
   country      String[]
-  category     String[]
+  category     String
 
   @@unique([article_id])
   @@map("articles")
+}
+
+model SampleArticles {
+  article_id          String    @id
+  title               String
+  link                String
+  keywords            String[]
+  creator             String[]
+  description         String?
+  content             String?
+  pubDate             String
+  full_description    String?
+  image_url           String
+  source_id           String
+  category            String
+
+  @@unique([article_id])
+  @@map("sample_articles")
 }
