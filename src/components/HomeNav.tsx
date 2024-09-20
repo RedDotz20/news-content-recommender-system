@@ -32,9 +32,8 @@ import { ThemeToggle } from './theme/ThemeToggle';
 
 export default function HomeNav() {
 	return (
-		<div className="flex flex-col w-full">
-			<header className="container mx-auto flex items-center justify-between bg-background shadow-sm px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 ">
-				{/* <div className="container mx-auto flex items-center justify-between"> */}
+		<div className="flex flex-col w-full fixed">
+			<header className="flex items-center justify-between bg-background shadow-sm px-6 sm:px-8 md:px-12 h-14 md:h-16">
 				<Link
 					href="/"
 					className="flex items-center gap-2"
@@ -49,7 +48,7 @@ export default function HomeNav() {
 								<Link
 									legacyBehavior
 									passHref
-									href="#"
+									href="/home"
 									className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
 									prefetch={false}
 								>
@@ -63,7 +62,7 @@ export default function HomeNav() {
 								<Link
 									legacyBehavior
 									passHref
-									href="#"
+									href="/home/newest"
 									className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
 									prefetch={false}
 								>
@@ -77,7 +76,7 @@ export default function HomeNav() {
 								<Link
 									legacyBehavior
 									passHref
-									href="#"
+									href="/home/trending"
 									className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
 									prefetch={false}
 								>
@@ -91,7 +90,7 @@ export default function HomeNav() {
 								<Link
 									legacyBehavior
 									passHref
-									href="#"
+									href="/home/popular"
 									className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
 									prefetch={false}
 								>
@@ -111,7 +110,6 @@ export default function HomeNav() {
 							href="/auth"
 						/> */}
 				</div>
-				{/* </div> */}
 			</header>
 
 			<div className="sm:hidden">
@@ -133,7 +131,7 @@ const MobileNavigationMenu = () => {
 				Home
 			</Link>
 			<Link
-				href="/newest"
+				href="/home/newest"
 				className="flex flex-col items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground"
 				prefetch={false}
 			>
@@ -141,7 +139,7 @@ const MobileNavigationMenu = () => {
 				Newest
 			</Link>
 			<Link
-				href="/trending"
+				href="/home/trending"
 				className="flex flex-col items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground"
 				prefetch={false}
 			>
@@ -149,7 +147,7 @@ const MobileNavigationMenu = () => {
 				Trending
 			</Link>
 			<Link
-				href="/popular"
+				href="/home/popular"
 				className="flex flex-col items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground"
 				prefetch={false}
 			>

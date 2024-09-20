@@ -1,63 +1,75 @@
+import Image from 'next/image';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { JSX, SVGProps } from 'react';
 import { Badge } from './ui/badge';
-import Image from 'next/image';
+import { cn } from '@/lib/utils';
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from './ui/tooltip';
+import { formatDate } from '@/lib/utils';
 
 interface ArticleCardProps {
+	className?: string;
 	image: string;
 	title: string;
 	description: string;
-	author: string;
+	author?: string;
 	time: string;
-	category: string[];
+	category: string;
 }
 
 export function ArticleCard({
+	className,
 	image,
 	title,
 	description,
 	author,
 	time,
-	category = ['global'],
+	category = 'latest',
 }: ArticleCardProps) {
 	return (
-		<Card className="max-w-80">
-			<div className="p-4 pb-0">
+		<Card
+			className={cn(
+				'flex flex-col sm:flex-row lg:flex-col w-full lg:min-w-[300px] lg:max-w-80 lg:h-[420px]',
+				className
+			)}
+		>
+			<div className="p-4 pb-0 w-full sm:w-[35%] lg:w-full h-full">
 				<Image
-					src={image}
+					src={image ? image : '/placeholder.svg'}
 					alt={title}
-					width={600}
-					height={400}
-					className="aspect-video object-cover rounded-t-lg"
+					sizes="100vw"
+					style={{
+						width: '100%',
+						height: 'auto',
+					}}
+					width={500}
+					height={300}
+					className="aspect-[3/2] lg:aspect-video object-cover rounded-t-lg"
 				/>
 			</div>
-			<CardContent className="p-4 space-y-2 h-full flex flex-col justify-between">
-				<div>
-					<div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
-						{category.map((category) => (
-							<Badge
-								key={category}
-								variant="secondary"
-							>
-								{category}
-							</Badge>
-						))}
+			<CardContent className="w-full sm:w-[65%] lg:w-full px-4 pb-4 pt-0 space-y-2 h-full flex flex-col justify-between">
+				<div className="flex flex-col justify-around h-full">
+					<div className="flex items-center gap-2 text-xs text-muted-foreground">
+						<Badge
+							key={category}
+							variant="secondary"
+						>
+							{category}
+						</Badge>
 					</div>
-					<h3 className="text-xl font-bold mb-1">{title}</h3>
-					{/* <p className="text-muted-foreground mb-3">{description}</p> */}
+					<h3 className="text-xl font-bold mb-1 line-clamp-2 lg:line-clamp-3">
+						{title}
+					</h3>
 					<time
 						suppressHydrationWarning
-						className="text-xs float-right px-2 py-1"
-						dateTime="2023-09-12"
+						className="text-xs ml-auto px-2 py-1"
 					>
-						{time}
+						{formatDate(time)}
 					</time>
 				</div>
 				<CardFooter className="flex items-center justify-between border-t pt-4">
