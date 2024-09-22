@@ -15,12 +15,13 @@ export const authOptions: NextAuthOptions = {
 	},
 	...authConfig, // providers
 	callbacks: {
-		async jwt({ token, user, profile }) {
+		async jwt({ token, user, profile, account }) {
 			if (user) {
 				return {
 					...token,
 					id: user.id.toString(),
 					name: user.name,
+					provider: account?.provider,
 				};
 			}
 
@@ -34,6 +35,7 @@ export const authOptions: NextAuthOptions = {
 				if (existingUser) {
 					return {
 						...token,
+						provider: account?.provider || token.provider,
 						id: existingUser.id.toString(),
 						name: existingUser.name,
 						email: existingUser.email,
@@ -50,6 +52,7 @@ export const authOptions: NextAuthOptions = {
 					...session.user,
 					name: token.name,
 					id: token.id,
+					provider: token.provider,
 				},
 			};
 		},

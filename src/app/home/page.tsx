@@ -1,5 +1,4 @@
 import { ArticleCard } from '@/components/ArticleCard';
-import { getProviders } from 'next-auth/react';
 
 /**
  * @returns A JSX element representing the recommended articles.
