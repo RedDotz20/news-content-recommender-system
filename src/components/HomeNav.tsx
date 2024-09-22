@@ -18,7 +18,7 @@ import {
 	DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 import { signOut, useSession } from 'next-auth/react';
-import { Button, buttonVariants } from './ui/button';
+import { Button } from './ui/button';
 import {
 	ExitIcon,
 	GearIcon,

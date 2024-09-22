@@ -11,8 +11,8 @@ export function NotFoundComponent() {
 					Oops, page not found!
 				</h1>
 				<p className="mt-4 text-muted-foreground">
-					The page you're looking for doesn't seem to exist. Let's get you back
-					on track.
+					The page you&apos;re looking for doesn&apos;t seem to exist.
+					Let&apos;s get you back on track.
 				</p>
 				<div className="mt-6">
 					<Link

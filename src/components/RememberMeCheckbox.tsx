@@ -15,7 +15,7 @@ interface UseRememberMecheckboxProps {
 
 interface RememberMeCheckboxWrapperProps {
 	rememberMe: boolean;
-	handleCheckboxChange: (event: React.FormEvent<HTMLButtonElement>) => void;
+	handleCheckboxChange: () => void;
 }
 
 export const useRememberMeCheckBox = ({

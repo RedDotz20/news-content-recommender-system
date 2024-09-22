@@ -15,7 +15,7 @@ export const authOptions: NextAuthOptions = {
 	},
 	...authConfig, // providers
 	callbacks: {
-		async jwt({ token, user, profile, account }) {
+		async jwt({ token, user, profile }) {
 			if (user) {
 				return {
 					...token,
@@ -43,7 +43,7 @@ export const authOptions: NextAuthOptions = {
 
 			return token;
 		},
-		async session({ session, token, user }) {
+		async session({ session, token }) {
 			return {
 				...session,
 				user: {

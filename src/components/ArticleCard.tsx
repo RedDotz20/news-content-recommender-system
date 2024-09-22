@@ -16,8 +16,8 @@ interface ArticleCardProps {
 	className?: string;
 	image: string;
 	title: string;
-	description: string;
-	author?: string;
+	// description: string;
+	// author?: string;
 	time: string;
 	category: string;
 }
@@ -26,8 +26,8 @@ export function ArticleCard({
 	className,
 	image,
 	title,
-	description,
-	author,
+	// description,
+	// author,
 	time,
 	category = 'latest',
 }: ArticleCardProps) {

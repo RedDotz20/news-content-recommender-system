@@ -29,7 +29,7 @@ export default async function NewestArticles() {
 						className="aspect-w-16 aspect-h-9 lg:w-full"
 						image={article.image_url}
 						title={article.title}
-						description={article.description as string}
+						// description={article.description as string}
 						time={article.pubDate}
 						category={article.category}
 					/>

@@ -2,12 +2,29 @@
   "name": "news-content-recommender-system",
   "version": "0.1.0",
   "private": true,
+  "description": "ArticleHorizon is a smart news article recommender webapp that helps users discover relevant and engaging content tailored to their interests.",
+  "author": "https://github.com/RedDotz20",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RedDotz20/news-content-recommender-system.git"
+  },
+  "keywords": [
+    "news",
+    "collaborative-filtering",
+    "content-based-filtering",
+    "articles-recommendations",
+    "nextjs14"
+  ],
+  "bugs": {
+    "url": "https://github.com/RedDotz20/news-content-recommender-system/issues"
+  },
+  "homepage": "https://github.com/RedDotz20/news-content-recommender-system#readme",
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@next-auth/prisma-adapter": "^1.0.7",
@@ -47,10 +64,14 @@
     "@types/react-dom": "^18.3.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "14.2.7",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-next": "^0.0.0",
+    "eslint-plugin-react": "^7.36.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "fluid-tailwind": "^1.0.3",
     "postcss": "^8.4.47",
     "prisma": "^5.19.1",
     "tailwindcss": "^3.4.12",
-    "typescript": "^5.6.2"
+    "typescript": "5.4.5"
   }
 }
