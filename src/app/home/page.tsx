@@ -1,19 +1,15 @@
-import { ArticleCard } from '@/components/ArticleCard';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+// import { ArticleCard } from '@/components/ArticleCard';
 
-/**
- * @returns A JSX element representing the recommended articles.
- */
 export default async function HomePage() {
+	const session = await getServerSession(authOptions);
+	// console.log(session?.token);
+
 	return (
 		<div className="flex items-center justify-center w-full flex-col sm:px-4">
-			<ArticleCard
-				image="/placeholder.svg"
-				title="The Rise of Sustainable Fashion"
-				// description="Exploring the growing movement towards eco-friendly and ethical clothing choices."
-				// author="John Doe"
-				time="Sep 12, 2024"
-				category="latest"
-			/>
+			<h1>Home Page</h1>
+			{session && <h1>Hi, {JSON.stringify(session)}</h1>}
 		</div>
 	);
 }

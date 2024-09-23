@@ -3,17 +3,17 @@ import NextAuth from 'next-auth';
 
 declare module 'next-auth' {
 	interface User {
-		// username: string | null;
 		email: string | null;
-		// id: string;
+		id: string;
+		provider: string;
 	}
 
 	/* eslint-disable no-unused-vars */
 	interface Session {
 		user: User & {
-			// username: string;
 			email: string | null;
-			//  id: string
+			id: string;
+			provider: string;
 		};
 		token: {
 			username: string;

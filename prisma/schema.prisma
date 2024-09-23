@@ -68,25 +68,39 @@ model VerificationToken {
 }
 
 model Article {
-  article_id   String
-  title        String
-  link         String
-  keywords     String[]
-  creator      String?
-  video_url    String?
-  description  String?
-  pubDate      String
-  image_url    String
-  source_id    String
-  source_name  String
-  source_url   String
-  source_icon  String
-  language     String
-  country      String[]
-  category     String
+  article_id          String   @id
+  title               String
+  link                String
+  keywords            String[]
+  creator             String?
+  description         String?
+  full_description    String?
+  content             String?
+  image_url           String?
+  source_id           String
+  category            String
+  pubDate             DateTime
 
   @@unique([article_id])
   @@map("articles")
+}
+
+model LatestArticles {
+  article_id          String   @id
+  title               String
+  link                String
+  keywords            String[]
+  creator             String?
+  description         String?
+  full_description    String?
+  content             String?
+  image_url           String?
+  source_id           String
+  category            String
+  pubDate             DateTime
+
+  @@unique([article_id])
+  @@map("latest_articles")
 }
 
 model SampleArticles {
