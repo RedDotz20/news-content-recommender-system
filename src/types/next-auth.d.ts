@@ -5,7 +5,7 @@ declare module 'next-auth' {
 	interface User {
 		email: string | null;
 		id: string;
-		provider: string;
+		provider?: string;
 	}
 
 	/* eslint-disable no-unused-vars */
@@ -13,10 +13,10 @@ declare module 'next-auth' {
 		user: User & {
 			email: string | null;
 			id: string;
-			provider: string;
+			provider?: string;
 		};
 		token: {
-			username: string;
+			username?: string;
 		};
 	}
 	/* eslint-enable no-unused-vars */

@@ -18,6 +18,7 @@ const config: Config = {
 	theme: {
 		extend: {
 			screens: {
+				//? set values to (rem) for fluid-tailwind to work
 				xs: '20rem', // Extra small screens (320px)
 				sm: '40rem', // Small screens (640px
 				lg: '64rem', // Large screens (1024px))
