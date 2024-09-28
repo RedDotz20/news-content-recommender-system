@@ -32,7 +32,7 @@ import { ThemeToggle } from './theme/ThemeToggle';
 
 export default function HomeNav() {
 	return (
-		<div className="flex flex-col w-full fixed">
+		<div className="flex flex-col w-full fixed z-50">
 			<header className="flex items-center justify-between bg-background shadow-sm px-6 sm:px-8 md:px-12 h-14 md:h-16">
 				<Link
 					href="/"
@@ -171,7 +171,10 @@ const AvatarIcon = () => {
 					className="overflow-hidden rounded-full"
 				>
 					<Avatar>
-						<AvatarImage src={session?.user.image as string} />
+						<AvatarImage
+							src={session?.user.image as string}
+							alt={'A'}
+						/>
 						<AvatarFallback>A</AvatarFallback>
 					</Avatar>
 				</Button>

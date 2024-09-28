@@ -1,7 +1,8 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Looking for ways to speed up your queries,
+// or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
@@ -14,109 +15,108 @@ datasource db {
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String  @map("user_id")
+  id                 String   @id @default(cuid())
+  userId             String   @map("user_id")
   type               String
   provider           String
-  providerAccountId  String  @map("provider_account_id")
-  refresh_token      String? @db.Text
-  access_token       String? @db.Text
+  providerAccountId  String   @map("provider_account_id")
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
   expires_at         Int?
   token_type         String?
   scope              String?
-  id_token           String? @db.Text
+  id_token           String?  @db.Text
   session_state      String?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
 }
 
 model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique @map("session_token")
-  userId       String   @map("user_id")
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String   @id @default(cuid())
+  sessionToken      String   @unique @map("session_token")
+  userId            String   @map("user_id")
+  expires           DateTime
+
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String?   @unique
-  password      String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  name          String?
-  emailVerified DateTime? @map("email_verified")
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
+  id                    String     @id @default(cuid())
+  email                 String?    @unique
+  name                  String?
+  password              String?
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+  emailVerified         DateTime?  @map("email_verified")
+  image                 String?
+  accounts              Account[]
+  sessions              Session[]
+
+  userPreferences       UserPreferences[]   @relation("UserPreferences")
+  userInteractions      UserInteractions[]  @relation("UserInteractions")
 
   @@map("users")
 }
 
+model UserPreferences {
+  id                    String    @id @default(cuid())
+  userId                String    @map("user_id")
+  createdAt             DateTime  @default(now())
+  updated_at            DateTime  @updatedAt
+  sports                Int       @default(0)
+  science_technology    Int       @default(0)
+  entertainment         Int       @default(0)
+  health                Int       @default(0)
+  politics              Int       @default(0)
+
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserPreferences")
+
+  @@map("user_preferences")
+}
+
+model UserInteractions {
+  id                    String     @id @default(cuid())
+  userId                String     @map("user_id")
+  articleId             String     @map("article_id")
+  upvote                Int        @default(0)
+  downvote              Int        @default(0)
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+
+  user                  User       @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserInteractions")
+  article               Articles   @relation(fields: [articleId], references: [id], onDelete: Cascade, name: "UserInteractions")
+
+  @@map("user_interactions")
+}
+
 model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
+  identifier            String
+  token                 String
+  expires               DateTime
 
   @@unique([identifier, token])
   @@map("verificationtokens")
 }
 
-model Article {
-  article_id          String   @id
-  title               String
-  link                String
-  keywords            String[]
-  creator             String?
-  description         String?
-  full_description    String?
-  content             String?
-  image_url           String?
-  source_id           String
-  category            String
-  pubDate             DateTime
+model Articles {
+  id                    String   @id
+  title                 String
+  link                  String
+  keywords              String[]
+  creator               String?
+  description           String?
+  image_url             String?
+  source_id             String
+  category              String
+  pubDate               DateTime
 
-  @@unique([article_id])
+  userInteractions      UserInteractions[] @relation("UserInteractions")
+
+  @@unique([id])
   @@map("articles")
-}
-
-model LatestArticles {
-  article_id          String   @id
-  title               String
-  link                String
-  keywords            String[]
-  creator             String?
-  description         String?
-  full_description    String?
-  content             String?
-  image_url           String?
-  source_id           String
-  category            String
-  pubDate             DateTime
-
-  @@unique([article_id])
-  @@map("latest_articles")
-}
-
-model SampleArticles {
-  article_id          String    @id
-  title               String
-  link                String
-  keywords            String[]
-  creator             String[]
-  description         String?
-  content             String?
-  pubDate             String
-  full_description    String?
-  image_url           String
-  source_id           String
-  category            String
-
-  @@unique([article_id])
-  @@map("sample_articles")
 }

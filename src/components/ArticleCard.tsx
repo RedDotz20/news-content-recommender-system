@@ -11,23 +11,24 @@ import {
 	TooltipTrigger,
 } from './ui/tooltip';
 import { formatDate } from '@/lib/utils';
+// import { ImageComponent } from './ImageComponent';
 
 interface ArticleCardProps {
+	// id: string;
 	className?: string;
 	image: string;
 	title: string;
 	// description: string;
-	// author?: string;
-	time: string;
+	time: Date;
 	category: string;
 }
 
 export function ArticleCard({
+	// id,
 	className,
 	image,
 	title,
 	// description,
-	// author,
 	time,
 	category = 'latest',
 }: ArticleCardProps) {
@@ -38,8 +39,14 @@ export function ArticleCard({
 				className
 			)}
 		>
-			<div className="p-4 pb-0 w-full sm:w-[35%] lg:w-full h-full">
+			<div className="p-4 pb-0 w-full sm:w-[35%] lg:w-full h-full relative">
+				{/* <ImageComponent
+					src={image}
+					alt={title}
+				/> */}
 				<Image
+					placeholder="blur"
+					blurDataURL="/placeholder.svg"
 					src={image ? image : '/placeholder.svg'}
 					alt={title}
 					sizes="100vw"
@@ -49,7 +56,7 @@ export function ArticleCard({
 					}}
 					width={500}
 					height={300}
-					className="aspect-[3/2] lg:aspect-video object-cover rounded-t-lg"
+					className="aspect-[3/2] lg:aspect-video object-cover rounded-t-lg transition-all duration-[2s] "
 				/>
 			</div>
 			<CardContent className="w-full sm:w-[65%] lg:w-full px-4 pb-4 pt-0 space-y-2 h-full flex flex-col justify-between">
@@ -62,7 +69,7 @@ export function ArticleCard({
 							{category}
 						</Badge>
 					</div>
-					<h3 className="text-xl font-bold mb-1 line-clamp-2 lg:line-clamp-3">
+					<h3 className="text-xl font-bold mb-1 line-clamp-2 lg:line-clamp-3 cursor-pointer">
 						{title}
 					</h3>
 					<time
