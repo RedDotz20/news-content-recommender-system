@@ -215,21 +215,21 @@ export default function SignUpForm() {
 				<p className="text-xs">
 					By signing up, you agree to our{' '}
 					<Link
-						href="#"
+						href="/legal/terms-of-use"
 						className="text-cyan-500"
 					>
 						terms
 					</Link>
 					,{' '}
 					<Link
-						href="#"
+						href="/legal/acceptable-use-policy"
 						className="text-cyan-500"
 					>
 						acceptable use
 					</Link>
 					, and{' '}
 					<Link
-						href="#"
+						href="/legal/privacy-policy"
 						className="text-cyan-500"
 					>
 						privacy policy

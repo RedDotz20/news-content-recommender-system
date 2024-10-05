@@ -4,6 +4,14 @@ const nextConfig = {
 		remotePatterns: [
 			{
 				protocol: 'https',
+				hostname: '*',
+			},
+			{
+				protocol: 'http',
+				hostname: '*',
+			},
+			{
+				protocol: 'https',
 				hostname: 'lh3.googleusercontent.com',
 			},
 			{
@@ -15,6 +23,11 @@ const nextConfig = {
 				hostname: 'cdn-icons-png.flaticon.com',
 			},
 		],
+	},
+	logging: {
+		fetches: {
+			fullUrl: false,
+		},
 	},
 };
 
