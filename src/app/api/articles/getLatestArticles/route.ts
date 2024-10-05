@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Articles as ArtilesType } from '@prisma/client';
 import { db } from '@/lib/db';
-import { fisherYatesShuffleArticles } from '@/lib/algorithms/fisherYatesShuffle';
+import { fisherYatesShuffle } from '@/lib/algorithms/fisherYatesShuffle';
 
 export async function GET() {
 	try {
@@ -20,12 +20,10 @@ export async function GET() {
       WHERE "image_url" IS NOT NULL
       AND "category" = 'latest'
       AND ("description" IS NOT NULL)
-      OFFSET ${randomOffset} LIMIT 20;
+      OFFSET ${randomOffset} LIMIT  ;
     `;
 
-		// Shuffle select 20 from sample
-		const shuffledArticles = fisherYatesShuffleArticles(articles);
-		// const randomRows = articles.sort(() => 0.5 - Math.random()).slice(0, 20);
+		const shuffledArticles = fisherYatesShuffle(articles);
 
 		return NextResponse.json({ data: shuffledArticles }, { status: 200 });
 	} catch (error) {

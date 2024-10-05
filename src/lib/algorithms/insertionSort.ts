@@ -1,48 +1,45 @@
+import { CategorialPreferenceType } from '@/types/userPreference';
+
 /**
  * Sorts a user's preferences based on their frequency in descending order.
  *
- * The algorithm works by looping through each preference in the array and
- * inserting it at the correct position in the sorted array by shifting larger
- * elements to the right.
- *
- * @param preference - The user's preferences to be sorted.
- * @returns The sorted preferences.
- * @throws Error if the input is not an array or is empty.
+ * @param preferences Array of user preferences
+ * @returns Sorted array of preferences
+ * @throws Error if the input is not a non-empty array.
+ * @performance
+ * Time Complexity: O(n^2) in the average and worst case due to the insertion process.
+ * Space Complexity: O(n) for the sorted array.
  */
 
-export type userPrefType = { category: string; frequency: number };
-
-export function insertionSort(preferences: userPrefType[]): userPrefType[] {
+export function insertionSort(
+	preferences: CategorialPreferenceType[]
+): CategorialPreferenceType[] {
 	// Ensure the input is a non-empty array
 	if (!Array.isArray(preferences) || preferences.length === 0) {
 		throw new Error('Invalid input: preferences must be a non-empty array.');
 	}
 
-	// Iterate through each preference starting from the second element
-	for (let i = 1; i < preferences.length; i++) {
-		const currentPreference = preferences[i];
-		let j = i - 1;
+	const sortedPreferences: CategorialPreferenceType[] = [];
 
-		// Shift larger elements to the right
-		while (j >= 0 && preferences[j].frequency < currentPreference.frequency) {
-			j--;
+	// Perform binary search to determine correct position for decending order
+	for (const currentPreference of preferences) {
+		let left = 0;
+		let right = sortedPreferences.length;
+
+		while (left < right) {
+			const mid = Math.floor((left + right) / 2);
+			// Sort in descending order
+			if (sortedPreferences[mid].frequency < currentPreference.frequency) {
+				left = mid + 1;
+			} else {
+				right = mid;
+			}
 		}
 
-		// Only insert the current preference if it's not already in the correct position
-		if (j + 1 !== i) {
-			// Remove current preference and insert it at the correct position
-			const [removedPreference] = preferences.splice(i, 1);
-			preferences.splice(j + 1, 0, removedPreference);
-		}
+		// Use unshift() to insert at the start (index 0) for a more concise operation
+		sortedPreferences.splice(left, 0, currentPreference);
 	}
 
-	return preferences;
+	// Return the sorted preferences
+	return sortedPreferences;
 }
-
-// const userPreference = [
-// 	{ category: 'sports', frequency: 5 },
-// 	{ category: 'science_technology', frequency: 3 },
-// 	{ category: 'entertainment', frequency: 2 },
-// 	{ category: 'health', frequency: 4 },
-// 	{ category: 'politics', frequency: 1 },
-// ];

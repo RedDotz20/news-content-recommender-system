@@ -1,7 +1,8 @@
 import { NextAuthOptions } from 'next-auth';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { db } from './db';
-import authConfig from './auth.config';
+import authProviders from './auth.providers';
+
 
 export const authOptions: NextAuthOptions = {
 	adapter: PrismaAdapter(db),
@@ -13,8 +14,36 @@ export const authOptions: NextAuthOptions = {
 		signIn: '/auth',
 		newUser: '/auth',
 	},
-	...authConfig, // providers
+	...authProviders, // providers
 	callbacks: {
+		async signIn({ user, account, profile }) {
+			try {
+				// Ensure user ID is present
+				const userId = user.id;
+				if (!userId) {
+					throw new Error('User ID is not available.');
+				}
+
+				// Check if user preferences already exist
+				const userPreferences = await db.userPreferences.findUnique({
+					where: { userId: userId },
+				});
+
+				// If no preferences exist, create default preferences
+				if (!userPreferences) {
+					await db.userPreferences.create({
+						data: {
+							userId: userId, // Foreign key linking to User
+						},
+					});
+				}
+
+				return true; // Return true to indicate successful sign-in
+			} catch (error) {
+				console.error('Error setting up user preferences', error);
+				return false; // Return false to indicate failed sign-in
+			}
+		},
 		async jwt({ token, user, profile, account }) {
 			if (user) {
 				return {

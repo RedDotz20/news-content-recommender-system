@@ -1,13 +1,62 @@
-import { normalizePreferences } from './normalization';
+import { normalizePreferences } from './normalizePreferences';
 
 /**
- * Calculate cosine similarity between two normalized users
- * @param userA - normalized frequency array of user A's category preferences
- * @param userB - normalized frequency array of user B's category preferences
- * @returns Cosine similarity between userA and userB
+ * Calculates the cosine similarity between two normalized users' category preferences.
+ *
+ * @param userAPreferences - Normalized frequency array of user A's category preferences.
+ * @param userBPreferences - Normalized frequency array of user B's category preferences.
+ * @returns The cosine similarity between user A and user B preferences, ranging from -1 to 1.
+ * @throws Error if any input is not an array or if arrays are empty.
  */
+export function collaborativeFiltering(
+	userAPreferences: number[],
+	userBPreferences: number[]
+): number {
+	validateInputArrays(userAPreferences, userBPreferences);
 
-export function calculateCosineSimilarity(userA: number[], userB: number[]) {
+	const normalizedUserA = normalizePreferences(userAPreferences);
+	const normalizedUserB = normalizePreferences(userBPreferences);
+
+	// If normalization results in empty arrays, return similarity of 0
+	if (!normalizedUserA.length || !normalizedUserB.length) {
+		return 0;
+	}
+
+	return calculateCosineSimilarity(normalizedUserA, normalizedUserB);
+}
+
+/**
+ * Validates that input arrays are non-empty arrays.
+ *
+ * @param userAPreferences - First input array.
+ * @param userBPreferences - Second input array.
+ * @throws Error if any input is not an array or if arrays are empty.
+ */
+export function validateInputArrays(
+	userAPreferences: any[],
+	userBPreferences: any[]
+): void {
+	if (!Array.isArray(userAPreferences) || !Array.isArray(userBPreferences)) {
+		throw new Error('Both inputs must be arrays');
+	}
+
+	if (!userAPreferences.length || !userBPreferences.length) {
+		throw new Error('Input arrays must not be empty');
+	}
+}
+
+/**
+ * Calculates the cosine similarity between two arrays of numbers.
+ *
+ * @param userA - First array of numbers representing normalized preferences.
+ * @param userB - Second array of numbers representing normalized preferences.
+ * @returns The cosine similarity between user A and user B preferences, ranging from -1 to 1.
+ * @throws Error if the lengths of the two arrays are not equal.
+ */
+export function calculateCosineSimilarity(
+	userA: number[],
+	userB: number[]
+): number {
 	if (userA.length !== userB.length) {
 		throw new Error('Array lengths must be equal');
 	}
@@ -18,28 +67,17 @@ export function calculateCosineSimilarity(userA: number[], userB: number[]) {
 
 	for (let i = 0; i < userA.length; i++) {
 		dotProduct += userA[i] * userB[i];
-		magnitudeA += Math.pow(userA[i], 2);
-		magnitudeB += Math.pow(userB[i], 2);
+		magnitudeA += userA[i] ** 2; // Squaring user A's preference
+		magnitudeB += userB[i] ** 2; // Squaring user B's preference
 	}
 
 	magnitudeA = Math.sqrt(magnitudeA);
 	magnitudeB = Math.sqrt(magnitudeB);
 
+	// If either user has a magnitude of 0, return a similarity of 0
 	if (magnitudeA === 0 || magnitudeB === 0) {
 		return 0;
 	}
 
 	return dotProduct / (magnitudeA * magnitudeB);
-}
-
-export function CollaborativeFiltering(userA: number[], userB: number[]) {
-	const normalizedUserA = normalizePreferences(userA);
-	const normalizedUserB = normalizePreferences(userB);
-
-	const cosineSimilarity = calculateCosineSimilarity(
-		normalizedUserA,
-		normalizedUserB
-	);
-
-	return cosineSimilarity;
 }

@@ -76,6 +76,7 @@ model UserPreferences {
 
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserPreferences")
 
+  @@unique([userId])
   @@map("user_preferences")
 }
 
