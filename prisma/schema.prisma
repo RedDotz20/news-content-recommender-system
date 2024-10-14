@@ -63,11 +63,14 @@ model User {
   @@map("users")
 }
 
+// TODO: UPDATE MODELS BASED ON NEW DATASETS
+
 model UserPreferences {
   id                    String    @id @default(cuid())
   userId                String    @map("user_id")
   createdAt             DateTime  @default(now())
   updated_at            DateTime  @updatedAt
+
   sports                Int       @default(0)
   science_technology    Int       @default(0)
   entertainment         Int       @default(0)

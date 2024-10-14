@@ -45,9 +45,10 @@ export function ArticleCard({
 					alt={title}
 				/> */}
 				<Image
-					placeholder="blur"
-					blurDataURL="/placeholder.svg"
-					src={image ? image : '/placeholder.svg'}
+					// placeholder="blur"
+					// blurDataURL="/placeholder.svg"
+					// src={image ? image : '/placeholder.svg'}
+					src="https://www.fccnn.com/incoming/7254122-yledlj-102621.S.STP.WOLVESREP.JPG/alternates/BASE_LANDSCAPE/102621.S.STP.WOLVESREP.jpg"
 					alt={title}
 					sizes="100vw"
 					style={{

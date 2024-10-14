@@ -1,6 +1,7 @@
 export interface CategorialPreferenceType {
 	category: string;
 	frequency: number;
+	articles?: number;
 }
 
 export interface CategorialCountType {

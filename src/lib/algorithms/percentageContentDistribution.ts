@@ -9,24 +9,24 @@
  * @throws {Error} If `baseTarget` is negative or if `distributionType` is not valid.
  */
 
-interface PercentageDistributionResults {
-	topCategoryCount: number;
-	secondCategoryCount: number;
-	thirdCategoryCount: number;
+interface GroupDistributionType {
+	firstGroupVal: number;
+	secondGroupVal: number;
+	thirdGroupVal: number;
 }
 
 export function percentageContentDistribution(
-	distributionType: 'contentBased' | 'Overall' = 'contentBased',
+	distributionType: 'articleDistribution' | 'categoryIdentifier',
 	baseTarget: number = 50
-): PercentageDistributionResults {
+): GroupDistributionType {
 	// Validate baseTarget to ensure it is non-negative
 	if (baseTarget < 0) {
 		throw new Error('baseTarget must be a non-negative number');
 	}
 
 	const distributions: Record<string, number[]> = {
-		contentBased: [0.4, 0.3, 0.3],
-		Overall: [0.7, 0.2, 0.1],
+		articleDistribution: [0.6, 0.3, 0.1],
+		categoryIdentifier: [0.3, 0.3, 0.4],
 	};
 
 	// Validate distributionType and retrieve percentages
@@ -39,29 +39,25 @@ export function percentageContentDistribution(
 	}
 
 	// Calculate the articles for each category based on percentages
-	const articlesForTopCategory = Math.round(baseTarget * percentage[0]);
-	const articlesForThirdCategory = Math.round(baseTarget * percentage[2]);
-	let articlesForSecondCategory =
-		baseTarget - articlesForTopCategory - articlesForThirdCategory;
+	const firstListGroup = Math.round(baseTarget * percentage[0]);
+	const thridListGroup = Math.round(baseTarget * percentage[2]);
+	let secondListGroup = baseTarget - firstListGroup - thridListGroup;
 
 	// Ensure articles for the second category are non-negative
-	if (articlesForSecondCategory < 0) {
-		articlesForSecondCategory = 0; // Set to 0 if negative
+	if (secondListGroup < 0) {
+		secondListGroup = 0; // Set to 0 if negative
 	}
 
 	// Correct the distributions if they do not sum to baseTarget
-	const totalCount =
-		articlesForTopCategory +
-		articlesForSecondCategory +
-		articlesForThirdCategory;
+	const totalCount = firstListGroup + secondListGroup + thridListGroup;
 
 	if (totalCount !== baseTarget) {
-		articlesForSecondCategory += baseTarget - totalCount; // Adjust second category count
+		secondListGroup += baseTarget - totalCount; // Adjust second category count
 	}
 
 	return {
-		topCategoryCount: articlesForTopCategory,
-		secondCategoryCount: articlesForSecondCategory,
-		thirdCategoryCount: articlesForThirdCategory,
+		firstGroupVal: firstListGroup,
+		secondGroupVal: secondListGroup,
+		thirdGroupVal: thridListGroup,
 	};
 }
