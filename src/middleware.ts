@@ -21,22 +21,40 @@ const secureApiMiddleware = async (request: NextRequest) => {
 	return NextResponse.next();
 };
 
-export default async function middleware(request: NextRequestWithAuth) {
-	const routePath = request.nextUrl.pathname;
+const middleware = async (req: NextRequestWithAuth) => {
+	const routePath = req.nextUrl.pathname;
+
+	// Redirect authenticated users from '/auth' to '/home'
+	if (routePath.startsWith('/auth')) {
+		if (req.nextauth.token) {
+			// Check if the user is authenticated
+			return NextResponse.redirect(new URL('/home', req.url));
+		}
+	}
 
 	// Protect the /api routes with the API Secret Key
 	if (routePath.startsWith('/api')) {
-		return secureApiMiddleware(request);
+		return secureApiMiddleware(req);
 	}
 
 	// Protect the /home and /account routes with NextAuth
 	if (routePath.startsWith('/home') || routePath.startsWith('/account')) {
-		return withAuth(request);
+		return withAuth(req);
 	}
 
 	return NextResponse.next();
-}
+};
+
+export default withAuth(middleware, {
+	callbacks: {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		authorized: ({ token }) => {
+			// Add your role-based authorization logic if necessary
+			return true; // Modify according to your needs
+		},
+	},
+});
 
 export const config = {
-	matcher: ['/api(.*)', '/home(.*)'],
+	matcher: ['/api(.*)', '/home(.*)', '/auth(.*)'],
 };

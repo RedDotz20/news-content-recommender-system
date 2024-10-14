@@ -4,7 +4,7 @@ import { ArticleCard } from '@/components/ArticleCard';
 
 async function getNewestArticles() {
 	const response = await fetch(
-		'http://localhost:3000/api/articles/getLatestArticles',
+		`${process.env.NEXT_PUBLIC_BASE_URL}/api/articles/getLatestArticles`,
 		{
 			next: { revalidate: 72000 }, // revalidate every 20 hours
 			method: 'GET',
@@ -15,11 +15,13 @@ async function getNewestArticles() {
 		}
 	);
 
-	return response.json();
+	return response.json(); // Now safely parse it as JSON
 }
 
 export default async function NewestArticles() {
 	const { data } = await getNewestArticles();
+
+	console.log(data);
 
 	return (
 		<div className="flex items-center justify-center w-full flex-col sm:px-4">

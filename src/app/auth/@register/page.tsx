@@ -1,9 +1,6 @@
 'use client';
 
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import * as z from 'zod';
 import Link from 'next/link';
 import {
@@ -25,6 +22,9 @@ import {
 	LockClosedIcon,
 } from '@radix-ui/react-icons';
 import { Loader2 } from 'lucide-react';
+import { userSafeSignUp } from '@/server/actions/signUpUser';
+import { useAction } from 'next-safe-action/hooks';
+import { useAuthTabsStore } from '@/store/authTabStore';
 
 const FormSchema = z.object({
 	name: z.string().min(1, 'Account Name is required').max(100),
@@ -36,11 +36,9 @@ const FormSchema = z.object({
 });
 
 export default function SignUpForm() {
-	const [isLoading, setIsLoading] = useState(false);
-	const { status } = useSession();
 	const { toast } = useToast();
+	const { onTabChange } = useAuthTabsStore();
 	const { isPasswordVisible, togglePasswordVisibility } = useShowHidePass();
-	const router = useRouter();
 
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
@@ -51,51 +49,38 @@ export default function SignUpForm() {
 		},
 	});
 
-	const onSubmit = async (values: z.infer<typeof FormSchema>) => {
-		try {
-			setIsLoading(true);
-
-			const response = await fetch('/api/user', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					name: values.name,
-					email: values.email,
-					password: values.password,
-				}),
+	const { execute, status } = useAction(userSafeSignUp, {
+		onSuccess: () => {
+			onTabChange('signin');
+			toast({
+				title: 'Registration Sucessful',
+				description: 'Please Sign In to Continue',
+				variant: 'success',
 			});
-
-			if (response.ok) {
-				router.push('/sign-in');
-			} else {
-				console.error('Registration Failed');
-				toast({
-					title: 'Error',
-					description: 'Oops! Something Went Wrong',
-					variant: 'destructive',
-				});
-			}
-		} catch (error) {
+		},
+		onExecute: () => {
+			console.log('Verifying Credentials...');
+		},
+		onError: (error) => {
 			console.error(error);
 			toast({
 				title: 'Error',
-				description: 'Oops! Something Went Wrong',
+				description: 'Error Signing Up. Please try again',
 				variant: 'destructive',
 			});
-		} finally {
-			setIsLoading(false);
-		}
+		},
+	});
+
+	const onSubmit = async (values: z.infer<typeof FormSchema>) => {
+		execute(values);
 	};
 
 	return (
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
-				className="space-y-6"
-				action="#"
 				method="POST"
+				className="space-y-6"
 			>
 				<div>
 					<div className="mt-1">
@@ -203,9 +188,9 @@ export default function SignUpForm() {
 				<Button
 					type="submit"
 					className="w-full"
-					disabled={status === 'loading' || isLoading}
+					disabled={status === 'executing'}
 				>
-					{isLoading ? (
+					{status === 'executing' ? (
 						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 					) : (
 						'Register'

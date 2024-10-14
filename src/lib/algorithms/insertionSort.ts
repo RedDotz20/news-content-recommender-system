@@ -29,7 +29,7 @@ export function insertionSort(
 		while (left < right) {
 			const mid = Math.floor((left + right) / 2);
 			// Sort in descending order
-			if (sortedPreferences[mid].frequency < currentPreference.frequency) {
+			if (sortedPreferences[mid].frequency > currentPreference.frequency) {
 				left = mid + 1;
 			} else {
 				right = mid;

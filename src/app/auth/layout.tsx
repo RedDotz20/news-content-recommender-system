@@ -1,34 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { ChevronLeftIcon } from 'lucide-react';
-import Link from 'next/link';
+import { useAuthTabsStore } from '@/store/authTabStore';
 
-type AuthTabTypes = 'signin' | 'register';
 interface AuthLayoutProps {
 	signin: React.ReactNode;
 	register: React.ReactNode;
 }
 
 export default function AuthLayout({ signin, register }: AuthLayoutProps) {
-	const [AuthTabs, setAuthTabs] = useState<AuthTabTypes>('signin');
-	const { data: session } = useSession();
-	const router = useRouter();
-
-	const onTabChange = (value: string) => {
-		setAuthTabs(value as AuthTabTypes);
-	};
-
-	useEffect(() => {
-		if (session) {
-			router.push('/home');
-		}
-	}, [session, router]);
-
+	const { AuthTabs, onTabChange } = useAuthTabsStore();
 	return (
 		<div className="h-screen flex flex-wrap-reverse items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
 			<Link href="/">
