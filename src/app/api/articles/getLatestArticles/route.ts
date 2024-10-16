@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Articles as ArticlesType } from '@prisma/client';
-import { db } from '@/lib/db';
-import { fisherYatesShuffle } from '@/lib/algorithms/fisherYatesShuffle';
+import { prisma } from '@/lib/db';
+import { fisherYatesShuffle } from '@/lib/algorithms/helper/fisherYatesShuffle';
 
 //TODO: Edit route based on new datasets
 
@@ -15,15 +15,7 @@ export async function GET() {
 		// 	AND "description" IS NOT NULL;
 		// `;
 
-		const totalRecords = await db.articles.count({
-			where: {
-				category: 'latest',
-				image_url: {
-					not: null,
-				},
-				description: { not: null },
-			},
-		});
+		const totalRecords = await prisma.articles.count();
 
 		// Ensure randomOffset is non-negative and does not exceed available records
 		const randomOffset = Math.max(
@@ -32,11 +24,10 @@ export async function GET() {
 		);
 		const limit = Math.min(100, totalRecords); // Set limit to 100, or totalRecords if less than 100
 
-		const articles: ArticlesType[] = await db.$queryRaw`
+		const articles: ArticlesType[] = await prisma.$queryRaw`
       SELECT * FROM "articles"
-      WHERE "image_url" IS NOT NULL
       AND "category" = 'latest'
-      AND ("description" IS NOT NULL)
+      AND ("short_description" IS NOT NULL)
       OFFSET ${randomOffset} LIMIT ${limit};
     `;
 
@@ -50,6 +41,6 @@ export async function GET() {
 			{ status: 500 }
 		);
 	} finally {
-		await db.$disconnect();
+		await prisma.$disconnect();
 	}
 }

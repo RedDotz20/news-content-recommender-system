@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { Articles as ArticleType } from '@prisma/client';
-import { db } from '@/lib/db';
+import { prisma } from '@/lib/db';
 
 export async function GET() {
 	try {
-		const articles: ArticleType[] = await db.articles.findMany({
+		const articles: ArticleType[] = await prisma.articles.findMany({
 			take: 10, // Limiting to 100 records
 		});
 		return NextResponse.json({ data: articles }, { status: 200 });
@@ -15,6 +15,6 @@ export async function GET() {
 			{ status: 500 }
 		);
 	} finally {
-		await db.$disconnect();
+		await prisma.$disconnect();
 	}
 }

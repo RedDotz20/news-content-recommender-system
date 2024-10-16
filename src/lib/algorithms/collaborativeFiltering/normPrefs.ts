@@ -1,4 +1,6 @@
 /**
+ * Normalize Preferences
+ *
  * Normalize a user's category frequency preferences using Min-Max normalization.
  *
  * This function has a time complexity of O(n), where n is the number of preferences.
@@ -13,7 +15,8 @@
  * Space Complexity: O(n) - for the normalizedValues array storing the results.
  *
  */
-export function normalizePreferences(preferenceValues: number[]): number[] {
+
+export function normPerfs(preferenceValues: number[]): number[] {
 	// Check if the array length is exactly 5
 	if (preferenceValues.length !== 5) {
 		throw new Error('Preferences array must be of length 5.');

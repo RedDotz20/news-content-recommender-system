@@ -1,6 +1,6 @@
 import { NextAuthOptions } from 'next-auth';
 import { compare } from 'bcrypt';
-import { db } from './db';
+import { prisma } from './db';
 
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
@@ -16,7 +16,7 @@ const credentials = CredentialsProvider({
 			return null;
 		}
 
-		const existingUser = await db.user.findUnique({
+		const existingUser = await prisma.user.findUnique({
 			where: {
 				email: credentials.email,
 			},

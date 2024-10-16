@@ -1,11 +1,10 @@
 import { NextAuthOptions } from 'next-auth';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { db } from './db';
+import { prisma } from './db';
 import authProviders from './auth.providers';
 
-
 export const authOptions: NextAuthOptions = {
-	adapter: PrismaAdapter(db),
+	adapter: PrismaAdapter(prisma),
 	secret: process.env.NEXTAUTH_SECRET,
 	session: {
 		strategy: 'jwt',
@@ -25,15 +24,16 @@ export const authOptions: NextAuthOptions = {
 				}
 
 				// Check if user preferences already exist
-				const userPreferences = await db.userPreferences.findUnique({
+				const userPreferences = await prisma.userPreferences.findUnique({
 					where: { userId: userId },
 				});
 
 				// If no preferences exist, create default preferences
 				if (!userPreferences) {
-					await db.userPreferences.create({
+					await prisma.userPreferences.create({
 						data: {
 							userId: userId, // Foreign key linking to User
+							preferences: {},
 						},
 					});
 				}
@@ -55,7 +55,7 @@ export const authOptions: NextAuthOptions = {
 			}
 
 			if (profile?.email) {
-				const existingUser = await db.user.findUnique({
+				const existingUser = await prisma.user.findUnique({
 					where: {
 						email: profile.email,
 					},

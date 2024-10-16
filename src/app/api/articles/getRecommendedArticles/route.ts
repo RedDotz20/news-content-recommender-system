@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { prisma } from '@/lib/db';
 
 export async function GET() {
 	// const userId = request.nextUrl.searchParams.get('id');
@@ -15,6 +15,6 @@ export async function GET() {
 			{ status: 500 }
 		);
 	} finally {
-		await db.$disconnect();
+		await prisma.$disconnect();
 	}
 }

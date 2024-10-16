@@ -1,4 +1,8 @@
+import { GroupDistributionType } from '@/types';
+
 /**
+ * Percentage Content Distribution
+ *
  * Calculates the distribution of articles across three categories based on a given distribution type.
  *
  * @param {('contentBased' | 'Overall')} distributionType - The type of distribution to use.
@@ -9,14 +13,10 @@
  * @throws {Error} If `baseTarget` is negative or if `distributionType` is not valid.
  */
 
-interface GroupDistributionType {
-	firstGroupVal: number;
-	secondGroupVal: number;
-	thirdGroupVal: number;
-}
+type distType = 'articleDistribution' | 'categoryIdentifier';
 
-export function percentageContentDistribution(
-	distributionType: 'articleDistribution' | 'categoryIdentifier',
+export function pctContentDist(
+	distributionType: distType,
 	baseTarget: number = 50
 ): GroupDistributionType {
 	// Validate baseTarget to ensure it is non-negative
@@ -38,9 +38,9 @@ export function percentageContentDistribution(
 		);
 	}
 
-	// Calculate the articles for each category based on percentages
 	const firstListGroup = Math.round(baseTarget * percentage[0]);
 	const thridListGroup = Math.round(baseTarget * percentage[2]);
+	// Calculate the articles for each category based on percentages
 	let secondListGroup = baseTarget - firstListGroup - thridListGroup;
 
 	// Ensure articles for the second category are non-negative

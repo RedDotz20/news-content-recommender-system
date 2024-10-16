@@ -1,13 +1,17 @@
 export interface CategorialPreferenceType {
 	category: string;
 	frequency: number;
-	articles?: number;
 }
 
-export interface CategorialCountType {
-	category: string;
+export interface CategorialPrefWithArticlesType
+	extends CategorialPreferenceType {
 	articles: number;
 }
+
+export type CategorialCountType = Pick<
+	CategorialPrefWithArticlesType,
+	'category' | 'articles'
+>;
 
 export interface TopUserCategorialArticlesType {
 	topOne?: { category: string; articles: number };

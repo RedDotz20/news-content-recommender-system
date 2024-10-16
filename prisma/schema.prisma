@@ -63,19 +63,12 @@ model User {
   @@map("users")
 }
 
-// TODO: UPDATE MODELS BASED ON NEW DATASETS
-
 model UserPreferences {
   id                    String    @id @default(cuid())
   userId                String    @map("user_id")
   createdAt             DateTime  @default(now())
   updated_at            DateTime  @updatedAt
-
-  sports                Int       @default(0)
-  science_technology    Int       @default(0)
-  entertainment         Int       @default(0)
-  health                Int       @default(0)
-  politics              Int       @default(0)
+  preferences           Json
 
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserPreferences")
 
@@ -108,16 +101,13 @@ model VerificationToken {
 }
 
 model Articles {
-  id                    String   @id
-  title                 String
+  id                    String    @id
   link                  String
-  keywords              String[]
-  creator               String?
-  description           String?
-  image_url             String?
-  source_id             String
+  headline              String
+  short_description     String?
+  authors               String?
   category              String
-  pubDate               DateTime
+  date                  DateTime  @db.Date
 
   userInteractions      UserInteractions[] @relation("UserInteractions")
 
