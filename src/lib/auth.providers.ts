@@ -40,18 +40,18 @@ const credentials = CredentialsProvider({
 		}
 
 		// Check if user preferences exist; if not, create default preferences
-		// const userPreferences = await prisma.userPreferences.findUnique({
-		// 	where: { userId: existingUser.id },
-		// });
+		const userPreferences = await prisma.userPreferences.findUnique({
+			where: { userId: existingUser.id },
+		});
 
-		// if (!userPreferences) {
-		// 	await prisma.userPreferences.create({
-		// 		data: {
-		// 			userId: existingUser.id, // Foreign key linking to User
-		// 			preferences: {}, // Default to empty preferences
-		// 		},
-		// 	});
-		// }
+		if (!userPreferences) {
+			await prisma.userPreferences.create({
+				data: {
+					userId: existingUser.id, // Foreign key linking to User
+					preferences: {}, // Default to empty preferences
+				},
+			});
+		}
 
 		// Return the user object for successful sign-in
 		return {
@@ -70,53 +70,54 @@ const google = GoogleProvider({
 			prompt: 'consent',
 			access_type: 'offline',
 			response_type: 'code',
-			// scope: 'openid email profile', // Make sure you include necessary scopes
+			allowDangerousEmailAccountLinking: true,
 		},
 	},
-	// async profile(profile) {
-	// This function is used when Google provides the profile after login
-	// Find user by email in the database
-	// let user = await prisma.user.findUnique({
-	// 	where: {
-	// 		email: profile.email,
-	// 	},
-	// });
+	async profile(profile) {
+		// This function is used when Google provides the profile after login
+		// Find user by email in the database
+		let user = await prisma.user.findUnique({
+			where: {
+				email: profile.email,
+			},
+		});
 
-	// // If user doesn't exist, create a new user
-	// if (!user) {
-	// 	user = await prisma.user.create({
-	// 		data: {
-	// 			email: profile.email,
-	// 			name: profile.name,
-	// 			image: profile.picture,
-	// 		},
-	// 	});
-	// }
+		// If user doesn't exist, create a new user
+		if (!user) {
+			user = await prisma.user.create({
+				data: {
+					email: profile.email,
+					name: profile.name,
+					image: profile.picture,
+				},
+			});
+		}
 
-	// // Ensure user preferences exist
-	// const userPreferences = await prisma.userPreferences.findUnique({
-	// 	where: { userId: user.id },
-	// });
+		// Ensure user preferences exist
+		const userPreferences = await prisma.userPreferences.findUnique({
+			where: { userId: user.id },
+		});
 
-	// // If no preferences exist, create default preferences
-	// if (!userPreferences) {
-	// 	await prisma.userPreferences.create({
-	// 		data: {
-	// 			userId: user.id,
-	// 			preferences: {}, // Default empty preferences
-	// 		},
-	// 	});
-	// }
+		// If no preferences exist, create default preferences
+		if (!userPreferences) {
+			await prisma.userPreferences.create({
+				data: {
+					userId: user.id,
+					preferences: {}, // Default empty preferences
+				},
+			});
+		}
 
-	// return {
-	// 	id: user.id,
-	// 	name: user.name,
-	// 	email: user.email,
-	// 	image: user.image,
-	// };
-	// },
+		return {
+			id: user.id,
+			name: user.name,
+			email: user.email,
+			image: user.image,
+		};
+	},
 });
 
+// excludes google temporarily
 export default {
-	providers: [credentials, google],
+	providers: [credentials],
 } satisfies NextAuthOptions;

@@ -4,7 +4,7 @@ import { prisma } from './db';
 import authProviders from './auth.providers';
 
 export const authOptions: NextAuthOptions = {
-	debug: true,
+	// debug: true,
 	adapter: PrismaAdapter(prisma),
 	secret: process.env.NEXTAUTH_SECRET,
 	session: {
@@ -18,55 +18,48 @@ export const authOptions: NextAuthOptions = {
 	callbacks: {
 		async signIn({ user, account, profile }) {
 			try {
-				// Ensure user ID is present
-				const userId = user.id;
-
-				if (!userId) {
-					throw new Error('Invalid User ID Not Provided');
-				}
-
-				// Handle Google sign-in
-				if (account?.provider === 'google' && profile) {
+				if (user.email) {
+					// Check if the user already exists
 					const existingUser = await prisma.user.findUnique({
-						where: { email: profile.email },
+						where: { email: user.email },
 					});
 
-					// Create a user if not found
-					if (!existingUser) {
-						await prisma.user.create({
+					// If the user exists, link the OAuth account if it's not already linked
+					if (existingUser) {
+						console.log(existingUser, 'existingUser');
+						// If the email exists, potentially link the account or return true if already linked
+						// You can implement logic to verify if the current account's provider corresponds to the existing user
+						return true; // User exists and sign-in is successful
+					} else {
+						// If the user doesn't exist, create a new user account
+						const newUser = await prisma.user.create({
 							data: {
-								name: profile.name,
-								email: profile.email,
-								image: profile.image,
-								// Add any additional fields required
+								name: user.name,
+								email: user.email,
+								image: user.image,
 							},
 						});
+						console.log(newUser, 'newUser');
+
+						// Handle Google sign-in specific logic
+						if (account?.provider === 'google' && profile) {
+							const existingGoogleUser = await prisma.user.findUnique({
+								where: { email: profile.email },
+							});
+
+							// Create a user if not found
+							if (!existingGoogleUser) {
+								await prisma.user.create({
+									data: {
+										name: profile.name,
+										email: profile.email,
+										image: profile.image,
+									},
+								});
+							}
+						}
 					}
 				}
-
-				// 	const existingUser = await prisma.user.findUnique({
-				// 		where: { email: profile.email },
-				// });
-
-				// // If user doesn't exist, create a new one
-				// if (!existingUser) {
-				// 		await prisma.user.create({
-				// 				data: {
-				// 						name: profile.name,
-				// 						email: profile.email,
-				// 						// Additional fields as necessary
-				// 				},
-				// 		});
-				// }
-
-				// Check if the user exists
-				// const existingUser = await prisma.user.findUnique({
-				// 	where: { id: userId },
-				// });
-
-				// if (!existingUser) {
-				// 	throw new Error(`User with ID ${userId} does not exist.`);
-				// }
 
 				return true;
 			} catch (error) {
@@ -74,9 +67,9 @@ export const authOptions: NextAuthOptions = {
 				return false; // Return false to indicate failed sign-in
 			}
 		},
-		async redirect({ url, baseUrl }) {
-			return `${baseUrl}/home`; // Redirect to /home after sign-in
-		},
+		// async redirect({ url, baseUrl }) {
+		// 	return `${baseUrl}/home`; // Redirect to /home after sign-in
+		// },
 		async jwt({ token, user, profile, account }) {
 			if (user) {
 				return {
