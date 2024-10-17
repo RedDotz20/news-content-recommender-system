@@ -1,4 +1,5 @@
 import { calcCosSim } from './calcCosSim';
+import { normPerfs } from './normPrefs';
 
 // using k-nearest neighbors
 
@@ -10,11 +11,15 @@ export function findKNearestNeighbors(
 	k: number
 ) {
 	const targetUser = userPreferences.find((user) => user.userId === userId);
+
 	if (!targetUser) {
 		throw new Error(`User with ID ${userId} not found`);
 	}
 
 	const similarities: { userId: string; similarity: number }[] = [];
+
+	// const normalizedUserA = normPerfs(userAPreferences);
+	// const normalizedUserB = normPerfs(userBPreferences);
 
 	userPreferences.forEach((otherUser) => {
 		if (otherUser.userId !== userId) {

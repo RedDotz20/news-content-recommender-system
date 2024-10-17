@@ -4,6 +4,7 @@ import { prisma } from './db';
 import authProviders from './auth.providers';
 
 export const authOptions: NextAuthOptions = {
+	debug: true,
 	adapter: PrismaAdapter(prisma),
 	secret: process.env.NEXTAUTH_SECRET,
 	session: {
@@ -19,30 +20,62 @@ export const authOptions: NextAuthOptions = {
 			try {
 				// Ensure user ID is present
 				const userId = user.id;
+
 				if (!userId) {
-					throw new Error('User ID is not available.');
+					throw new Error('Invalid User ID Not Provided');
 				}
 
-				// Check if user preferences already exist
-				const userPreferences = await prisma.userPreferences.findUnique({
-					where: { userId: userId },
-				});
-
-				// If no preferences exist, create default preferences
-				if (!userPreferences) {
-					await prisma.userPreferences.create({
-						data: {
-							userId: userId, // Foreign key linking to User
-							preferences: {},
-						},
+				// Handle Google sign-in
+				if (account?.provider === 'google' && profile) {
+					const existingUser = await prisma.user.findUnique({
+						where: { email: profile.email },
 					});
+
+					// Create a user if not found
+					if (!existingUser) {
+						await prisma.user.create({
+							data: {
+								name: profile.name,
+								email: profile.email,
+								image: profile.image,
+								// Add any additional fields required
+							},
+						});
+					}
 				}
 
-				return true; // Return true to indicate successful sign-in
+				// 	const existingUser = await prisma.user.findUnique({
+				// 		where: { email: profile.email },
+				// });
+
+				// // If user doesn't exist, create a new one
+				// if (!existingUser) {
+				// 		await prisma.user.create({
+				// 				data: {
+				// 						name: profile.name,
+				// 						email: profile.email,
+				// 						// Additional fields as necessary
+				// 				},
+				// 		});
+				// }
+
+				// Check if the user exists
+				// const existingUser = await prisma.user.findUnique({
+				// 	where: { id: userId },
+				// });
+
+				// if (!existingUser) {
+				// 	throw new Error(`User with ID ${userId} does not exist.`);
+				// }
+
+				return true;
 			} catch (error) {
-				console.error('Error setting up user preferences', error);
+				console.error('Error signing in: ', error);
 				return false; // Return false to indicate failed sign-in
 			}
+		},
+		async redirect({ url, baseUrl }) {
+			return `${baseUrl}/home`; // Redirect to /home after sign-in
 		},
 		async jwt({ token, user, profile, account }) {
 			if (user) {

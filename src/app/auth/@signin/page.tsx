@@ -64,11 +64,13 @@ export default function SignInForm() {
 				redirect: false,
 			});
 
+			console.log(signInData);
+
 			if (signInData?.error) {
 				console.error(signInData.error);
 				toast({
 					title: 'Error',
-					description: 'Oops! Something Went Wrong',
+					description: `${signInData.error}`,
 					variant: 'destructive',
 				});
 			} else {
