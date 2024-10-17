@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { User } from '@prisma/client';
-import { db } from '@/lib/db';
+import { prisma } from '@/lib/db';
 
 export async function GET() {
 	try {
-		const users: User[] = await db.user.findMany();
+		const users: User[] = await prisma.user.findMany();
 
 		if (!users) {
 			return NextResponse.json(
@@ -20,6 +20,6 @@ export async function GET() {
 			{ status: 500 }
 		);
 	} finally {
-		await db.$disconnect();
+		await prisma.$disconnect();
 	}
 }
