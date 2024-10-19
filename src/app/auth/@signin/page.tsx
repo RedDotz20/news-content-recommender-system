@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn, SignInResponse, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
@@ -20,7 +20,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useShowHidePass, ShowHideIconWrapper } from '@/hooks/useShowHidePass';
-import GoogleSignInButton from '@/components/GoogleSignInButton';
+// import GoogleSignInButton from '@/components/GoogleSignInButton';
+
 import {
 	RememberMeCheckboxWrapper,
 	useRememberMeCheckBox,
@@ -38,6 +39,7 @@ const FormSchema = z.object({
 export default function SignInForm() {
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
+
 	const { status } = useSession();
 	const { isPasswordVisible, togglePasswordVisibility } = useShowHidePass();
 	const { toast } = useToast();
@@ -58,17 +60,24 @@ export default function SignInForm() {
 			setIsLoading(true);
 			handleRememberMeStorage();
 
-			const signInData = await signIn('credentials', {
-				email: values.email,
-				password: values.password,
-				redirect: false,
-			});
+			const signInData: SignInResponse | undefined = await signIn(
+				'credentials',
+				{
+					email: values.email,
+					password: values.password,
+					redirect: false,
+				}
+			);
 
 			if (signInData?.error) {
 				console.error(signInData.error);
 				toast({
-					title: 'Error',
-					description: 'Oops! Something Went Wrong',
+					title: 'ERROR',
+					description: `${
+						signInData.error === 'CredentialsSignin'
+							? 'Invalid Credentials'
+							: signInData.error
+					}`,
 					variant: 'destructive',
 				});
 			} else {
@@ -78,7 +87,7 @@ export default function SignInForm() {
 		} catch (error) {
 			console.error(error);
 			toast({
-				title: 'Error',
+				title: 'ERROR',
 				description: 'Oops! Something Went Wrong',
 				variant: 'destructive',
 			});
@@ -137,13 +146,13 @@ export default function SignInForm() {
 										<p> Password</p>
 									</div>
 								</FormLabel>
-								<Link
-									href="#" // TODO: ADD  PASSWORD
+								{/* <Link
+									href="#" // TODO: ADD FORGET PASSWORD
 									className="text-xs font-medium text-muted-foreground hover:text-cyan-400/90"
 									prefetch={false}
 								>
 									Forgot your password?
-								</Link>
+								</Link> */}
 							</div>
 
 							<FormControl>
@@ -182,7 +191,8 @@ export default function SignInForm() {
 						'Sign In'
 					)}
 				</Button>
-				<GoogleSignInButton />
+				{/* Temporary disable google signin */}
+				{/* <GoogleSignInButton /> */}
 			</form>
 		</Form>
 	);

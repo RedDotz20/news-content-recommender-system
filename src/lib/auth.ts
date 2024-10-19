@@ -1,11 +1,11 @@
 import { NextAuthOptions } from 'next-auth';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { db } from './db';
+import { prisma } from './db';
 import authProviders from './auth.providers';
 
-
 export const authOptions: NextAuthOptions = {
-	adapter: PrismaAdapter(db),
+	// debug: true,
+	adapter: PrismaAdapter(prisma),
 	secret: process.env.NEXTAUTH_SECRET,
 	session: {
 		strategy: 'jwt',
@@ -18,32 +18,58 @@ export const authOptions: NextAuthOptions = {
 	callbacks: {
 		async signIn({ user, account, profile }) {
 			try {
-				// Ensure user ID is present
-				const userId = user.id;
-				if (!userId) {
-					throw new Error('User ID is not available.');
-				}
-
-				// Check if user preferences already exist
-				const userPreferences = await db.userPreferences.findUnique({
-					where: { userId: userId },
-				});
-
-				// If no preferences exist, create default preferences
-				if (!userPreferences) {
-					await db.userPreferences.create({
-						data: {
-							userId: userId, // Foreign key linking to User
-						},
+				if (user.email) {
+					// Check if the user already exists
+					const existingUser = await prisma.user.findUnique({
+						where: { email: user.email },
 					});
+
+					// If the user exists, link the OAuth account if it's not already linked
+					if (existingUser) {
+						console.log(existingUser, 'existingUser');
+						// If the email exists, potentially link the account or return true if already linked
+						// You can implement logic to verify if the current account's provider corresponds to the existing user
+						return true; // User exists and sign-in is successful
+					} else {
+						// If the user doesn't exist, create a new user account
+						const newUser = await prisma.user.create({
+							data: {
+								name: user.name as string,
+								email: user.email,
+								image: user.image,
+							},
+						});
+						console.log(newUser, 'newUser');
+
+						// Handle Google sign-in specific logic
+						if (account?.provider === 'google' && profile) {
+							const existingGoogleUser = await prisma.user.findUnique({
+								where: { email: profile.email },
+							});
+
+							// Create a user if not found
+							if (!existingGoogleUser) {
+								await prisma.user.create({
+									data: {
+										name: profile.name,
+										email: profile.email as string,
+										image: profile.image,
+									},
+								});
+							}
+						}
+					}
 				}
 
-				return true; // Return true to indicate successful sign-in
+				return true;
 			} catch (error) {
-				console.error('Error setting up user preferences', error);
+				console.error('Error signing in: ', error);
 				return false; // Return false to indicate failed sign-in
 			}
 		},
+		// async redirect({ url, baseUrl }) {
+		// 	return `${baseUrl}/home`; // Redirect to /home after sign-in
+		// },
 		async jwt({ token, user, profile, account }) {
 			if (user) {
 				return {
@@ -55,7 +81,7 @@ export const authOptions: NextAuthOptions = {
 			}
 
 			if (profile?.email) {
-				const existingUser = await db.user.findUnique({
+				const existingUser = await prisma.user.findUnique({
 					where: {
 						email: profile.email,
 					},
