@@ -34,7 +34,7 @@ export const authOptions: NextAuthOptions = {
 						// If the user doesn't exist, create a new user account
 						const newUser = await prisma.user.create({
 							data: {
-								name: user.name,
+								name: user.name as string,
 								email: user.email,
 								image: user.image,
 							},
@@ -52,7 +52,7 @@ export const authOptions: NextAuthOptions = {
 								await prisma.user.create({
 									data: {
 										name: profile.name,
-										email: profile.email,
+										email: profile.email as string,
 										image: profile.image,
 									},
 								});

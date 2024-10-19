@@ -1,9 +1,4 @@
-import { CategorialPreferenceType } from '@/types/userPreference';
-
-interface calcMedPerfsType {
-	lowestBracket: CategorialPreferenceType[];
-	median: CategorialPreferenceType[];
-}
+import { CategorialPreferenceType, LowerAndMedianPrefsType } from '@/types';
 
 /**
  * Calculate Median Preferences
@@ -16,10 +11,10 @@ interface calcMedPerfsType {
  * Time Complexity: O(n log n) - Sorting the array of preferences takes O(n log n) time.
  * Space Complexity: O(n) - A new array is created for sortedPreferences, requiring O(n) space.
  */
-export function calcMedPrefs(
+export function calcMedianPreference(
 	baseTarget: number,
 	preferences: CategorialPreferenceType[]
-): calcMedPerfsType {
+): LowerAndMedianPrefsType {
 	// Handle case when preferences array is empty
 	if (preferences.length === 0) {
 		throw new Error('Preferences array cannot be empty');
@@ -83,7 +78,7 @@ export function calcMedPrefs(
 	}
 
 	return {
-		lowestBracket: lowestCandidates,
-		median: medianCandidates,
+		lowestBracket: lowestCandidates, // 0.1
+		median: medianCandidates, // 0.2
 	};
 }

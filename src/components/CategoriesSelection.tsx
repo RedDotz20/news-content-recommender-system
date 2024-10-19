@@ -32,24 +32,52 @@ export function CategoriesSelection() {
 					</DialogHeader>
 					<ToggleGroup type="multiple">
 						<ToggleGroupItem
-							value="bold"
+							value="a"
 							aria-label="Toggle bold"
 						>
-							<p>b</p>
+							<p>a</p>
 							{/* <Bold className="h-4 w-4" /> */}
 						</ToggleGroupItem>
 						<ToggleGroupItem
-							value="italic"
+							value="b"
 							aria-label="Toggle italic"
 						>
 							<p>b</p>
 							{/* <Italic className="h-4 w-4" /> */}
 						</ToggleGroupItem>
 						<ToggleGroupItem
-							value="underline"
+							value="c"
 							aria-label="Toggle underline"
 						>
-							<p>b</p>
+							<p>c</p>
+							{/* <Underline className="h-4 w-4" /> */}
+						</ToggleGroupItem>
+						<ToggleGroupItem
+							value="d"
+							aria-label="Toggle underline"
+						>
+							<p>d</p>
+							{/* <Underline className="h-4 w-4" /> */}
+						</ToggleGroupItem>
+						<ToggleGroupItem
+							value="e"
+							aria-label="Toggle underline"
+						>
+							<p>e</p>
+							{/* <Underline className="h-4 w-4" /> */}
+						</ToggleGroupItem>
+						<ToggleGroupItem
+							value="f"
+							aria-label="Toggle underline"
+						>
+							<p>f</p>
+							{/* <Underline className="h-4 w-4" /> */}
+						</ToggleGroupItem>
+						<ToggleGroupItem
+							value="g"
+							aria-label="Toggle underline"
+						>
+							<p>g</p>
 							{/* <Underline className="h-4 w-4" /> */}
 						</ToggleGroupItem>
 					</ToggleGroup>
@@ -83,7 +111,12 @@ export function CategoriesSelection() {
         </div>
       </div> */}
 					<DialogFooter>
-						<Button type="submit">Save changes</Button>
+						<Button
+							disabled={false}
+							type="submit"
+						>
+							Save changes
+						</Button>
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>

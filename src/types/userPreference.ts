@@ -13,8 +13,7 @@ export type CategorialCountType = Pick<
 	'category' | 'articles'
 >;
 
-export interface TopUserCategorialArticlesType {
-	topOne?: { category: string; articles: number };
-	topTwo?: { category: string; articles: number };
-	topThree?: { category: string; articles: number };
+export interface UserPreferenceType {
+	userId: string;
+	preferences: CategorialPreferenceType[];
 }

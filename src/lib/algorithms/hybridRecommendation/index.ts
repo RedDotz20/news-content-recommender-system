@@ -1,41 +1,70 @@
-// import { calculateMedianPreference } from './helper/calculateMedianPreference';
-// import { collaborativeFiltering } from './collaborativeFiltering';
-// import { contentBasedFiltering } from './contentBasedFiltering';
-// import { percentageRatioAdjustment } from './helper/percentageRatioAdjustment';
-// import {
-// 	CategorialPreferenceType,
-// 	TopUserCategorialArticlesType,
-// } from '@/types/userPreference';
+import { contentBasedFiltering } from '../contentBasedFiltering';
+import { collaborativeFiltering } from '../collaborativeFiltering';
+import { calcMedianPreference } from './calcMedianPreference';
+import {
+	CategorialCountType,
+	CategorialPrefWithArticlesType,
+	LowerAndMedianPrefsType,
+	UserPreferenceType,
+} from '@/types';
+import { calRemaining } from '../helper';
+import { medDist } from './medDist';
 
-// // FUNCTION TO LOOP TOP NEIGHBORHOOD CATEGORIAL ARTICLES SIMILAR TO YOURS
-// // RETURN 5 COSINE SIMILARITY THEN PICK HIGHEST VALUE
+export function hybridRecommendation(
+	baseTarget: number,
+	targetUserPreferences: UserPreferenceType,
+	otherUserPreferences: UserPreferenceType[]
+) {
+	const targetUserCategorialPref = targetUserPreferences.preferences;
 
-// // TODO: TEST IN API
-// export function recommendedArticles(
-// 	baseTarget: number = 50,
-// 	userCategorialPreferences: CategorialPreferenceType[],
-// 	relatedCategorialPreferences: CategorialPreferenceType[]
-// ) {
-// 	// 40:30:30 ratio
-// 	// perform content based filtering based on user preferences w/ base target
-// 	const userPreferencesArticles: TopUserCategorialArticlesType =
-// 		contentBasedFiltering(userCategorialPreferences, baseTarget);
+	//*
+	const contentBasedFiltered: ReturnType<typeof contentBasedFiltering> =
+		contentBasedFiltering(targetUserCategorialPref, baseTarget);
+	//*
 
-// 	// adjust the 40:30:30 ratio to 70% of base target
-// 	const adjustedArticleRatio: TopUserCategorialArticlesType[] =
-// 		percentageRatioAdjustment(userPreferencesArticles);
+	const collaborativeFiltered: ReturnType<typeof collaborativeFiltering> =
+		collaborativeFiltering(targetUserPreferences, otherUserPreferences);
 
-// 	// 20 + 10 PERCENT
+	const collabFilteredMed = collaborativeFiltered.mostSimilarUser?.preferences;
 
-// 	let articles: TopUserCategorialArticlesType[] = [];
+	if (collabFilteredMed) {
+		const collaborativeMedian: LowerAndMedianPrefsType = calcMedianPreference(
+			0.3,
+			collabFilteredMed
+		);
 
-// 	// articles.push([...adjustedArticleRatio])
+		const collabMedian = medDist(baseTarget, collaborativeMedian.median);
 
-// 	adjustedArticleRatio.forEach((item: TopUserCategorialArticlesType, index) => {
-// 		articles.push(item);
-// 	});
+		const collabLowBracket = calRemaining(
+			baseTarget * 0.1,
+			collaborativeMedian.lowestBracket
+		);
 
-// 	// calculate the median preference of the other related preferences
-// 	const relatedCategorialMedianPreference: CategorialPreferenceType =
-// 		calculateMedianPreference(relatedCategorialPreferences);
-// }
+		const mergedArticles = [
+			contentBasedFiltered.firstGroup as CategorialPrefWithArticlesType[],
+			contentBasedFiltered.secondGroup as CategorialPrefWithArticlesType[],
+			contentBasedFiltered.thirdGroup as CategorialPrefWithArticlesType[],
+			collabMedian as CategorialPrefWithArticlesType[],
+			collabLowBracket as CategorialPrefWithArticlesType[],
+		].flat();
+
+		// TODO: implement distribute evenly with articles
+
+		const hybridRecommendedArticles: CategorialCountType[] =
+			mergedArticles.reduce((acc: CategorialCountType[], curr) => {
+				const existingCategory = acc.find(
+					(item) => item.category === curr.category
+				);
+
+				if (existingCategory) {
+					existingCategory.articles += curr.articles;
+				} else {
+					acc.push({ category: curr.category, articles: curr.articles });
+				}
+
+				return acc;
+			}, []);
+
+		return hybridRecommendedArticles;
+	}
+}

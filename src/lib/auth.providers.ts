@@ -48,7 +48,7 @@ const credentials = CredentialsProvider({
 			await prisma.userPreferences.create({
 				data: {
 					userId: existingUser.id, // Foreign key linking to User
-					preferences: {}, // Default to empty preferences
+					// preferences: [], // Default to empty preferences
 				},
 			});
 		}

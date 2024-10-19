@@ -1,8 +1,14 @@
-import { GroupDistributionType } from './algorithmTypes';
+import {
+	GroupDistributionType,
+	PreferenceVectorType,
+	LowerAndMedianPrefsType,
+	CollaborativeResults,
+} from './algorithmTypes';
 import {
 	CategorialPreferenceType,
 	CategorialPrefWithArticlesType,
 	CategorialCountType,
+	UserPreferenceType,
 } from './userPreference';
 
 export type {
@@ -10,4 +16,8 @@ export type {
 	CategorialPreferenceType,
 	CategorialPrefWithArticlesType,
 	CategorialCountType,
+	PreferenceVectorType,
+	LowerAndMedianPrefsType,
+	UserPreferenceType,
+	CollaborativeResults,
 };
