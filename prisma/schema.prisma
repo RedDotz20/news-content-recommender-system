@@ -1,12 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries,
-// or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
 }
 
 datasource db {
@@ -14,104 +7,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Account {
-  id                 String   @id @default(cuid())
-  userId             String   @map("user_id")
-  type               String
-  provider           String
-  providerAccountId  String   @map("provider_account_id")
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
+model Articles {
+  link              String
+  category          String
+  id                String             @id @unique
+  authors           String?
+  date              DateTime           @db.Date
+  headline          String
+  short_description String?
+  userInteractions  UserInteractions[] @relation("UserInteractions")
 
-  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@map("accounts")
-}
-
-model Session {
-  id                String   @id @default(cuid())
-  sessionToken      String   @unique @map("session_token")
-  userId            String   @map("user_id")
-  expires           DateTime
-
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("sessions")
-}
-
-model User {
-  id                    String     @id @default(cuid())
-  email                 String     @unique
-  name                  String     @default("")
-  password              String?
-  createdAt             DateTime   @default(now())
-  updatedAt             DateTime   @updatedAt
-  emailVerified         DateTime?  @map("email_verified")
-  image                 String?
-  accounts              Account[]
-  sessions              Session[]
-
-  userPreferences       UserPreferences[]   @relation("UserPreferences")
-  userInteractions      UserInteractions[]  @relation("UserInteractions")
-
-  @@map("users")
+  @@map("articles")
 }
 
 model UserPreferences {
-  id                    String    @id @default(cuid())
-  userId                String    @map("user_id")
-  createdAt             DateTime  @default(now())
-  updated_at            DateTime  @updatedAt
-  preferences           Json      @default("[]")
+  id          String   @id @default(cuid())
+  userId      String   @unique @default(dbgenerated("gen_random_uuid()")) @map("user_id") @db.Uuid
+  createdAt   DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  preferences Json     @default("[]")
 
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserPreferences")
-
-  @@unique([userId])
   @@map("user_preferences")
 }
 
 model UserInteractions {
-  id                    String     @id @default(cuid())
-  userId                String     @map("user_id")
-  articleId             String     @map("article_id")
-  category              String     @default("")
-  upvote                Int        @default(0)
-  downvote              Int        @default(0)
-  createdAt             DateTime   @default(now())
-  updatedAt             DateTime   @updatedAt
-
-  user                  User       @relation(fields: [userId], references: [id], onDelete: Cascade, name: "UserInteractions")
-  article               Articles   @relation(fields: [articleId], references: [id], onDelete: Cascade, name: "UserInteractions")
+  id        String   @id @default(cuid())
+  userId    String   @default(dbgenerated("gen_random_uuid()")) @map("user_id") @db.Uuid
+  articleId String   @map("article_id")
+  upvote    Int      @default(0)
+  downvote  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  category  String   @default("")
+  article   Articles @relation("UserInteractions", fields: [articleId], references: [id], onDelete: Cascade)
 
   @@map("user_interactions")
-}
-
-model VerificationToken {
-  identifier            String
-  token                 String
-  expires               DateTime
-
-  @@unique([identifier, token])
-  @@map("verificationtokens")
-}
-
-model Articles {
-  id                    String    @id
-  link                  String
-  headline              String
-  short_description     String?
-  authors               String?
-  category              String
-  date                  DateTime  @db.Date
-
-  userInteractions      UserInteractions[] @relation("UserInteractions")
-
-  @@unique([id])
-  @@map("articles")
 }

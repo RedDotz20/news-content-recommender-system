@@ -3,7 +3,6 @@ import { Chivo } from 'next/font/google';
 import './globals.css';
 
 import { Toaster } from '@/components/ui/toaster';
-import { SessionWrapper } from '@/components/SessionWrapper';
 import { ThemeProvider } from '@/components/theme/theme-provider';
 
 const chivo = Chivo({
@@ -22,20 +21,17 @@ interface RootlayoutProps {
 
 export default function RootLayout({ children }: RootlayoutProps) {
 	return (
-		<SessionWrapper>
-			<html lang="en">
-				<body className={chivo.className}>
-					<ThemeProvider
-						attribute="class"
-						defaultTheme="system"
-						enableSystem
-						disableTransitionOnChange
-					>
-						<main>{children}</main>
-						<Toaster />
-					</ThemeProvider>
-				</body>
-			</html>
-		</SessionWrapper>
+		<html lang="en">
+			<body className={chivo.className}>
+				<ThemeProvider
+					attribute="class"
+					defaultTheme="system"
+					enableSystem
+				>
+					<main>{children}</main>
+					<Toaster />
+				</ThemeProvider>
+			</body>
+		</html>
 	);
 }

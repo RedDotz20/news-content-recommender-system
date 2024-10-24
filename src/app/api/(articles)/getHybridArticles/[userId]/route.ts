@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { hybridRecommendation } from '@/lib/algorithms/hybridRecommendation';
+import { fisherYatesShuffle } from '@/lib/algorithms';
 import {
 	CategorialCountType,
 	UserPreferenceType,
@@ -61,19 +62,20 @@ export async function GET(
 
 		const queries = recommendedArticles.map(({ category, articles }) => {
 			return prisma.$queryRaw`
-          SELECT *
-          FROM articles
-          WHERE category = ${category}
-          ORDER BY RANDOM()
-          LIMIT ${articles}
-      `;
+		    SELECT *
+				FROM articles
+				WHERE category = ${category}
+				ORDER BY RANDOM()
+				LIMIT ${articles}
+			`;
 		});
 
 		const results = await Promise.all(queries);
-		const articles = results.flat();
+		const articles: any[] = results.flat();
+		const shuffledArticles = fisherYatesShuffle(articles);
 
 		return NextResponse.json(
-			{ recommendedArticles: articles },
+			{ recommendedArticles: shuffledArticles },
 			{ status: 200 }
 		);
 	} catch (error: any) {

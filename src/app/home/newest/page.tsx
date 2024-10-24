@@ -1,4 +1,4 @@
-import { API_SECRET_KEY } from '@/middleware';
+// import { API_SECRET_KEY } from '@/middleware';
 // import { Articles as ArticlesType } from '@prisma/client';
 // import { ArticleCard } from '@/components/ArticleCard';
 
@@ -10,7 +10,7 @@ async function getNewestArticles() {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				'x-api-secret-key': API_SECRET_KEY as string,
+				// 'x-api-secret-key': API_SECRET_KEY as string,
 			},
 		}
 	);
