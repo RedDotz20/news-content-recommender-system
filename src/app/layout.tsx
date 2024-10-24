@@ -2,8 +2,10 @@ import type { Metadata } from 'next';
 import { Chivo } from 'next/font/google';
 import './globals.css';
 
+import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme/theme-provider';
+import React from 'react';
 
 const chivo = Chivo({
 	subsets: ['latin'],
@@ -15,22 +17,20 @@ export const metadata: Metadata = {
 	description: 'Article Recommender System',
 };
 
-interface RootlayoutProps {
-	readonly children: React.ReactNode;
-}
-
-export default function RootLayout({ children }: RootlayoutProps) {
+export default function RootLayout({ children }: React.PropsWithChildren) {
 	return (
 		<html lang="en">
 			<body className={chivo.className}>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-				>
-					<main>{children}</main>
-					<Toaster />
-				</ThemeProvider>
+				<ReactQueryProvider>
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="system"
+						enableSystem
+					>
+						<main>{children}</main>
+						<Toaster />
+					</ThemeProvider>
+				</ReactQueryProvider>
 			</body>
 		</html>
 	);

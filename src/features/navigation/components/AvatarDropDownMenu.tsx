@@ -20,12 +20,14 @@ export const AvatarDropDownMenu = () => {
 	const {
 		user: { name, email, imageProfile },
 		isLoading,
-		// error,
 	} = useGetSessionData();
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
+			<DropdownMenuTrigger
+				asChild
+				className={isLoading ? 'pointer-events-none' : ''}
+			>
 				<Button
 					disabled={isLoading}
 					variant="outline"

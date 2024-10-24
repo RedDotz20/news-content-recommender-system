@@ -1,44 +1,43 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
-import { UserResponse } from '@supabase/supabase-js';
+import { useMemo } from 'react';
 import { supabaseClient } from '@/utils/supabase/client';
+import { useQuery } from '@tanstack/react-query';
+import { User } from '@supabase/supabase-js';
+
+const fetchSessionData = async () => {
+	const {
+		data: { user },
+		error,
+	} = await supabaseClient.auth.getUser();
+
+	if (error) {
+		throw new Error(error.message);
+	}
+
+	return user as User | null;
+};
 
 export function useGetSessionData() {
-	const [session, setSession] = useState<UserResponse | null>(null);
-	const [isLoading, setIsLoading] = useState<boolean>(true);
-	const [error, setError] = useState<string | null>(null);
+	const {
+		data: session,
+		isLoading,
+		error,
+	} = useQuery({
+		queryKey: ['sessionData'],
+		queryFn: fetchSessionData,
+		throwOnError: true,
+	});
 
 	const user = useMemo(
 		() => ({
-			id: session?.data.user?.id || ('' as string),
-			name: session?.data.user?.user_metadata.name || ('' as string),
-			email: session?.data.user?.user_metadata.email || ('' as string),
-			imageProfile:
-				session?.data.user?.user_metadata.avatar_url || ('' as string),
+			id: session?.user_metadata.id ?? ('' as string),
+			name: session?.user_metadata.name ?? ('' as string),
+			email: session?.user_metadata.email ?? ('' as string),
+			imageProfile: session?.user_metadata.avatar_url ?? ('' as string),
 		}),
 		[session]
 	);
-
-	useEffect(() => {
-		const fetchUser = async () => {
-			try {
-				setIsLoading(true);
-				setError(null);
-
-				const sessionData = await supabaseClient.auth.getUser();
-				setSession(sessionData);
-			} catch (err) {
-				console.error('Error fetching user session: ', err);
-				setError('Failed to fetch user session');
-			} finally {
-				setIsLoading(false);
-			}
-		};
-
-		fetchUser();
-		console.log('SESSION_DATA: ', user);
-	}, [user]); // Now user won't change on every render
 
 	return { session, user, isLoading, error };
 }

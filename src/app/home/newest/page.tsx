@@ -2,26 +2,25 @@
 // import { Articles as ArticlesType } from '@prisma/client';
 // import { ArticleCard } from '@/components/ArticleCard';
 
-async function getNewestArticles() {
-	const response = await fetch(
-		`${process.env.NEXT_PUBLIC_BASE_URL}/api/articles/getLatestArticles`,
-		{
-			next: { revalidate: 72000 }, // revalidate every 20 hours
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				// 'x-api-secret-key': API_SECRET_KEY as string,
-			},
-		}
-	);
+// async function getNewestArticles() {
+// 	const response = await fetch(
+// 		`${process.env.NEXT_PUBLIC_BASE_URL}/api/articles/getLatestArticles`,
+// 		{
+// 			next: { revalidate: 72000 }, // revalidate every 20 hours
+// 			method: 'GET',
+// 			headers: {
+// 				'Content-Type': 'application/json',
+// 				// 'x-api-secret-key': API_SECRET_KEY as string,
+// 			},
+// 		}
+// 	);
 
-	return response.json();
-}
+// 	return response.json();
+// }
 
 export default async function NewestArticles() {
-	const { data } = await getNewestArticles();
-
-	console.log(data);
+	// const { data } = await getNewestArticles();
+	// console.log(data);
 
 	return (
 		<div className="flex items-center justify-center w-full flex-col sm:px-4">
