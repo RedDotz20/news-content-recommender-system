@@ -4,7 +4,6 @@ import {
 	PieChartIcon,
 	MagicWandIcon,
 	PersonIcon,
-	GearIcon,
 } from '@radix-ui/react-icons';
 
 export const navigationLinks = [

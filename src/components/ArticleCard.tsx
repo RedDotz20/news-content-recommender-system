@@ -1,4 +1,5 @@
-import { JSX, SVGProps } from 'react';
+/* eslint-disable no-unused-vars */
+
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from './ui/badge';
@@ -105,7 +106,7 @@ const ToolTipWrapper = ({
 	children,
 }: {
 	content: string;
-	children: JSX.Element;
+	children: React.ReactNode;
 }) => {
 	return (
 		<TooltipProvider

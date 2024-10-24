@@ -76,6 +76,7 @@ export function hybridRecommendation(
 			distributedArticles.sort((a, b) => b.articles - a.articles);
 
 			for (let i = 0; i < distributedArticles.length && deficit > 0; i++) {
+				// eslint-disable-next-line no-unused-vars
 				let current = distributedArticles[i];
 				// Increase articles by 1 each time until we meet baseTarget
 				distributedArticles[i].articles += 1;

@@ -1,21 +1,24 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { UserResponse } from '@supabase/supabase-js';
 import { supabaseClient } from '@/utils/supabase/client';
 
-export function getSessionData() {
+export function useGetSessionData() {
 	const [session, setSession] = useState<UserResponse | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 
-	const user = {
-		id: session?.data.user?.id || ('' as string),
-		name: session?.data.user?.user_metadata.name || ('' as string),
-		email: session?.data.user?.user_metadata.email || ('' as string),
-		imageProfile:
-			session?.data.user?.user_metadata.avatar_url || ('' as string),
-	};
+	const user = useMemo(
+		() => ({
+			id: session?.data.user?.id || ('' as string),
+			name: session?.data.user?.user_metadata.name || ('' as string),
+			email: session?.data.user?.user_metadata.email || ('' as string),
+			imageProfile:
+				session?.data.user?.user_metadata.avatar_url || ('' as string),
+		}),
+		[session]
+	);
 
 	useEffect(() => {
 		const fetchUser = async () => {
@@ -35,7 +38,7 @@ export function getSessionData() {
 
 		fetchUser();
 		console.log('SESSION_DATA: ', user);
-	}, []);
+	}, [user]); // Now user won't change on every render
 
 	return { session, user, isLoading, error };
 }

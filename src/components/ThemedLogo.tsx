@@ -1,5 +1,7 @@
 // import { useTheme } from 'next-themes';
 
+import Image from "next/image";
+
 export const ThemedLogo = ({
 	width,
 	height,
@@ -11,7 +13,7 @@ export const ThemedLogo = ({
 	// const { settheme } = useTheme();
 
 	return (
-		<img
+		<Image
 			src="/logo/logo_white.svg"
 			alt="My SVG Image"
 			width={width}

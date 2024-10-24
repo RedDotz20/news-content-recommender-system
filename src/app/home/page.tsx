@@ -1,23 +1,24 @@
 // import { CategoriesSelection } from '@/components/CategoriesSelection';
 // import { ArticleCard } from '@/components/ArticleCard';
 // import { ThemedLogo } from '@/components/ThemedLogo';
-async function getHybridRecommendedArticles() {
-	const response = await fetch(
-		// sample user id and base target
-		`${process.env.NEXT_PUBLIC_BASE_URL}/api/getHybridArticles/cm2fq2zgm0000g97autnrdezv?baseTarget=60`,
-		{
-			next: { revalidate: 72000 }, // revalidate every 20 hours
-			// next: { revalidate: 10 }, // revalidate every 20 hours
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				'x-api-secret-key': process.env.API_SECRET_KEY as string,
-			},
-		}
-	);
 
-	return response.json();
-}
+// async function getHybridRecommendedArticles() {
+// 	const response = await fetch(
+// 		// sample user id and base target
+// 		`${process.env.NEXT_PUBLIC_BASE_URL}/api/getHybridArticles/cm2fq2zgm0000g97autnrdezv?baseTarget=60`,
+// 		{
+// 			next: { revalidate: 72000 }, // revalidate every 20 hours
+// 			// next: { revalidate: 10 }, // revalidate every 20 hours
+// 			method: 'GET',
+// 			headers: {
+// 				'Content-Type': 'application/json',
+// 				'x-api-secret-key': process.env.API_SECRET_KEY as string,
+// 			},
+// 		}
+// 	);
+
+// 	return response.json();
+// }
 
 export default async function HomePage() {
 	// TODO: implement strict Typings

@@ -12,7 +12,7 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { avatarDropdownItems } from '../constants/NavigationConst';
-import { getSessionData } from '@/features/auth/hooks/getSessionData';
+import { useGetSessionData } from '@/features/auth/hooks/useGetSessionData';
 import { SignOutButton } from '@/features/auth/components/SignOutButton';
 import { Separator } from '@/components/ui/separator';
 
@@ -20,8 +20,8 @@ export const AvatarDropDownMenu = () => {
 	const {
 		user: { name, email, imageProfile },
 		isLoading,
-		error,
-	} = getSessionData();
+		// error,
+	} = useGetSessionData();
 
 	return (
 		<DropdownMenu>
