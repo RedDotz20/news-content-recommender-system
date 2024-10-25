@@ -2,8 +2,9 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
+import { actionClient } from '@/lib/safe-action';
 
-export const signInWithGoogle = async () => {
+export const signInWithGoogle = actionClient.action(async () => {
 	const supabase = createClient();
 	const { data, error } = await supabase.auth.signInWithOAuth({
 		provider: 'google',
@@ -24,4 +25,4 @@ export const signInWithGoogle = async () => {
 	if (data.url) {
 		redirect(data.url);
 	}
-};
+});

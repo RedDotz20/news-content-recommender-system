@@ -12,6 +12,11 @@ body {
 	height: 100vh;
 }
 
+* {
+	scrollbar-width: thin;
+	/* scrollbar-color: var(--muted) var(--foreground); */
+}
+
 @media (prefers-color-scheme: dark) {
 	:root {
 		--foreground-rgb: 255, 255, 255;

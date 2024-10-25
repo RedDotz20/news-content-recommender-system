@@ -31,6 +31,7 @@ const config: Config = {
 				'shimmer-slide':
 					'shimmer-slide var(--speed) ease-in-out infinite alternate',
 				'spin-around': 'spin-around calc(var(--speed) * 2) infinite linear',
+				loader: 'l3-1 1.5s infinite linear, l3-2 2.5s infinite steps(1) -0.5s',
 			},
 			keyframes: {
 				gradient: {
@@ -57,6 +58,20 @@ const config: Config = {
 						transform: 'translateZ(0) rotate(360deg)',
 					},
 				},
+				'l3-1': {
+					'0%': { transform: 'perspective(150px) rotateX(0deg) rotateY(0deg)' },
+					'50%': {
+						transform: 'perspective(150px) rotateX(180deg) rotateY(0deg)',
+					},
+					'100%': {
+						transform: 'perspective(150px) rotateX(180deg) rotateY(180deg)',
+					},
+				},
+				// 'l3-2': {
+				// 	'0%': { background: 'var(--tw-gradient-stops)' },
+				// 	'33%': { background: '#f03355' },
+				// 	'66%': { background: '#25b09b' },
+				// },
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

@@ -13,7 +13,7 @@ import { GoogleSignInButton } from '@/features/auth/components/GoogleSignInButto
 export default function LoginPage() {
 	return (
 		<section className="flex items-center justify-center min-h-screen px-4">
-			<Card className="w-full max-w-md p-4">
+			<Card className="w-full max-w-md px-4 py-6">
 				<CardHeader className="space-y-1">
 					<CardTitle className="text-3xl font-bold text-center inline-flex items-center  flex-col gap-6">
 						<ThemedLogo

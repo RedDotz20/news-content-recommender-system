@@ -9,8 +9,8 @@ export default function LogoutPage() {
 
 	useEffect(() => {
 		if (countdown === 0) {
-			router.push('/login');
-			return; // Exit early when countdown reaches 0
+			router.replace('/login');
+			return;
 		}
 
 		const timer = setInterval(() => {
