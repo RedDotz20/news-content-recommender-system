@@ -39,7 +39,7 @@ export async function PUT(
           FROM jsonb_array_elements(preferences) AS value
         ),
         updated_at = now()
-      WHERE user_id = ${userId};
+      WHERE user_id = ${userId}::uuid;
     `;
 
 		return NextResponse.json(

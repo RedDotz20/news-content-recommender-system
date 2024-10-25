@@ -67,7 +67,7 @@ export async function PUT(
         ), '[]'::jsonb  -- Fallback to an empty JSON array
       ),
       updated_at = NOW()
-      WHERE user_id = ${userId};
+      WHERE user_id = ${userId}::uuid;
     `;
 
 		return NextResponse.json(

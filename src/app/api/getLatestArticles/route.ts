@@ -26,8 +26,7 @@ export async function GET() {
 
 		const articles: ArticlesType[] = await prisma.$queryRaw`
       SELECT * FROM "articles"
-      AND "category" = 'latest'
-      AND ("short_description" IS NOT NULL)
+      WHERE ("short_description" IS NOT NULL)
       OFFSET ${randomOffset} LIMIT ${limit};
     `;
 
