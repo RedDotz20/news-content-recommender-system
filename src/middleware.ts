@@ -1,13 +1,27 @@
-import { type NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { updateSession } from '@/utils/supabase/middleware';
+import { logsEnvMiddleware } from '@/utils/middlewares/logsEnv';
+import { rateLimiterMiddleware } from '@/utils/middlewares/rateLimiter';
+import { cspMiddleware } from './utils/middlewares/contentSecurityPolicy';
 
 export async function middleware(request: NextRequest) {
-	if (process.env.NODE_ENV === 'development') {
-		console.log('running in development mode');
-	}
+	logsEnvMiddleware();
+	cspMiddleware(request);
 
-	if (process.env.NODE_ENV === 'production') {
-		console.log('running in production mode');
+	// Check rate limit for API routes
+	if (request.nextUrl.pathname.startsWith('/api')) {
+		// Call the rate limiter
+		const rateLimitResponse = rateLimiterMiddleware(request);
+		if (rateLimitResponse) {
+			// Return the rate-limiting response if applicable
+			return rateLimitResponse;
+		}
+
+		// Secure API route handler with secret key
+		const apiSecretKey = request.headers.get('x-api-secret-key');
+		return apiSecretKey !== process.env.API_SECRET_KEY
+			? NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+			: NextResponse.next();
 	}
 
 	return await updateSession(request);
@@ -26,5 +40,12 @@ export const config = {
 		'/home(.*)',
 		'/login(.*)',
 		'/((?!^$|api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
+		{
+			source: '/((?!api|_next/static|_next/image|favicon.ico).*)',
+			missing: [
+				{ type: 'header', key: 'next-router-prefetch' },
+				{ type: 'header', key: 'purpose', value: 'prefetch' },
+			],
+		},
 	],
 };

@@ -18,22 +18,43 @@ const config: Config = {
 	theme: {
 		extend: {
 			screens: {
-				//? set values to (rem) for fluid-tailwind to work
-				xs: '20rem', // Extra small screens (320px)
-				sm: '40rem', // Small screens (640px
-				lg: '64rem', // Large screens (1024px))
-				md: '48rem', // Medium screens (768px)
-				xl: '80rem', // Extra large screens (1280px)
-				'2xl': '96rem', // 2x extra large screens (1536px)
-				'3xl': '120rem', // 3x extra large screens (1920px)
+				xs: '20rem',
+				sm: '40rem',
+				lg: '64rem',
+				md: '48rem',
+				xl: '80rem',
+				'2xl': '96rem',
+				'3xl': '120rem',
 			},
 			animation: {
 				gradient: 'gradient 8s linear infinite',
+				'shimmer-slide':
+					'shimmer-slide var(--speed) ease-in-out infinite alternate',
+				'spin-around': 'spin-around calc(var(--speed) * 2) infinite linear',
 			},
 			keyframes: {
 				gradient: {
 					to: {
 						backgroundPosition: 'var(--bg-size) 0',
+					},
+				},
+				'shimmer-slide': {
+					to: {
+						transform: 'translate(calc(100cqw - 100%), 0)',
+					},
+				},
+				'spin-around': {
+					'0%': {
+						transform: 'translateZ(0) rotate(0)',
+					},
+					'15%, 35%': {
+						transform: 'translateZ(0) rotate(90deg)',
+					},
+					'65%, 85%': {
+						transform: 'translateZ(0) rotate(270deg)',
+					},
+					'100%': {
+						transform: 'translateZ(0) rotate(360deg)',
 					},
 				},
 			},

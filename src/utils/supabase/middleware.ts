@@ -45,12 +45,6 @@ export async function updateSession(request: NextRequest) {
 			url.pathname = '/login';
 			return NextResponse.redirect(url);
 		}
-
-		// if (!request.nextUrl.pathname.startsWith('/login')) {
-		// 	const url = request.nextUrl.clone();
-		// 	url.pathname = '/login';
-		// 	return NextResponse.redirect(url);
-		// }
 	} else {
 		// User is authenticated, redirect to home if in /login route
 		if (
@@ -61,28 +55,7 @@ export async function updateSession(request: NextRequest) {
 			url.pathname = '/home';
 			return NextResponse.redirect(url);
 		}
-		// if (!request.nextUrl.pathname.startsWith('/home')) {
-		// 	const url = request.nextUrl.clone();
-		// 	url.pathname = '/home';
-		// 	return NextResponse.redirect(url);
-		// }
 	}
-
-	// if (!user) {
-	// 	// User is not authenticated, redirect to login
-	// 	if (!request.nextUrl.pathname.startsWith('/login')) {
-	// 		const url = request.nextUrl.clone();
-	// 		url.pathname = '/login';
-	// 		return NextResponse.redirect(url);
-	// 	}
-	// } else {
-	// 	// User is authenticated, redirect to home if not on home
-	// 	if (!request.nextUrl.pathname.startsWith('/home')) {
-	// 		const url = request.nextUrl.clone();
-	// 		url.pathname = '/home';
-	// 		return NextResponse.redirect(url);
-	// 	}
-	// }
 
 	// -----------------------------------------------------------------
 
