@@ -6,10 +6,11 @@
   "author": "https://github.com/RedDotz20",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "prisma generate"
   },
   "repository": {
     "type": "git",
