@@ -1,60 +1,51 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { withAuth, NextRequestWithAuth } from 'next-auth/middleware';
+import { NextResponse, type NextRequest } from 'next/server';
+import { updateSession } from '@/utils/supabase/middleware';
+import { logsEnvMiddleware } from '@/utils/middlewares/logsEnv';
+import { rateLimiterMiddleware } from '@/utils/middlewares/rateLimiter';
+import { cspMiddleware } from './utils/middlewares/contentSecurityPolicy';
 
-export const API_SECRET_KEY = process.env.API_SECRET_KEY;
+export async function middleware(request: NextRequest) {
+	logsEnvMiddleware();
+	cspMiddleware(request);
 
-const secureApiMiddleware = async (request: NextRequest) => {
-	const routePath = request.nextUrl.pathname;
-
-	// Exclude Authentication Routes (for nextauth)
-	if (routePath.startsWith('/api/auth')) {
-		return NextResponse.next();
-	}
-
-	if (routePath.startsWith('/api')) {
-		const SECRET_KEY = request.headers.get('x-api-secret-key');
-		if (SECRET_KEY !== API_SECRET_KEY) {
-			return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
+	// Check rate limit for API routes
+	if (request.nextUrl.pathname.startsWith('/api')) {
+		// Call the rate limiter
+		const rateLimitResponse = rateLimiterMiddleware(request);
+		if (rateLimitResponse) {
+			// Return the rate-limiting response if applicable
+			return rateLimitResponse;
 		}
+
+		// Secure API route handler with secret key
+		const apiSecretKey = request.headers.get('x-api-secret-key');
+		return apiSecretKey !== process.env.API_SECRET_KEY
+			? NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+			: NextResponse.next();
 	}
 
-	return NextResponse.next();
-};
-
-const middleware = async (req: NextRequestWithAuth) => {
-	const routePath = req.nextUrl.pathname;
-
-	// Redirect authenticated users from '/auth' to '/home'
-	if (routePath.startsWith('/auth')) {
-		if (req.nextauth.token) {
-			// Check if the user is authenticated
-			return NextResponse.redirect(new URL('/home', req.url));
-		}
-	}
-
-	// Protect the /api routes with the API Secret Key
-	if (routePath.startsWith('/api')) {
-		return secureApiMiddleware(req);
-	}
-
-	// Protect the /home and /account routes with NextAuth
-	if (routePath.startsWith('/home') || routePath.startsWith('/account')) {
-		return withAuth(req);
-	}
-
-	return NextResponse.next();
-};
-
-export default withAuth(middleware, {
-	callbacks: {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		authorized: ({ token }) => {
-			// Add your role-based authorization logic if necessary
-			return true; // Modify according to your needs
-		},
-	},
-});
+	return await updateSession(request);
+}
 
 export const config = {
-	matcher: ['/api(.*)', '/home(.*)', '/auth(.*)'],
+	matcher: [
+		/*
+		 * Match all request paths except for the ones starting with:
+		 * - _next/static (static files)
+		 * - _next/image (image optimization files)
+		 * - favicon.ico (favicon file)
+		 * Feel free to modify this pattern to include more paths.
+		 */
+		'/api(.*)',
+		'/home(.*)',
+		'/login(.*)',
+		'/((?!^$|api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
+		{
+			source: '/((?!api|_next/static|_next/image|favicon.ico).*)',
+			missing: [
+				{ type: 'header', key: 'next-router-prefetch' },
+				{ type: 'header', key: 'purpose', value: 'prefetch' },
+			],
+		},
+	],
 };

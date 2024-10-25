@@ -1,4 +1,5 @@
-import HomeNav from '@/components/HomeNav';
+// import HomeNavigation from '@/features/navigation/components/HomeNavigation';
+import HomeNavigation from '@/features/navigation/components/HomeNavigation';
 
 interface HomeLayoutProps {
 	children: React.ReactNode;
@@ -7,11 +8,8 @@ interface HomeLayoutProps {
 export default function HomeLayout({ children }: HomeLayoutProps) {
 	return (
 		<>
-			<HomeNav />
+			<HomeNavigation />
 			<div className="pt-20 lg:px-6 h-full">{children}</div>
-			{/* <div className="flex items-center justify-center h-dvh mx-auto w-full">
-				{children}
-			</div> */}
 		</>
 	);
 }

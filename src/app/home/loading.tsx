@@ -2,18 +2,18 @@ import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function loading() {
-	return (
-		<div className="flex justify-center items-center flex-wrap gap-6 overflow-hidden px-6 sm:px-8 md:px-12">
-			<LoadingCards />
-			<LoadingCards />
-			<LoadingCards />
-			<LoadingCards />
-			<LoadingCards />
-			<LoadingCards />
-			<LoadingCards />
-			<LoadingCards />
-		</div>
-	);
+	try {
+		return (
+			<div className="flex justify-center items-center flex-wrap gap-6 overflow-hidden px-6 sm:px-8 md:px-12">
+				{Array.from({ length: 8 }, (_, index) => (
+					<LoadingCards key={index} />
+				))}
+			</div>
+		);
+	} catch (error) {
+		console.error('Error rendering loading component:', error);
+		return <div>Error loading content. Please try again later.</div>;
+	}
 }
 
 const LoadingCards = () => {
