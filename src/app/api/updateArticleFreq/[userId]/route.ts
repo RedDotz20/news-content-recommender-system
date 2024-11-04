@@ -1,10 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
-import {
-	updateArticleFreqSchema,
-	updateArticleFreqResType,
-	paramsType,
-} from './schema';
+import { updateArticleFreqSchema, updateArticleFreqResType } from './schema';
 
 /**
  * Updates a user's preference for a specific category.
@@ -16,9 +12,9 @@ import {
  */
 export async function PUT(
 	req: NextRequest,
-	{ params }: paramsType
+	props: { params: Promise<{ userId: string }> }
 ): Promise<updateArticleFreqResType> {
-	const { userId } = params;
+	const { userId } = await props.params;
 
 	try {
 		const body: typeof updateArticleFreqSchema = await req.json();

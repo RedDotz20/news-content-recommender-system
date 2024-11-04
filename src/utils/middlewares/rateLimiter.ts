@@ -1,12 +1,12 @@
 // lib/rateLimiter.ts
 import { NextRequest, NextResponse } from 'next/server';
-
+import { ipAddress } from '@vercel/functions';
 const rateLimitMap = new Map<string, { count: number; lastReset: number }>();
 
 export function rateLimiterMiddleware(req: NextRequest) {
 	const ip =
 		req.headers.get('x-forwarded-for') ||
-		req.ip ||
+		ipAddress(req) ||
 		req.headers.get('x-real-ip');
 	const limit = 25; // Limit requests to 5 per minute per IP
 	const windowMs = 60 * 1000; // 1 minute

@@ -1,3 +1,5 @@
-export default function getTrendingArticles() {
+
+
+export default function TrendingArticles() {
 	return <div></div>;
 }

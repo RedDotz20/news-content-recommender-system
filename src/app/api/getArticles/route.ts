@@ -5,7 +5,7 @@ import { prisma } from '@/lib/db';
 export async function GET() {
 	try {
 		const articles: ArticleType[] = await prisma.articles.findMany({
-			take: 10, // Limiting to 100 records
+			take: 10, // Limiting to 10 records
 		});
 		return NextResponse.json({ data: articles }, { status: 200 });
 	} catch (error) {

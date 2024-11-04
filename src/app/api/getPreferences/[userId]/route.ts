@@ -1,14 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-// import { Articles as ArticleType } from '@prisma/client';
 import { prisma } from '@/lib/db';
 
 export async function GET(
-	req: NextRequest,
-	{ params }: { params: { userId: string } }
+	_req: NextRequest,
+	props: { params: Promise<{ userId: string }> }
 ) {
-	const { userId } = params;
-
-	console.log('userID: ', userId);
+	const { userId } = await props.params;
 
 	try {
 		const preferences = await prisma.userPreferences.findUnique({
@@ -20,9 +17,12 @@ export async function GET(
 
 		return NextResponse.json({ data: preferences }, { status: 200 });
 	} catch (error: any) {
-		console.error('Error fetching preferences: ', error.message);
+		console.error('Error fetching user preferences: ', error.message);
 		return NextResponse.json(
-			{ userId: userId, error: `Error fetching categories ${error.message}` },
+			{
+				userId: userId,
+				error: `Error fetching user preferences: ${error.message}`,
+			},
 			{ status: 500 }
 		);
 	} finally {

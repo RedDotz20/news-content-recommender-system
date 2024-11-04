@@ -3,7 +3,7 @@
 import { useAction } from 'next-safe-action/hooks';
 import { signInWithGoogle } from '../server/actions/signInWithGoogleAction';
 import { Button } from '@/components/ui/button';
-import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { LoadingSpinner } from '@/components/customui/LoadingSpinner';
 import { Chrome } from 'lucide-react';
 
 export const GoogleSignInButton = () => {

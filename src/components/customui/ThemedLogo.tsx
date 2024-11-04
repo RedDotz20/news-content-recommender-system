@@ -3,13 +3,12 @@
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 
-export const ThemedLogo = ({
-	width,
-	height,
-}: {
+interface ThemedLogoProps {
 	width: number;
 	height: number;
-}) => {
+}
+
+export const ThemedLogo = ({ width, height }: ThemedLogoProps) => {
 	const { theme } = useTheme();
 
 	return (
@@ -18,6 +17,7 @@ export const ThemedLogo = ({
 			alt="My SVG Image"
 			width={width}
 			height={height}
+			priority={true}
 		/>
 	);
 };

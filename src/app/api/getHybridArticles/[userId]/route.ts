@@ -1,3 +1,5 @@
+export const dynamic = 'force-static';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { hybridRecommendation } from '@/lib/algorithms/hybridRecommendation';
@@ -10,10 +12,10 @@ import {
 
 export async function GET(
 	req: NextRequest,
-	{ params }: { params: { userId: string } }
+	props: { params: Promise<{ userId: string }> }
 ) {
 	try {
-		const { userId } = params;
+		const { userId } = await props.params;
 		const baseTarget = req.nextUrl.searchParams.get('baseTarget');
 
 		if (!baseTarget) {

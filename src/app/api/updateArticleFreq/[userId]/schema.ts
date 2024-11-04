@@ -6,8 +6,6 @@ export const updateArticleFreqSchema = z.object({
 	frequencyVal: z.number(),
 });
 
-export type paramsType = { params: { userId: string } };
-
 export type updateArticleFreqResType =
 	| NextResponse<{ message: string }>
 	| NextResponse<{ error: string }>;

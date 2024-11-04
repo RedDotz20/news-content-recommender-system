@@ -9,12 +9,11 @@
 }
 
 body {
-	height: 100vh;
+	height: 100dvh;
 }
 
 * {
 	scrollbar-width: thin;
-	/* scrollbar-color: var(--muted) var(--foreground); */
 }
 
 @media (prefers-color-scheme: dark) {

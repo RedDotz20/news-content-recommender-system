@@ -5,26 +5,27 @@ import './globals.css';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme/theme-provider';
-import React from 'react';
 
-const chivo = Chivo({
-	subsets: ['latin'],
-	display: 'swap',
-});
+const chivo = Chivo({ subsets: ['latin'], display: 'swap' });
 
 export const metadata: Metadata = {
 	title: 'ArticleHorizon',
 	description: 'Article Recommender System',
+	icons: { icon: ['/logo/logo_white.svg'] },
 };
 
 export default function RootLayout({ children }: React.PropsWithChildren) {
 	return (
-		<html lang="en">
+		<html
+			lang="en"
+			className="dark"
+			suppressHydrationWarning
+		>
 			<body className={chivo.className}>
 				<ReactQueryProvider>
 					<ThemeProvider
 						attribute="class"
-						defaultTheme="system"
+						defaultTheme="dark"
 						enableSystem
 					>
 						<main>{children}</main>
