@@ -13,7 +13,6 @@ import {
 import { formatDate } from '@/lib/utils';
 import { wordFormmater, cn } from '@/lib/utils';
 import { filterAuthor } from '../../../lib/utils';
-import Link from 'next/link';
 
 interface ArticleCardProps extends ArticlesType {
 	className?: string;
@@ -30,8 +29,7 @@ export function ArticleCards({
 	category,
 }: ArticleCardProps) {
 	// TODO: implement optimistic updates w/ up/down votes (POST REQ)
-	const handleUpVote = async () => {};
-	const handleDownVote = async () => {};
+	const handleLike = async () => {};
 
 	return (
 		<Card
@@ -65,27 +63,15 @@ export function ArticleCards({
 			</a>
 
 			<CardFooter className="flex items-center justify-between p-4">
-				<div className="flex items-center gap-2">
-					<Button
-						variant="ghost"
-						size="icon"
-						className="h-8 w-8"
-					>
-						<ArrowUp className="h-4 w-4" />
-						<span className="sr-only">Upvote</span>
-						<span className="text-sm font-medium">15</span>
-					</Button>
-
-					<Button
-						variant="ghost"
-						size="icon"
-						className="h-8 w-8"
-					>
-						<ArrowDown className="h-4 w-4" />
-						<span className="sr-only">Downvote</span>
-						<span className="text-sm font-medium">15</span>
-					</Button>
-				</div>
+				<Button
+					variant="ghost"
+					size="icon"
+					className="h-8 w-8"
+				>
+					<ArrowUp className="h-4 w-4" />
+					<span className="sr-only">Upvote</span>
+					<span className="text-sm font-medium">15</span>
+				</Button>
 				<Button
 					variant="ghost"
 					size="icon"

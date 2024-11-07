@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getDistinctCategories } from '../server/actions/fetchCategories';
 
 const distinctCatQueryKey = ['distinctCategories'];
-const distinctCatQueryFn = async () => await getDistinctCategories();
+const distinctCatQueryFn = () => getDistinctCategories();
 
 export const useFetchCategories = () => {
 	return useQuery({

@@ -10,6 +10,8 @@ export const updatePerfsArrSchema = z.object({
 	),
 });
 
+export type paramsType = { params: { userId: string } };
+
 export type updatePrefsResType =
 	| NextResponse<{ message: string }>
 	| NextResponse<{ error: string }>;

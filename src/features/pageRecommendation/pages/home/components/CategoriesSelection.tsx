@@ -11,18 +11,59 @@ import {
 } from '@/components/customui/DialogueBox';
 import { Button } from '@/components/ui/button';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { LoadingSpinner } from '@/components/customui/LoadingSpinner';
+import {
+	LoadingSpinner,
+	LoadingSpinnerWithText,
+} from '@/components/customui/LoadingSpinner';
 import { wordFormmater } from '@/lib/utils';
 import { Plus } from 'lucide-react';
-
+import { useAction } from 'next-safe-action/hooks';
 import { useFetchCategories } from '../hooks/useFetchCategories';
 import { useState } from 'react';
+import { mutateCategoryAction } from '../server/actions/mutateCatActions';
+import { useGetSessionData } from '@/features/auth/hooks/useGetSessionData';
+// import { useMutation } from '@tanstack/react-query';
 
 export function CategoriesSelection() {
 	const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-	const { isPending, error, isFetching, isLoading } = useFetchCategories();
+	const { data, isPending, error, isFetching, isLoading } =
+		useFetchCategories();
+	const {
+		user: { id },
+	} = useGetSessionData();
+
+	const { execute, result, hasSucceeded, isExecuting } = useAction(
+		mutateCategoryAction,
+		{
+			onSuccess: () => {
+				console.log('newMutateCatActionss Successfully Executed');
+			},
+		}
+	);
+
+	if (result) {
+		console.log(result?.data);
+	}
+
+	if (hasSucceeded) {
+		console.log('newMutateCatActionss Successfully Executed');
+	}
 
 	if (error) return 'An error has occurred: ' + error.message;
+
+	const preferences = {
+		categories: selectedCategories.map((cat) => ({
+			category: cat,
+			frequency: 12, // add 12 freqency Value
+		})),
+	};
+
+	// const { mutate } = useMutation({
+	// 	mutationFn: () => mutateCatActions(userId, selectedCatArr),
+	// 	onSuccess: () => {
+	// 		console.log('User Preference Categories Successfully Updated');
+	// 	},
+	// });
 
 	return (
 		<div className="flex flex-col justify-center h-[calc(100vh-80px)] px-4">
@@ -37,10 +78,7 @@ export function CategoriesSelection() {
 						variant="outline"
 					>
 						{isLoading || isPending || isFetching ? (
-							<div className="flex gap-2 items-center justify-center">
-								<LoadingSpinner className="h-4 w-4" />
-								<p className="text-gray-400 select-none">Loading</p>
-							</div>
+							<LoadingSpinnerWithText className="h-4 w-4" />
 						) : (
 							'Select Categories'
 						)}
@@ -56,17 +94,38 @@ export function CategoriesSelection() {
 						</DialogDescription>
 					</DialogHeader>
 
-					<SelectionToggleGroup
-						selectedCategories={selectedCategories}
-						setSelectedCategories={setSelectedCategories}
-					/>
+					<ToggleGroup
+						type="multiple"
+						value={selectedCategories}
+						onValueChange={setSelectedCategories}
+						className={`max-h-56 my-2 ${isLoading || isPending || isFetching ? 'justify-center overflow-y-hidden' : 'overflow-y-auto'}`}
+					>
+						{data &&
+							data.category.map((item) => {
+								return (
+									<ToggleGroupItem
+										key={item}
+										value={item}
+										aria-label={item}
+										className="flex gap-2 border"
+									>
+										<p>{wordFormmater(item)}</p>
+										<Plus className="h-4 w-4" />
+									</ToggleGroupItem>
+								);
+							})}
+					</ToggleGroup>
 
 					<DialogFooter>
 						<Button
-							disabled={isLoading || isPending || isFetching}
-							type="submit"
+							disabled={isLoading || isPending || isFetching || isExecuting}
+							onClick={() => execute({ userId: id, preferences })}
 						>
-							Confirm
+							{isLoading || isPending || isFetching || isExecuting ? (
+								<LoadingSpinner className="h-4 w-4" />
+							) : (
+								'Confirm'
+							)}
 						</Button>
 					</DialogFooter>
 				</DialogContent>
@@ -74,40 +133,3 @@ export function CategoriesSelection() {
 		</div>
 	);
 }
-
-const SelectionToggleGroup = ({
-	selectedCategories,
-	setSelectedCategories,
-}: {
-	selectedCategories: string[];
-	setSelectedCategories: (value: string[]) => void;
-}) => {
-	const { data, isPending, isFetching, isLoading } = useFetchCategories();
-
-	if (data) {
-		return (
-			<ToggleGroup
-				type="multiple"
-				value={selectedCategories} // Bind selected value
-				onValueChange={setSelectedCategories} // Update on change
-				className={`max-h-56 my-2 ${isLoading || isPending || isFetching ? 'justify-center overflow-y-hidden' : 'overflow-y-auto'}`}
-			>
-				{data.category.map((item) => {
-					return (
-						<ToggleGroupItem
-							key={item}
-							value={item}
-							aria-label={item}
-							className="flex gap-2 border"
-						>
-							<p>{wordFormmater(item)}</p>
-							<Plus className="h-4 w-4" />
-						</ToggleGroupItem>
-					);
-				})}
-			</ToggleGroup>
-		);
-	}
-
-	return null;
-};

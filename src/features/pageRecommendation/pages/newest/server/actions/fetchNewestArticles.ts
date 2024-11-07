@@ -27,7 +27,6 @@ export const getNewestArticles = async (
 		const result: { data: Articles[] } = await response.json();
 		return result.data;
 	} catch (error) {
-		// Re-throwing error after logging for better tracing
 		console.error('Error in getNewestArticles:', error);
 		throw new Error(
 			'Could not retrieve the newest articles. Please try again later.'
