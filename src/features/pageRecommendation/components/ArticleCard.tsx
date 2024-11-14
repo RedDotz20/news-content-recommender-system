@@ -1,7 +1,7 @@
 'use client';
 
 import { Articles as ArticlesType } from '@prisma/client';
-import { ArrowDown, ArrowUp, Bookmark } from 'lucide-react';
+import { Bookmark, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -10,16 +10,18 @@ import {
 	CardFooter,
 	CardHeader,
 } from '@/components/ui/card';
-import { formatDate } from '@/lib/utils';
-import { wordFormmater, cn } from '@/lib/utils';
-import { filterAuthor } from '../../../lib/utils';
+import { cn, formatDate, wordFormmater, filterAuthor } from '@/lib/utils';
+import { useMutateInteraction } from '../hooks/useMutateInteraction';
 
 interface ArticleCardProps extends ArticlesType {
 	className?: string;
+	userId: string;
+	isLiked: boolean;
 }
 
 export function ArticleCards({
-	id,
+	id: articleId,
+	userId,
 	className,
 	headline,
 	authors,
@@ -27,13 +29,14 @@ export function ArticleCards({
 	date,
 	link,
 	category,
+	isLiked,
 }: ArticleCardProps) {
-	// TODO: implement optimistic updates w/ up/down votes (POST REQ)
-	const handleLike = async () => {};
+	const frequencyVal: number = 12;
+	const { mutate } = useMutateInteraction(userId);
 
 	return (
 		<Card
-			id={id}
+			id={articleId}
 			className={cn(
 				'relative overflow-hidden max-w-[320px] flex flex-col',
 				className
@@ -67,10 +70,12 @@ export function ArticleCards({
 					variant="ghost"
 					size="icon"
 					className="h-8 w-8"
+					onClick={() => mutate({ isLiked, articleId, category, frequencyVal })}
 				>
-					<ArrowUp className="h-4 w-4" />
-					<span className="sr-only">Upvote</span>
-					<span className="text-sm font-medium">15</span>
+					<Heart
+						className={`h-4 w-4 ${isLiked && 'fill-red-500 stroke-red-500'}`}
+					/>
+					<span className="sr-only">Like</span>
 				</Button>
 				<Button
 					variant="ghost"

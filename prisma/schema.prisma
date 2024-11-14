@@ -34,12 +34,12 @@ model UserInteractions {
   id        String   @id @default(cuid())
   userId    String   @default(dbgenerated("gen_random_uuid()")) @map("user_id") @db.Uuid
   articleId String   @map("article_id")
-  upvote    Int      @default(0)
-  downvote  Int      @default(0)
+  isLiked   Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   category  String   @default("")
   article   Articles @relation("UserInteractions", fields: [articleId], references: [id], onDelete: Cascade)
 
+  @@unique([userId])
   @@map("user_interactions")
 }

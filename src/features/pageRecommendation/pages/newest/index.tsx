@@ -4,16 +4,22 @@
 import { BoxLoader } from '@/components/customui/BoxLoader';
 import { ArticleCards } from '@/features/pageRecommendation/components/ArticleCard';
 import { useFetchNewestArticles } from './hooks/useFetchNewestArticles';
+import { useGetSessionData } from '@/features/auth/hooks/useGetSessionData';
 
 export default function NewestArticlesComponent() {
-	const { data, isPending, error, isFetching, isLoading } =
-		useFetchNewestArticles();
+	const {
+		user: { id: userId },
+	} = useGetSessionData();
+
+	const { data, isPending, error, isLoading } = useFetchNewestArticles(userId);
 
 	if (error) return 'An error has occurred: ' + error.message;
 
-	if (isPending || isFetching || isLoading) {
+	if (isPending || isLoading) {
 		return <BoxLoader />;
 	}
+
+	// console.log(data.map((article) => article.headline));
 
 	//TODO: Fix fade in transition on refetch
 	// const [fadeIn, setFadeIn] = useState(false);
@@ -31,7 +37,9 @@ export default function NewestArticlesComponent() {
 				{data.map((article) => {
 					return (
 						<ArticleCards
+							userId={userId}
 							id={article.id}
+							isLiked={article.isLiked}
 							key={article.id}
 							link={article.link}
 							headline={article.headline}

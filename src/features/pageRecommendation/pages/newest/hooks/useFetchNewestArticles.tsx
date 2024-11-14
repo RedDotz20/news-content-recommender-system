@@ -1,15 +1,16 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { getNewestArticles } from '../server/actions/fetchNewestArticles';
+import { getArticles } from '../server/actions/fetchArticles';
+// import { getNewestArticles } from '../server/actions/fetchNewestArticles';
 
-const newestArticlesQueryKey = ['newestArticles'];
-const newestArticlesQueryFn = async () => await getNewestArticles();
+// const newestArticlesQueryKey = ['newestArticles'];
+// const newestArticlesQueryFn = async () => await getNewestArticles();
 
-export const useFetchNewestArticles = () => {
+export const useFetchNewestArticles = (userId: string) => {
 	return useQuery({
-		queryKey: newestArticlesQueryKey,
-		queryFn: newestArticlesQueryFn,
+		queryKey: ['newestArticles'],
+		queryFn: async () => await getArticles(userId, 50),
 		refetchOnMount: false,
 		refetchOnWindowFocus: false,
 		refetchOnReconnect: true,

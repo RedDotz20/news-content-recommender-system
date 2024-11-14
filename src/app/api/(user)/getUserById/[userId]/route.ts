@@ -11,9 +11,9 @@ export async function GET(
 		const { data, error } = await adminAuthClient.getUserById(userId);
 
 		if (error) {
-			console.error('Error fetching user id:', error);
+			console.error('Error FETCHING user id:', error);
 			return NextResponse.json(
-				{ error: 'Error fetching user id' },
+				{ error: 'Error FETCHING user id' },
 				{ status: 500 }
 			);
 		}

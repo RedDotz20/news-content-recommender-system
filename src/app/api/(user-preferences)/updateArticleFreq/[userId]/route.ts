@@ -20,7 +20,6 @@ export async function PUT(
 		const body: typeof updateArticleFreqSchema = await req.json();
 		const { category, frequencyVal } = updateArticleFreqSchema.parse(body);
 
-		// Safe if the text query below is completely trusted content
 		await prisma.$executeRaw`
       UPDATE public.user_preferences
       SET

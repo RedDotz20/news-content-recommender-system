@@ -3,10 +3,15 @@
 import { Button } from '@/components/ui/button';
 import { useFetchNewestArticles } from '../hooks/useFetchNewestArticles';
 import { RefreshCcw } from 'lucide-react';
+import { useGetSessionData } from '@/features/auth/hooks/useGetSessionData';
 
 export const RefetchButton = () => {
+	const {
+		user: { id },
+	} = useGetSessionData();
+
 	const { refetch, isPending, isFetching, isLoading } =
-		useFetchNewestArticles();
+		useFetchNewestArticles(id);
 
 	return (
 		<Button
