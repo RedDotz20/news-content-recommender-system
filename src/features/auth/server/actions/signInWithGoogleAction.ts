@@ -21,7 +21,7 @@ const getURL = () => {
 
 // Sign in with Google function with dynamic redirect URL
 export const signInWithGoogle = actionClient.action(async () => {
-	const supabase = createClient();
+	const supabase = await createClient();
 	const redirectToURL = `${getURL()}auth/callback`; // Use dynamic base URL for redirection
 
 	const { data, error } = await supabase.auth.signInWithOAuth({
@@ -31,7 +31,7 @@ export const signInWithGoogle = actionClient.action(async () => {
 				access_type: 'offline',
 				prompt: 'consent',
 			},
-			redirectTo: redirectToURL, // Dynamically set the redirect URL
+			redirectTo: redirectToURL,
 		},
 	});
 

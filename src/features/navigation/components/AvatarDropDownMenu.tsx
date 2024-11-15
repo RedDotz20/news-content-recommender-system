@@ -37,13 +37,15 @@ export const AvatarDropDownMenu = () => {
 					<Avatar>
 						<AvatarImage
 							src={
-								isLoading ? '/placeholder-user.jpg' : (imageProfile as string)
+								isLoading
+									? '/assets/avatar_placeholder.jpg'
+									: (imageProfile as string)
 							}
 							alt={'A'}
 						/>
 						<AvatarFallback>
 							<AvatarImage
-								src="/placeholder-user.jpg"
+								src="/assets/avatar_placeholder.jpg"
 								alt={'A'}
 							/>
 						</AvatarFallback>

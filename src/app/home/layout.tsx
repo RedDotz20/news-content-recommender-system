@@ -1,15 +1,5 @@
-// import HomeNavigation from '@/features/navigation/components/HomeNavigation';
-import HomeNavigation from '@/features/navigation/components/HomeNavigation';
+import HomeLayoutComponent from '@/features/pageRecommendation/pages/home/layout';
 
-interface HomeLayoutProps {
-	children: React.ReactNode;
-}
-
-export default function HomeLayout({ children }: HomeLayoutProps) {
-	return (
-		<>
-			<HomeNavigation />
-			<div className="pt-20 lg:px-6 h-full">{children}</div>
-		</>
-	);
+export default function HomeLayout({ children }: React.PropsWithChildren) {
+	return <HomeLayoutComponent>{children}</HomeLayoutComponent>;
 }
