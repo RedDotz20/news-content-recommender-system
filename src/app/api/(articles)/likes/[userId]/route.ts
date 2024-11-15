@@ -13,51 +13,52 @@ export async function POST(
 		const { articleId, category, frequencyVal } =
 			updateArticleFreqSchema.parse(body);
 
-		const preferenceUpdateResult = await prisma.$executeRaw`
-			UPDATE public.user_preferences
-			SET
-				preferences = (
-					SELECT jsonb_agg(
-						CASE
-							WHEN value ->> 'category' = ${category} THEN
-								jsonb_set(value, '{frequency}', to_jsonb((value ->> 'frequency')::int + ${frequencyVal})::jsonb)
-							ELSE
-								value
-						END
-					)
-					FROM jsonb_array_elements(preferences) AS value
-				) ||
-				CASE
-					WHEN NOT EXISTS (
-						SELECT 1
+		// Use Prisma transaction to handle both operations in one go
+		const transactionPostResult = await prisma.$transaction(async (prisma) => {
+			// Update user_preferences JSONB data
+			const preferenceUpdateResult = await prisma.$executeRaw`
+				UPDATE public.user_preferences
+				SET
+					preferences = (
+						SELECT jsonb_agg(
+							CASE
+								WHEN value ->> 'category' = ${category} THEN
+									jsonb_set(value, '{frequency}', to_jsonb((value ->> 'frequency')::int + ${frequencyVal})::jsonb)
+								ELSE
+									value
+							END
+						)
 						FROM jsonb_array_elements(preferences) AS value
-						WHERE value ->> 'category' = ${category}
-					) THEN
-						jsonb_build_array(jsonb_build_object('category', ${category}, 'frequency', ${frequencyVal}))
-					ELSE
-						'[]'::jsonb
-				END,
-				updated_at = now()
-			WHERE user_id = ${userId}::uuid;
+					) ||
+					CASE
+						WHEN NOT EXISTS (
+							SELECT 1
+							FROM jsonb_array_elements(preferences) AS value
+							WHERE value ->> 'category' = ${category}
+						) THEN
+							jsonb_build_array(jsonb_build_object('category', ${category}, 'frequency', ${frequencyVal}))
+						ELSE
+							'[]'::jsonb
+					END,
+					updated_at = now()
+				WHERE user_id = ${userId}::uuid;
+			`;
 
-		`;
-
-		if (preferenceUpdateResult > 0) {
-			const associatedInteraction = await prisma.userInteractions.create({
-				data: { userId, articleId, category },
-			});
-
-			if (associatedInteraction) {
-				return NextResponse.json(
-					{ error: 'POST: interaction & update Success' },
-					{ status: 200 }
-				);
-			} else {
-				return NextResponse.json(
-					{ error: 'POST: Update Failed, No interaction created' },
-					{ status: 404 }
-				);
+			// If preferences were updated, create interaction
+			if (preferenceUpdateResult) {
+				const interaction = await prisma.userInteractions.create({
+					data: { userId, articleId, category },
+				});
+				return interaction;
 			}
+			return null;
+		});
+
+		if (transactionPostResult) {
+			return NextResponse.json(
+				{ message: 'POST: Interaction & Update Success' },
+				{ status: 200 }
+			);
 		} else {
 			return NextResponse.json(
 				{ error: 'POST: Update Failed, No preferences updated' },

@@ -3,13 +3,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { getDistinctCategories } from '../server/actions/fetchCategories';
 
-const distinctCatQueryKey = ['distinctCategories'];
-const distinctCatQueryFn = () => getDistinctCategories();
-
 export const useFetchCategories = () => {
 	return useQuery({
-		queryKey: distinctCatQueryKey,
-		queryFn: distinctCatQueryFn,
+		queryKey: ['distinctCategories'],
+		queryFn: () => getDistinctCategories(),
 		refetchOnMount: false,
 		refetchOnWindowFocus: false,
 		refetchOnReconnect: true,

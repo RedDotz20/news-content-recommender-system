@@ -1,6 +1,9 @@
+'use client';
+
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { handleUserInteraction } from '../server/actions/handleUserInteraction';
 import { getArticlesType } from '../pages/newest/server/actions/fetchArticles';
+import { useRef } from 'react';
 
 type mutationType = {
 	isLiked: boolean;
@@ -13,14 +16,21 @@ export const useMutateInteraction = (userId: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
+		mutationKey: ['userInteraction'],
 		mutationFn: ({
 			isLiked,
 			articleId,
 			category,
 			frequencyVal,
-		}: mutationType) =>
-			handleUserInteraction(userId, isLiked, articleId, category, frequencyVal),
-
+		}: mutationType) => {
+			return handleUserInteraction(
+				userId,
+				isLiked,
+				articleId,
+				category,
+				frequencyVal
+			);
+		},
 		// Optimistic update logic
 		onMutate: async ({ articleId, isLiked }) => {
 			// Cancel outgoing refetches

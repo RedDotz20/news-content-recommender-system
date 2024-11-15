@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from 'next-view-transitions';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { MobileNavigationMenu } from './MobileNavigation';
 import { AvatarDropDownMenu } from './AvatarDropDownMenu';

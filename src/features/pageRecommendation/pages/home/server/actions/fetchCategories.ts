@@ -1,6 +1,6 @@
 'use server';
 
-import { Articles } from '@prisma/client';
+// import { Articles } from '@prisma/client';
 
 interface distinctCategoriesType {
 	count: number;

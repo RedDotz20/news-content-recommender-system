@@ -5,34 +5,36 @@ import './globals.css';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme/theme-provider';
+import { ViewTransitions } from 'next-view-transitions';
 
 const chivo = Chivo({ subsets: ['latin'], display: 'swap' });
 
 export const metadata: Metadata = {
 	title: 'ArticleHorizon',
 	description: 'Article Recommender System',
-	icons: { icon: ['/logo/logo_white.svg'] },
 };
 
 export default function RootLayout({ children }: React.PropsWithChildren) {
 	return (
-		<html
-			lang="en"
-			className="dark"
-			suppressHydrationWarning
-		>
-			<body className={chivo.className}>
-				<ReactQueryProvider>
-					<ThemeProvider
-						attribute="class"
-						defaultTheme="dark"
-						enableSystem
-					>
-						<main>{children}</main>
-						<Toaster />
-					</ThemeProvider>
-				</ReactQueryProvider>
-			</body>
-		</html>
+		<ViewTransitions>
+			<html
+				lang="en"
+				className="dark"
+				suppressHydrationWarning
+			>
+				<body className={chivo.className}>
+					<ReactQueryProvider>
+						<ThemeProvider
+							attribute="class"
+							defaultTheme="dark"
+							enableSystem
+						>
+							<main>{children}</main>
+							<Toaster />
+						</ThemeProvider>
+					</ReactQueryProvider>
+				</body>
+			</html>
+		</ViewTransitions>
 	);
 }

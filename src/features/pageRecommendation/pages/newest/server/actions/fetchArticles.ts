@@ -28,16 +28,14 @@ export const getArticles = async (userId: string, limit: number = 10) => {
 		);
 
 		if (!response.ok) {
-			const errorDetail = await response.text();
-			throw new Error(
-				`Failed to fetch articles: ${`${baseUrl}/api/getArticles${userId}?limit=${limit}`} ${errorDetail}`
-			);
+			console.error(response.status);
+			throw new Error(`HTTP error: ${response.statusText}`);
 		}
 
 		const { data } = await response.json();
 		return data as getArticlesType[];
 	} catch (error) {
-		console.error('Error in getNewestArticles:', error);
+		console.log('Error in getNewestArticles:', error);
 		throw new Error(
 			`Could not retrieve the newest articles. Please try again later ${error}.`
 		);

@@ -1,12 +1,12 @@
 'use server';
 
-// TODO: implement handle user interaction
 export const handleUserInteraction = async (
 	userId: string,
 	isLiked: boolean,
 	articleId: string,
 	category: string,
-	frequencyVal: number
+	frequencyVal: number,
+	signal?: AbortSignal //TODO: Optional AbortSignal for request cancellation
 ) => {
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL as string;
 
@@ -19,6 +19,7 @@ export const handleUserInteraction = async (
 				'x-api-secret-key': process.env.API_SECRET_KEY as string,
 			},
 			body: JSON.stringify({ articleId, category, frequencyVal }),
+			signal,
 		});
 
 		if (!response.ok) {
@@ -31,9 +32,15 @@ export const handleUserInteraction = async (
 		const { data } = await response.json();
 		return data;
 	} catch (error) {
-		console.error('Error in handleUserInteraction:', error);
+		const typedError = error as Error; // Type assertion
+		if (typedError.name === 'AbortError') {
+			console.log('Request was aborted by the user');
+			return; // Exit early if the request was aborted
+		}
+
+		console.error('Error in handleUserInteraction:', typedError);
 		throw new Error(
-			`Could not perform user interaction update. Please try again later ${error}.`
+			`Could not perform user interaction update. Please try again later ${typedError}.`
 		);
 	}
 };

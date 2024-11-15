@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from 'next-view-transitions';
 import { cn } from '@/lib/utils';
 import DotPattern from '../components/magicui/dot-pattern';
 import AnimatedGradientText from '@/components/magicui/animated-gradient-text';

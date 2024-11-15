@@ -6,7 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import Link from 'next/link';
+import { Link } from 'next-view-transitions';
 import { ThemedLogo } from '@/components/customui/ThemedLogo';
 import { GoogleSignInButton } from '@/features/auth/components/GoogleSignInButton';
 
