@@ -1,11 +1,11 @@
-import Link from 'next/link';
+import { Link } from 'next-view-transitions';
 import { cn } from '@/lib/utils';
 import DotPattern from '../components/magicui/dot-pattern';
 import AnimatedGradientText from '@/components/magicui/animated-gradient-text';
 import ShimmerButton from '@/components/ui/shimmer-button';
 import { PaperPlaneIcon } from '@radix-ui/react-icons';
 
-export default async function Home() {
+export default async function LandingPage() {
 	return (
 		<section className="h-screen flex flex-col justify-center gap-6 px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5">
 			<DotPattern

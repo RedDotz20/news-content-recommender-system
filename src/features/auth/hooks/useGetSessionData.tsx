@@ -15,7 +15,7 @@ const fetchSessionData = async () => {
 		throw new Error(error.message);
 	}
 
-	return user as User | null;
+	return user as User;
 };
 
 export function useGetSessionData() {
@@ -31,7 +31,7 @@ export function useGetSessionData() {
 
 	const user = useMemo(
 		() => ({
-			id: session?.user_metadata.id ?? ('' as string),
+			id: session?.id ?? ('' as string),
 			name: session?.user_metadata.name ?? ('' as string),
 			email: session?.user_metadata.email ?? ('' as string),
 			imageProfile: session?.user_metadata.avatar_url ?? ('' as string),

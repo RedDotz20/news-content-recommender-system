@@ -5,12 +5,9 @@ import './globals.css';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme/theme-provider';
-import React from 'react';
+import { ViewTransitions } from 'next-view-transitions';
 
-const chivo = Chivo({
-	subsets: ['latin'],
-	display: 'swap',
-});
+const chivo = Chivo({ subsets: ['latin'], display: 'swap' });
 
 export const metadata: Metadata = {
 	title: 'ArticleHorizon',
@@ -19,19 +16,25 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: React.PropsWithChildren) {
 	return (
-		<html lang="en">
-			<body className={chivo.className}>
-				<ReactQueryProvider>
-					<ThemeProvider
-						attribute="class"
-						defaultTheme="system"
-						enableSystem
-					>
-						<main>{children}</main>
-						<Toaster />
-					</ThemeProvider>
-				</ReactQueryProvider>
-			</body>
-		</html>
+		<ViewTransitions>
+			<html
+				lang="en"
+				className="dark"
+				suppressHydrationWarning
+			>
+				<body className={chivo.className}>
+					<ReactQueryProvider>
+						<ThemeProvider
+							attribute="class"
+							defaultTheme="dark"
+							enableSystem
+						>
+							<main>{children}</main>
+							<Toaster />
+						</ThemeProvider>
+					</ReactQueryProvider>
+				</body>
+			</html>
+		</ViewTransitions>
 	);
 }

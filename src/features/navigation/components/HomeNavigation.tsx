@@ -1,15 +1,15 @@
-import Link from 'next/link';
+import { Link } from 'next-view-transitions';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { MobileNavigationMenu } from './MobileNavigation';
 import { AvatarDropDownMenu } from './AvatarDropDownMenu';
 import { TopBarNavigation } from './TopBarNavigation';
-import { ThemedLogo } from '@/components/ThemedLogo';
+import { ThemedLogo } from '@/components/customui/ThemedLogo';
 
 export default function HomeNavigation() {
 	return (
 		<section className="flex flex-col w-full fixed z-50">
 			<header className="flex items-center justify-between bg-background shadow-sm px-6 sm:px-8 md:px-12 h-14 md:h-16">
-				<LogoTitle />
+				<LogoInTitleLink />
 				<TopBarNavigation />
 
 				<div className="flex gap-4">
@@ -23,7 +23,7 @@ export default function HomeNavigation() {
 	);
 }
 
-const LogoTitle = () => {
+const LogoInTitleLink = () => {
 	return (
 		<Link
 			href="/"
