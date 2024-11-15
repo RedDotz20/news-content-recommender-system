@@ -45,9 +45,9 @@ export function ArticleCards(props: ArticleCardProps) {
 					</span>
 				</CardHeader>
 				<CardContent className="p-4 pt-0">
-					<p className="text-sm text-muted-foreground">
+					<span className="text-sm text-muted-foreground">
 						{props.short_description}
-					</p>
+					</span>
 				</CardContent>
 			</ClickInteraction>
 
