@@ -14,6 +14,6 @@ export const useFetchCategories = () => {
 };
 
 // export const prefetchCategories = {
-// 	queryKey: distinctCatQueryKey,
-// 	queryFn: distinctCatQueryFn,
+// 	queryKey: ['distinctCategories'],
+// 	queryFn: () => getDistinctCategories(),
 // };

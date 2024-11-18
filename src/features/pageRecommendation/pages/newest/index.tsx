@@ -30,9 +30,7 @@ export default function NewestArticlesComponent() {
 	// }, [data]);
 
 	return (
-		<div
-			className={`flex items-center justify-center w-full flex-col sm:px-4 transition-opacity duration-1000`}
-		>
+		<div className="flex items-center justify-center w-full flex-col sm:px-4 transition-opacity duration-1000">
 			<div className="flex flex-col justify-center lg:flex-row lg:flex-wrap gap-4 lg:p-4">
 				{data.map((article) => {
 					return (

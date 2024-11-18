@@ -15,16 +15,21 @@ export const checkUserPref = async (userId: string) => {
 		);
 
 		if (!response.ok) {
-			const errorDetail = await response.text();
-			throw new Error(`Failed to verify user preferences: ${errorDetail}`);
+			const errorDetail = await response.json();
+			throw new Error(`Failed to Verify Preferences: ${errorDetail.error}`);
 		}
 
 		const result = await response.json();
 		return result;
 	} catch (error) {
-		console.error('Error in getDistinctCategories:', error);
-		throw new Error(
-			'Could not validate user preferences. Please try again later.'
-		);
+		console.error('Error in checkUserPreference:', error);
+		if (error instanceof Error) {
+			// Re-throw with a detailed message, or handle as needed
+			throw new Error(error.message);
+		} else {
+			throw new Error(
+				'Could not validate user preferences. Please try again later.'
+			);
+		}
 	}
 };

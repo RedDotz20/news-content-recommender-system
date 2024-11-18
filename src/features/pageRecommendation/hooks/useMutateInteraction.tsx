@@ -3,7 +3,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { handleUserInteraction } from '../server/actions/handleUserInteraction';
 import { getArticlesType } from '../pages/newest/server/actions/fetchArticles';
-import { useRef } from 'react';
 
 type mutationType = {
 	isLiked: boolean;

@@ -9,7 +9,7 @@ export const useCheckUserPref = () => {
 		user: { id },
 	} = useGetSessionData();
 
-	return useQuery({
+	const checkUserPrefQuery = useQuery({
 		queryKey: ['isPreferencesExists'],
 		queryFn: () => checkUserPref(id),
 		enabled: !!id,
@@ -17,4 +17,6 @@ export const useCheckUserPref = () => {
 		refetchOnWindowFocus: false,
 		refetchOnReconnect: true,
 	});
+
+	return { ...checkUserPrefQuery };
 };

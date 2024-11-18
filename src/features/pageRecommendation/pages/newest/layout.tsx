@@ -20,7 +20,7 @@ export default async function NewestLayoutComponent({
 
 	return (
 		// <HydrationBoundary state={dehydrate(queryClient)}>
-		<div className="lg:px-6 h-full">
+		<div className="lg:px-6 h-full w-full">
 			<div className="flex justify-between w-full mb-4 px-8">
 				<p className="~text-lg/2xl font-bold">Latest News</p>
 				<RefetchButton />

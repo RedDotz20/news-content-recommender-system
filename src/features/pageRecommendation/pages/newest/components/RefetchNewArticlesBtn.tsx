@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useFetchNewestArticles } from '../hooks/useFetchNewestArticles';
 import { RefreshCcw } from 'lucide-react';
 import { useGetSessionData } from '@/features/auth/hooks/useGetSessionData';
+import { LoadingSpinnerWithText } from '@/components/customui/LoadingSpinner';
 
 export const RefetchButton = () => {
 	const {
@@ -20,13 +21,13 @@ export const RefetchButton = () => {
 			onClick={() => refetch()}
 		>
 			{isLoading ? (
-				<span>Loading...</span>
+				<LoadingSpinnerWithText />
 			) : (
 				<>
 					<RefreshCcw
 						className={`${isPending || (isFetching && 'animate-spin')}`}
 					/>
-					<span>REFRESH</span>
+					<span>{isPending || isFetching ? 'LOADING' : 'REFRESH'}</span>
 				</>
 			)}
 		</Button>

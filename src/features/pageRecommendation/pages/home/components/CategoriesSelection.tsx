@@ -23,11 +23,15 @@ import { useState } from 'react';
 import { mutateCategoryAction } from '../server/actions/mutateCatActions';
 import { useGetSessionData } from '@/features/auth/hooks/useGetSessionData';
 // import { useMutation } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 export function CategoriesSelection() {
+	const queryClient = useQueryClient();
 	const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
 	const { data, isPending, error, isFetching, isLoading } =
 		useFetchCategories();
+
 	const {
 		user: { id },
 	} = useGetSessionData();
@@ -37,6 +41,10 @@ export function CategoriesSelection() {
 		{
 			onSuccess: () => {
 				console.log('newMutateCatActionss Successfully Executed');
+			},
+			onSettled: () => {
+				// isPreferencesExists
+				queryClient.invalidateQueries({ queryKey: ['isPreferencesExists'] });
 			},
 		}
 	);
@@ -49,7 +57,7 @@ export function CategoriesSelection() {
 		console.log('newMutateCatActionss Successfully Executed');
 	}
 
-	if (error) return 'An error has occurred: ' + error.message;
+	if (error) return `An error has occurred: ${error.message}`;
 
 	const preferences = {
 		categories: selectedCategories.map((cat) => ({

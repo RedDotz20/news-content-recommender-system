@@ -21,7 +21,7 @@ export const createUserPerfs = async (userId: string) => {
 
 		return await response.json();
 	} catch (error) {
-		console.error('Error in getDistinctCategories:', error);
+		console.error('Error in createUserPreference:', error);
 		throw new Error(
 			'Could not validate user preferences. Please try again later.'
 		);

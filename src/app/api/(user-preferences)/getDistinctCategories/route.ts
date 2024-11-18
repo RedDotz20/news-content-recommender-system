@@ -1,30 +1,28 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 
-interface CategoryResponse {
-	count: number;
-	category: string[];
-}
+// interface CategoryResponse {
+// 	count: number;
+// 	category: string[];
+// }
 
 interface ErrorResponse {
 	error: string;
 }
 
-export async function GET(): Promise<
-	NextResponse<CategoryResponse | ErrorResponse>
-> {
+export async function GET() {
 	try {
-		const uniqueCategories = await prisma.articles.findMany({
-			distinct: ['category'],
-			select: { category: true },
-		});
+		const uniqueCategories = await prisma.$queryRaw<
+			Array<{ category: string }>
+		>`SELECT DISTINCT category FROM articles;`;
 
-		const categories = uniqueCategories.map((item) => item.category);
-
-		return NextResponse.json(
-			{ count: categories.length, category: categories },
-			{ status: 200 }
-		);
+		if (uniqueCategories) {
+			const categories = uniqueCategories.map((item) => item.category);
+			return NextResponse.json(
+				{ count: categories.length, category: categories },
+				{ status: 200 }
+			);
+		}
 	} catch (error: unknown) {
 		console.error(
 			'Error fetching categories:',

@@ -23,7 +23,7 @@ export const handleUserInteraction = async (
 		});
 
 		if (!response.ok) {
-			const errorDetail = await response.text();
+			const errorDetail = await response.json();
 			throw new Error(
 				`Failed to execute handleUserInteraction: ${errorDetail}`
 			);
@@ -33,6 +33,7 @@ export const handleUserInteraction = async (
 		return data;
 	} catch (error) {
 		const typedError = error as Error; // Type assertion
+
 		if (typedError.name === 'AbortError') {
 			console.log('Request was aborted by the user');
 			return; // Exit early if the request was aborted

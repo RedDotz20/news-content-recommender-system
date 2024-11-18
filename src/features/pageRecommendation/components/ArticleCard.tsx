@@ -77,7 +77,7 @@ const ClickInteraction = (props: ArticleCardProps) => {
 			target="_blank"
 			rel="noopener noreferrer"
 			className="flex-1"
-			onClick={(e) => {
+			onClick={() => {
 				mutate({ isLiked, articleId, category, frequencyVal });
 			}}
 		>
