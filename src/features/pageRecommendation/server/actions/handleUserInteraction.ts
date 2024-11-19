@@ -5,8 +5,8 @@ export const handleUserInteraction = async (
 	isLiked: boolean,
 	articleId: string,
 	category: string,
-	frequencyVal: number,
-	signal?: AbortSignal //TODO: Optional AbortSignal for request cancellation
+	frequencyVal: number
+	// signal?: AbortSignal //TODO: Optional AbortSignal for request cancellation
 ) => {
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL as string;
 
@@ -18,14 +18,18 @@ export const handleUserInteraction = async (
 				'Content-Type': 'application/json',
 				'x-api-secret-key': process.env.API_SECRET_KEY as string,
 			},
-			body: JSON.stringify({ articleId, category, frequencyVal }),
-			signal,
+			body: JSON.stringify({
+				articleId,
+				category,
+				frequencyVal,
+			}),
+			// signal,
 		});
 
 		if (!response.ok) {
 			const errorDetail = await response.json();
 			throw new Error(
-				`Failed to execute handleUserInteraction: ${errorDetail}`
+				`Failed to execute handleUserInteraction: ${errorDetail.error}`
 			);
 		}
 

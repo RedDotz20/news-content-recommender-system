@@ -42,6 +42,5 @@ model UserInteractions {
   category  String   @default("")
   article   Articles @relation("UserInteractions", fields: [articleId], references: [id], onDelete: Cascade)
 
-  @@unique([userId])
   @@map("user_interactions")
 }

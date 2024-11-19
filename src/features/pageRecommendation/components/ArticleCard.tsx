@@ -1,9 +1,5 @@
 'use client';
 
-import { Articles as ArticlesType } from '@prisma/client';
-import { Bookmark, Heart } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
 	Card,
 	CardContent,
@@ -11,16 +7,15 @@ import {
 	CardHeader,
 } from '@/components/ui/card';
 import { cn, formatDate, wordFormmater, filterAuthor } from '@/lib/utils';
-import { useMutateInteraction } from '../hooks/useMutateInteraction';
+import { Badge } from '@/components/ui/badge';
+import { ArticleCardProps } from '../types/articleCardType';
+import {
+	ClickInteractLink,
+	LikeInteractButton,
+	BookmarkInteractButton,
+} from './UserInteraction';
 
-interface ArticleCardProps extends ArticlesType {
-	userId: string;
-	isLiked: boolean;
-	className?: string;
-	children?: React.ReactNode;
-}
-
-export function ArticleCards(props: ArticleCardProps) {
+export const ArticleCards = (props: ArticleCardProps) => {
 	return (
 		<Card
 			id={props.id}
@@ -29,7 +24,7 @@ export function ArticleCards(props: ArticleCardProps) {
 				props.className
 			)}
 		>
-			<ClickInteraction {...props}>
+			<ClickInteractLink {...props}>
 				<CardHeader className="space-y-0 p-4">
 					<div className="flex items-center justify-between mb-4">
 						<Badge className="select-none">
@@ -49,59 +44,12 @@ export function ArticleCards(props: ArticleCardProps) {
 						{props.short_description}
 					</span>
 				</CardContent>
-			</ClickInteraction>
+			</ClickInteractLink>
 
 			<CardFooter className="flex items-center justify-between p-4">
-				<LikeInteraction {...props} />
-				<Button
-					variant="ghost"
-					size="icon"
-					className="h-8 w-8"
-				>
-					<Bookmark className="h-4 w-4" />
-					<span className="sr-only">Bookmark</span>
-				</Button>
+				<LikeInteractButton {...props} />
+				<BookmarkInteractButton {...props} />
 			</CardFooter>
 		</Card>
-	);
-}
-
-const ClickInteraction = (props: ArticleCardProps) => {
-	const { userId, id: articleId, isLiked, category } = props,
-		{ mutate } = useMutateInteraction(userId),
-		frequencyVal: number = 2;
-
-	return (
-		<a
-			href={props.link}
-			target="_blank"
-			rel="noopener noreferrer"
-			className="flex-1"
-			onClick={() => {
-				mutate({ isLiked, articleId, category, frequencyVal });
-			}}
-		>
-			{props.children}
-		</a>
-	);
-};
-
-const LikeInteraction = (props: ArticleCardProps) => {
-	const { userId, id: articleId, isLiked, category } = props,
-		{ mutate } = useMutateInteraction(userId),
-		frequencyVal: number = 12;
-
-	return (
-		<Button
-			variant="ghost"
-			size="icon"
-			className="h-8 w-8"
-			onClick={() => mutate({ isLiked, articleId, category, frequencyVal })}
-		>
-			<Heart
-				className={`h-4 w-4 ${isLiked && 'fill-red-500 stroke-red-500'}`}
-			/>
-			<span className="sr-only">Like</span>
-		</Button>
 	);
 };
