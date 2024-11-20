@@ -13,13 +13,6 @@ export async function POST(
 		const { articleId, category, frequencyVal } =
 			updateArticleFreqSchema.parse(body);
 
-		const getUserPref = await prisma.userPreferences.findFirst({
-			where: { userId: userId },
-		});
-
-		console.log('CURRENT_USER_PREF', getUserPref);
-		console.log('pref_type: ', typeof getUserPref?.preferences);
-
 		const existingInteraction = await prisma.userInteractions.findFirst({
 			where: { userId: userId, articleId: articleId },
 			select: { id: true },

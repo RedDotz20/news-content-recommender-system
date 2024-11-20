@@ -20,8 +20,6 @@ export function UserPreferenceBoundary({ children }: PropsWithChildren) {
 		return <div className={style}>{error.message}</div>;
 	}
 
-	console.log(data);
-
 	if (data) {
 		if (data.isExists && data.isEmpty) {
 			console.log('Categories Loading');

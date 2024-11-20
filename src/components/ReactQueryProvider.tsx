@@ -15,14 +15,9 @@ function makeQueryClient() {
 				// With SSR, we usually want to set some default staleTime
 				// above 0 to avoid refetching immediately on the client
 				// staleTime: 60 * 1000,
-
-				// staleTime: 1000 * 60 * 10, // 10 minutes
-				// staleTime: Infinity, // 10 minutes
 				gcTime: 1000 * 60 * 60 * 24, // 24 hours
 				refetchOnWindowFocus: false, // Avoid refetch on window focus
 				refetchOnMount: false, // Avoid refetch when remounting component
-
-				// staleTime: 100,
 				// refetchInterval: 100,
 				// refetchOnMount: false,
 				// refetchOnWindowFocus: false,
@@ -65,12 +60,13 @@ export function ReactQueryProvider({ children }: PropsWithChildren) {
 	//       have a suspense boundary between this and the code that may
 	//       suspend because React will throw away the client on the initial
 	//       render if it suspends and there is no boundary
+
 	const client = getQueryClient();
 
 	return (
 		<QueryClientProvider client={client}>
 			{children}
-			<ReactQueryDevtools initialIsOpen={false} />
+			{/* <ReactQueryDevtools initialIsOpen={false} /> */}
 		</QueryClientProvider>
 	);
 }

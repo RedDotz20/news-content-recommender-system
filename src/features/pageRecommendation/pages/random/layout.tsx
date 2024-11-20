@@ -4,10 +4,10 @@ import { PropsWithChildren } from 'react';
 // 	HydrationBoundary,
 // 	dehydrate,
 // } from '@tanstack/react-query';
-import { RefetchButton } from './components/RefetchNewArticlesBtn';
+import { RandomArticleRefetchBtn } from './components/RefetchRandomArticles';
 // import { getNewestArticles } from './server/actions/fetchNewestArticles';
 
-export default async function NewestLayoutComponent({
+export default async function RandomLayoutComponent({
 	children,
 }: PropsWithChildren) {
 	// const queryClient = new QueryClient();
@@ -22,8 +22,8 @@ export default async function NewestLayoutComponent({
 		// <HydrationBoundary state={dehydrate(queryClient)}>
 		<div className="lg:px-6 h-full w-full">
 			<div className="flex justify-between w-full mb-4 px-8">
-				<p className="~text-lg/2xl font-bold">Latest News</p>
-				<RefetchButton />
+				<p className="~text-lg/2xl font-bold">Random News Article</p>
+				<RandomArticleRefetchBtn />
 			</div>
 			{children}
 		</div>

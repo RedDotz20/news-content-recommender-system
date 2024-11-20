@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { handleUserInteraction } from '../server/actions/handleUserInteraction';
-import { getArticlesType } from '../pages/newest/server/actions/fetchArticles';
+import { getArticlesType } from '../pages/random/server/actions/fetchArticles';
 
 type mutationType = {
 	isLiked: boolean;
@@ -11,7 +11,10 @@ type mutationType = {
 	frequencyVal: number;
 };
 
-export const useMutateInteraction = (userId: string) => {
+export const useMutateInteraction = (
+	userId: string,
+	mutationQueryKey: string = 'randomArticles'
+) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
@@ -33,15 +36,15 @@ export const useMutateInteraction = (userId: string) => {
 		// Optimistic update logic
 		onMutate: async ({ articleId, isLiked }) => {
 			// Cancel outgoing refetches
-			await queryClient.cancelQueries({ queryKey: ['newestArticles', userId] });
+			await queryClient.cancelQueries({ queryKey: [mutationQueryKey, userId] });
 
 			// Snapshot previous articles
 			const previousArticles = queryClient.getQueryData<getArticlesType[]>([
-				'newestArticles',
+				mutationQueryKey,
 			]);
 
 			// Optimistically update the specific article's isLiked state
-			queryClient.setQueryData(['newestArticles'], (old: getArticlesType[]) => {
+			queryClient.setQueryData([mutationQueryKey], (old: getArticlesType[]) => {
 				if (Array.isArray(old)) {
 					return old.map((article) =>
 						article.id === articleId
@@ -64,7 +67,7 @@ export const useMutateInteraction = (userId: string) => {
 
 			if (context?.previousArticles) {
 				queryClient.setQueryData(
-					['newestArticles', userId],
+					[mutationQueryKey, userId],
 					context.previousArticles
 				);
 			}
@@ -72,7 +75,7 @@ export const useMutateInteraction = (userId: string) => {
 
 		// Revalidate data after mutation to ensure cache consistency
 		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: ['newestArticles'] });
+			queryClient.invalidateQueries({ queryKey: [mutationQueryKey] });
 		},
 	});
 };

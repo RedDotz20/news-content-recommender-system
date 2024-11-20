@@ -1,18 +1,18 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { useFetchNewestArticles } from '../hooks/useFetchNewestArticles';
+import { useFetchRandomArticles } from '../hooks/useFetchNewestArticles';
 import { RefreshCcw } from 'lucide-react';
 import { useGetSessionData } from '@/features/auth/hooks/useGetSessionData';
 import { LoadingSpinnerWithText } from '@/components/customui/LoadingSpinner';
 
-export const RefetchButton = () => {
+export const RandomArticleRefetchBtn = () => {
 	const {
 		user: { id },
 	} = useGetSessionData();
 
 	const { refetch, isPending, isFetching, isLoading } =
-		useFetchNewestArticles(id);
+		useFetchRandomArticles(id);
 
 	return (
 		<Button

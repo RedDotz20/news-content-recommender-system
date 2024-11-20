@@ -4,9 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import { getArticles } from '../server/actions/fetchArticles';
 // import { getNewestArticles } from '../server/actions/fetchNewestArticles';
 
-export const useFetchNewestArticles = (userId: string) => {
+export const useFetchRandomArticles = (userId: string) => {
 	return useQuery({
-		queryKey: ['newestArticles'],
+		queryKey: ['randomArticles'],
 		queryFn: () => getArticles(userId, 50),
 		enabled: !!userId,
 		refetchOnMount: false,
