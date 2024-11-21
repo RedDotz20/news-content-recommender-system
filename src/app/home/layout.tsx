@@ -3,8 +3,8 @@ import {
 	HydrationBoundary,
 	QueryClient,
 } from '@tanstack/react-query';
-import HomeLayoutComponent from '@/features/pageRecommendation/pages/home/layout';
-import { getDistinctCategories } from '@/features/pageRecommendation/pages/home/server/actions/fetchCategories';
+import HomeLayoutComponent from '@/features/hybridRecommendation/pages/layout';
+import { getDistinctCategories } from '@/features/categorySelection/server/actions/fetchCategories';
 
 export default async function HomeLayout({
 	children,

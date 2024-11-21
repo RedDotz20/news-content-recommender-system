@@ -9,11 +9,6 @@ export default function loading() {
 				<LoadingSpinner className="h-4 w-4" />
 				<p className="text-gray-400 select-none">Loading</p>
 			</div>
-			// <div className="flex justify-center items-center flex-wrap gap-6 overflow-hidden px-6 sm:px-8 md:px-12">
-			// 	{Array.from({ length: 8 }, (_, index) => (
-			// 		<LoadingCards key={index} />
-			// 	))}
-			// </div>
 		);
 	} catch (error) {
 		console.error('Error rendering loading component:', error);
@@ -21,7 +16,7 @@ export default function loading() {
 	}
 }
 
-const LoadingCards = () => {
+export const LoadingCards = () => {
 	return (
 		<div className="flex flex-col space-y-3">
 			<Skeleton className="h-[320px] w-[300px] rounded-xl" />

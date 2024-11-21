@@ -1,6 +1,6 @@
 'use client';
 
-import RandomArticlesComponent from '@/features/pageRecommendation/pages/random';
+import RandomArticlesComponent from '@/features/randomRecommendation/pages';
 
 export default function RandomArticles() {
 	return <RandomArticlesComponent />;
