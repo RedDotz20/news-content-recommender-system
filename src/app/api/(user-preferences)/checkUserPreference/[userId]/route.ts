@@ -109,7 +109,5 @@ export async function GET(
 			{ error: 'Error fetching user preferences', message: errorMessage },
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }

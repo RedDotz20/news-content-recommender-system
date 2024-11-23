@@ -152,8 +152,9 @@ export async function POST(
 						{ message: 'POST: Interaction & Pref Update Success' },
 						{ status: 201 }
 					);
-				} else {
 				}
+				// else {
+				// }
 			} else {
 				return NextResponse.json(
 					{
@@ -170,8 +171,6 @@ export async function POST(
 			{ error: 'Error liking article', details: errorMessage },
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }
 
@@ -253,7 +252,5 @@ export async function DELETE(
 			{ error: `Error disliking article ${error}` },
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }

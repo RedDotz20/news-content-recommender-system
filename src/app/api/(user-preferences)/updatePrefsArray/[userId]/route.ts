@@ -74,7 +74,5 @@ export async function PUT(
 			{ error: `Error fetching categories ${errorMessage}` },
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }

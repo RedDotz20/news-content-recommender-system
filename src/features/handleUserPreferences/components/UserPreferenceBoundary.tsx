@@ -1,7 +1,10 @@
 'use client';
 
 import { PropsWithChildren } from 'react';
-import { LoadingSpinnerWithText } from '@/components/customui/LoadingSpinner';
+import {
+	LoadingSpinner,
+	// LoadingSpinnerWithText,
+} from '@/components/customui/LoadingSpinner';
 import { CategoriesSelection } from '@/features/categorySelection/components/CategoriesSelection';
 import { useCheckUserPref } from '@/features/handleUserPreferences/hooks/useCheckUserPref';
 
@@ -13,7 +16,14 @@ export function UserPreferenceBoundary({ children }: PropsWithChildren) {
 	// TODO: implement strict Typings and Hybrid Recommendation
 
 	if (isLoading || isFetching) {
-		return <LoadingSpinnerWithText className="h-4 w-4" />;
+		return (
+			<div className="flex justify-center w-full h-[calc(100vh-140px)]">
+				<div className="flex gap-2 items-center justify-center">
+					<LoadingSpinner className="h-4 w-4" />
+					<p>checking user preferences</p>
+				</div>
+			</div>
+		);
 	}
 
 	if (error) {

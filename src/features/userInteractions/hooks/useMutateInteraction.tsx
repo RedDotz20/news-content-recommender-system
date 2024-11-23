@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { handleUserInteraction } from '../server/actions/handleUserInteraction';
 import { getArticlesType } from '../../articles/types/articleType';
+import { usePathname } from 'next/navigation';
 
 type userInteractMutationType = {
 	isLiked: boolean;
@@ -11,11 +12,11 @@ type userInteractMutationType = {
 	frequencyVal: number;
 };
 
-export const useMutateInteraction = (
-	userId: string,
-	mutationQueryKey: string = 'randomArticles'
-) => {
+export const useMutateInteraction = (userId: string) => {
 	const queryClient = useQueryClient();
+	const pathname = usePathname();
+	const isHomePage = pathname === '/home';
+	const mutationQueryKey = isHomePage ? 'hybridArticles' : 'randomArticles';
 
 	return useMutation({
 		mutationKey: ['userInteraction'],
@@ -75,7 +76,7 @@ export const useMutateInteraction = (
 
 		// Revalidate data after mutation to ensure cache consistency
 		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: [mutationQueryKey] });
+			// queryClient.invalidateQueries({ queryKey: [mutationQueryKey] });
 		},
 	});
 };

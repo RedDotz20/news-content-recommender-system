@@ -1,12 +1,12 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { getArticles } from '../server/actions/fetchArticles';
+import { getArticles } from '../server/actions/fetchRandomArticlesAction';
 // import { getNewestArticles } from '../server/actions/fetchNewestArticles';
 
 export const useFetchRandomArticles = (userId: string) => {
 	return useQuery({
-		queryKey: ['randomArticles'],
+		queryKey: ['randomArticles', userId],
 		queryFn: () => getArticles(userId, 50),
 		enabled: !!userId,
 		refetchOnMount: false,

@@ -40,7 +40,5 @@ export async function GET(
 			{ error: 'Error fetching articles' },
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }

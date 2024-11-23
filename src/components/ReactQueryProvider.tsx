@@ -1,6 +1,5 @@
 'use client';
 
-import { PropsWithChildren, useState } from 'react';
 import {
 	isServer,
 	QueryClient,
@@ -18,10 +17,6 @@ function makeQueryClient() {
 				gcTime: 1000 * 60 * 60 * 24, // 24 hours
 				refetchOnWindowFocus: false, // Avoid refetch on window focus
 				refetchOnMount: false, // Avoid refetch when remounting component
-				// refetchInterval: 100,
-				// refetchOnMount: false,
-				// refetchOnWindowFocus: false,
-				// refetchOnReconnect: true,
 			},
 		},
 	});
@@ -43,30 +38,18 @@ function getQueryClient() {
 	}
 }
 
-export function ReactQueryProvider({ children }: PropsWithChildren) {
-	// const [client] = useState(
-	// 	new QueryClient({
-	// 		defaultOptions: {
-	// 			queries: {
-	// 				refetchOnMount: false,
-	// 				refetchOnWindowFocus: false,
-	// 				refetchOnReconnect: true,
-	// 			},
-	// 		},
-	// 	})
-	// );
+export function ReactQueryProvider({ children }: React.PropsWithChildren) {
+	const client = getQueryClient();
 
 	// NOTE: Avoid useState when initializing the query client if you don't
 	//       have a suspense boundary between this and the code that may
 	//       suspend because React will throw away the client on the initial
 	//       render if it suspends and there is no boundary
 
-	const client = getQueryClient();
-
 	return (
 		<QueryClientProvider client={client}>
 			{children}
-			{/* <ReactQueryDevtools initialIsOpen={false} /> */}
+			<ReactQueryDevtools initialIsOpen={false} />
 		</QueryClientProvider>
 	);
 }

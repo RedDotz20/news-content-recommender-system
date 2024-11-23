@@ -1,49 +1,55 @@
 'use server';
 
-// import { Articles } from '@prisma/client';
-
-interface DistinctCategoriesType {
+interface CategoryResponse {
 	count: number;
 	category: string[];
 }
 
-export const getDistinctCategories =
-	async (): Promise<DistinctCategoriesType> => {
-		try {
-			const baseUrl = process.env.NEXT_PUBLIC_SITE_URL as string;
-			const apiSecretKey = process.env.API_SECRET_KEY;
+interface ErrorResponse {
+	error: string;
+}
 
-			// Check if essential environment variables are defined
-			if (!baseUrl || !apiSecretKey) {
-				throw new Error(
-					'Environment variables for base URL or API secret key are not defined.'
-				);
-			}
+export const getDistinctCategories = async (): Promise<
+	CategoryResponse | ErrorResponse
+> => {
+	try {
+		const baseUrl = process.env.NEXT_PUBLIC_SITE_URL as string;
 
-			const response = await fetch(`${baseUrl}/api/getDistinctCategories`, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-					'x-api-secret-key': apiSecretKey,
-				},
-			});
-
-			if (!response.ok) {
-				const statusText = response.statusText || 'Unknown error';
-				throw new Error(
-					`Failed to fetch categories: ${response.status} ${statusText}`
-				);
-			}
-
-			const result: DistinctCategoriesType = await response.json();
-			return result;
-		} catch (error) {
-			// Log the error for debugging
-			console.error('Error in getDistinctCategories:', error);
-
-			// Throw a user-friendly error
+		if (!baseUrl) {
 			throw new Error(
-				'Could not retrieve list of categories. Please try again later.'
+				'Environment variables for base URL or API secret key are not defined.'
 			);
 		}
-	};
+
+		const response = await fetch(`${baseUrl}/api/getDistinctCategories`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'x-api-secret-key': process.env.API_SECRET_KEY as string,
+			},
+		});
+
+		if (!response.ok) {
+			const statusText = response.statusText || 'Unknown error';
+			throw new Error(
+				`Failed to fetch categories: ${response.status} ${statusText}`
+			);
+		}
+
+		const result: CategoryResponse | ErrorResponse = await response.json();
+		return result;
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error('Error in getDistinctCategories:', error);
+		} else {
+			console.error(
+				'Error in getDistinctCategories:',
+				'An unknown error occurred'
+			);
+		}
+
+		return {
+			error: 'Could not retrieve list of categories. Please try again later.',
+		};
+	}
+};

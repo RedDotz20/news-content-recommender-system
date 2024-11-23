@@ -29,7 +29,5 @@ export async function POST(
 			{ error: 'Error creating user preferences' },
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }

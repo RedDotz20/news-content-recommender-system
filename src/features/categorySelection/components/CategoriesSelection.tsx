@@ -22,7 +22,10 @@ import { useFetchCategories } from '../hooks/useFetchCategories';
 import { useState } from 'react';
 import { mutateCategoryAction } from '../server/actions/mutateCatActions';
 import { useGetSessionData } from '@/features/auth/hooks/useGetSessionData';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+	// useQuery,
+	useQueryClient,
+} from '@tanstack/react-query';
 // import { useMutation } from '@tanstack/react-query';
 
 export function CategoriesSelection() {
@@ -109,7 +112,8 @@ export function CategoriesSelection() {
 						className={`max-h-56 my-2 ${isLoading || isPending || isFetching ? 'justify-center overflow-y-hidden' : 'overflow-y-auto'}`}
 					>
 						{data &&
-							data.category.map((item) => {
+							'category' in data &&
+							data.category.map((item: string) => {
 								return (
 									<ToggleGroupItem
 										key={item}

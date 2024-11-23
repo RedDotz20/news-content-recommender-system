@@ -1,4 +1,3 @@
-/* eslint-disable no-mixed-spaces-and-tabs */
 'use client';
 
 // Inspired by react-hot-toast library

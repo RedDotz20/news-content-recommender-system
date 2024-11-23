@@ -1,5 +1,7 @@
 'use client';
 
+import { useCallback, useRef } from 'react';
+import { useMousePosition } from '@/hooks/useMousePosition';
 import {
 	Card,
 	CardContent,
@@ -12,18 +14,51 @@ import { ArticleCardProps } from '../types/articleCardType';
 import {
 	ClickInteractLink,
 	LikeInteractButton,
-	BookmarkInteractButton,
+	// BookmarkInteractButton,
 } from '@/features/userInteractions/components/UserInteraction';
 
 export const ArticleCards = (props: ArticleCardProps) => {
+	const containerRef = useRef<HTMLDivElement>(null);
+	const overlayRef = useRef<HTMLDivElement>(null);
+
+	const updateOverlayPosition = useCallback(
+		({ x, y }: { x: number; y: number }) => {
+			if (!overlayRef.current) return;
+
+			const { width, height } = overlayRef.current.getBoundingClientRect();
+			const xOffset = x - width / 2;
+			const yOffset = y - height / 2;
+
+			overlayRef.current.style.setProperty('--x', `${xOffset}px`);
+			overlayRef.current.style.setProperty('--y', `${yOffset}px`);
+		},
+		[]
+	);
+
+	useMousePosition(
+		containerRef as React.RefObject<HTMLElement>,
+		updateOverlayPosition
+	);
+
 	return (
 		<Card
+			ref={containerRef}
 			id={props.id}
 			className={cn(
-				'relative overflow-hidden max-w-[320px] flex flex-col',
+				'group relative overflow-hidden max-w-[320px] flex flex-col rounded-md border border-border shadow-lg',
 				props.className
 			)}
 		>
+			{/* Shiny overlay */}
+			<div
+				ref={overlayRef}
+				className="absolute -z-1 h-64 w-64 rounded-full bg-primary opacity-0 bg-blend-soft-light blur-3xl transition-opacity group-hover:opacity-10 pointer-events-none"
+				style={{
+					transform: 'translate(var(--x), var(--y))',
+				}}
+			/>
+
+			{/* Card Content */}
 			<ClickInteractLink {...props}>
 				<CardHeader className="space-y-0 p-4">
 					<div className="flex items-center justify-between mb-4">
@@ -34,13 +69,15 @@ export const ArticleCards = (props: ArticleCardProps) => {
 							<span>{formatDate(props.date)}</span>
 						</div>
 					</div>
-					<h3 className="text-xl font-bold">{props.headline}</h3>
+					<h3 className="text-xl font-bold line-clamp-3 min-h-[5.3rem]">
+						{props.headline}
+					</h3>
 					<span className="text-xs text-muted-foreground">
 						<span>•</span> {filterAuthor(props.authors as string)}
 					</span>
 				</CardHeader>
 				<CardContent className="p-4 pt-0">
-					<span className="text-sm text-muted-foreground">
+					<span className="text-sm text-muted-foreground line-clamp-3">
 						{props.short_description}
 					</span>
 				</CardContent>
@@ -48,7 +85,7 @@ export const ArticleCards = (props: ArticleCardProps) => {
 
 			<CardFooter className="flex items-center justify-between p-4">
 				<LikeInteractButton {...props} />
-				<BookmarkInteractButton {...props} />
+				{/* <BookmarkInteractButton {...props} /> */}
 			</CardFooter>
 		</Card>
 	);
