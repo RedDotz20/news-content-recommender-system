@@ -45,16 +45,19 @@ export const useMutateInteraction = (userId: string) => {
 			]);
 
 			// Optimistically update the specific article's isLiked state
-			queryClient.setQueryData([mutationQueryKey], (old: getArticlesType[]) => {
-				if (Array.isArray(old)) {
-					return old.map((article) =>
-						article.id === articleId
-							? { ...article, isLiked: !isLiked }
-							: article
-					);
+			queryClient.setQueryData(
+				[mutationQueryKey, userId],
+				(old: getArticlesType[]) => {
+					if (Array.isArray(old)) {
+						return old.map((article) =>
+							article.id === articleId
+								? { ...article, isLiked: !isLiked }
+								: article
+						);
+					}
+					return old;
 				}
-				return old;
-			});
+			);
 
 			// Return context for potential rollback
 			return { previousArticles };
@@ -62,10 +65,7 @@ export const useMutateInteraction = (userId: string) => {
 
 		// Roll back if the mutation fails
 		onError: (err, _, context) => {
-			if (err) {
-				console.error(err);
-			}
-
+			if (err) console.error(err);
 			if (context?.previousArticles) {
 				queryClient.setQueryData(
 					[mutationQueryKey, userId],

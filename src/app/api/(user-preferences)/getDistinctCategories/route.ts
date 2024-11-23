@@ -37,8 +37,5 @@ export async function GET(): Promise<
 			{ error: 'Error fetching categories' } as ErrorResponse,
 			{ status: 500 }
 		);
-	} finally {
-		// Only disconnect if you're certain that no other part of the code is going to reuse the Prisma client.
-		if (prisma) await prisma.$disconnect();
 	}
 }

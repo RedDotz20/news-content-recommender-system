@@ -72,12 +72,12 @@ export const ArticleCards = (props: ArticleCardProps) => {
 					<h3 className="text-xl font-bold line-clamp-3 min-h-[5.3rem]">
 						{props.headline}
 					</h3>
-					<span className="text-xs text-muted-foreground">
+					<span className="text-xs text-muted-foreground line-clamp-1">
 						<span>•</span> {filterAuthor(props.authors as string)}
 					</span>
 				</CardHeader>
 				<CardContent className="p-4 pt-0">
-					<span className="text-sm text-muted-foreground line-clamp-3">
+					<span className="text-sm text-muted-foreground line-clamp-4">
 						{props.short_description}
 					</span>
 				</CardContent>
