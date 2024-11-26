@@ -1,9 +1,10 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { handleUserInteraction } from '../server/actions/handleUserInteraction';
+import { handleLikeInteraction } from '../server/actions/handleLikeInteraction';
 import { getArticlesType } from '../../articles/types/articleType';
 import { usePathname } from 'next/navigation';
+import { z } from 'zod';
 
 type userInteractMutationType = {
 	isLiked: boolean;
@@ -12,32 +13,37 @@ type userInteractMutationType = {
 	frequencyVal: number;
 };
 
-export const useMutateInteraction = (userId: string) => {
+const userIdSchema = z.string().min(1, 'User ID must not be empty').uuid();
+
+export const useMutateLikeInteract = (userId: string) => {
+	const validatedUserId = userIdSchema.parse(userId);
 	const queryClient = useQueryClient();
 	const pathname = usePathname();
 	const isHomePage = pathname === '/home';
 	const mutationQueryKey = isHomePage ? 'hybridArticles' : 'randomArticles';
 
 	return useMutation({
-		mutationKey: ['userInteraction'],
+		mutationKey: ['userLikeInteraction'],
 		mutationFn: ({
 			isLiked,
 			articleId,
 			category,
 			frequencyVal,
 		}: userInteractMutationType) => {
-			return handleUserInteraction(
-				userId,
+			return handleLikeInteraction(
+				validatedUserId,
 				isLiked,
 				articleId,
 				category,
 				frequencyVal
 			);
 		},
-		// Optimistic update logic
+		// Optimistic update
 		onMutate: async ({ articleId, isLiked }) => {
 			// Cancel outgoing refetches
-			await queryClient.cancelQueries({ queryKey: [mutationQueryKey, userId] });
+			await queryClient.cancelQueries({
+				queryKey: [mutationQueryKey, validatedUserId],
+			});
 
 			// Snapshot previous articles
 			const previousArticles = queryClient.getQueryData<getArticlesType[]>([
@@ -46,7 +52,7 @@ export const useMutateInteraction = (userId: string) => {
 
 			// Optimistically update the specific article's isLiked state
 			queryClient.setQueryData(
-				[mutationQueryKey, userId],
+				[mutationQueryKey, validatedUserId],
 				(old: getArticlesType[]) => {
 					if (Array.isArray(old)) {
 						return old.map((article) =>
@@ -68,7 +74,7 @@ export const useMutateInteraction = (userId: string) => {
 			if (err) console.error(err);
 			if (context?.previousArticles) {
 				queryClient.setQueryData(
-					[mutationQueryKey, userId],
+					[mutationQueryKey, validatedUserId],
 					context.previousArticles
 				);
 			}

@@ -45,19 +45,10 @@ export const ArticleCards = (props: ArticleCardProps) => {
 			ref={containerRef}
 			id={props.id}
 			className={cn(
-				'group relative overflow-hidden max-w-[320px] flex flex-col rounded-md border border-border shadow-lg',
+				'group relative overflow-hidden min-w-[320px] flex flex-col rounded-md border border-border shadow-lg',
 				props.className
 			)}
 		>
-			{/* Shiny overlay */}
-			<div
-				ref={overlayRef}
-				className="absolute -z-1 h-64 w-64 rounded-full bg-primary opacity-0 bg-blend-soft-light blur-3xl transition-opacity group-hover:opacity-10 pointer-events-none"
-				style={{
-					transform: 'translate(var(--x), var(--y))',
-				}}
-			/>
-
 			{/* Card Content */}
 			<ClickInteractLink {...props}>
 				<CardHeader className="space-y-0 p-4">
@@ -69,7 +60,7 @@ export const ArticleCards = (props: ArticleCardProps) => {
 							<span>{formatDate(props.date)}</span>
 						</div>
 					</div>
-					<h3 className="text-xl font-bold line-clamp-3 min-h-[5.3rem]">
+					<h3 className="text-xl font-bold line-clamp-2 md:line-clamp-3 md:min-h-[5.3rem]">
 						{props.headline}
 					</h3>
 					<span className="text-xs text-muted-foreground line-clamp-1">
@@ -77,7 +68,7 @@ export const ArticleCards = (props: ArticleCardProps) => {
 					</span>
 				</CardHeader>
 				<CardContent className="p-4 pt-0">
-					<span className="text-sm text-muted-foreground line-clamp-4">
+					<span className="text-sm text-muted-foreground line-clamp-2 md:line-clamp-4">
 						{props.short_description}
 					</span>
 				</CardContent>
@@ -87,6 +78,15 @@ export const ArticleCards = (props: ArticleCardProps) => {
 				<LikeInteractButton {...props} />
 				{/* <BookmarkInteractButton {...props} /> */}
 			</CardFooter>
+
+			{/* Shiny overlay */}
+			<div
+				ref={overlayRef}
+				className="absolute -z-1 h-64 w-64 rounded-full bg-primary opacity-0 bg-blend-soft-light blur-3xl transition-opacity group-hover:opacity-10 pointer-events-none"
+				style={{
+					transform: 'translate(var(--x), var(--y))',
+				}}
+			/>
 		</Card>
 	);
 };

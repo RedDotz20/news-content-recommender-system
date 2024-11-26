@@ -152,9 +152,14 @@ export async function POST(
 						{ message: 'POST: Interaction & Pref Update Success' },
 						{ status: 201 }
 					);
+				} else {
+					return NextResponse.json(
+						{
+							error: 'POST: Update Failed, No interaction CREATED',
+						},
+						{ status: 500 }
+					);
 				}
-				// else {
-				// }
 			} else {
 				return NextResponse.json(
 					{

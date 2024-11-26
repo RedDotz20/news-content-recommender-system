@@ -18,7 +18,7 @@ export default function HomeLayoutComponent({
 				<div className="flex items-center justify-center w-full flex-col sm:px-4">
 					<UserPreferenceBoundary>
 						{isHomePage && (
-							<div className="flex justify-between w-full mb-4 px-8">
+							<div className="flex justify-between items-center w-full mb-4 px-8">
 								<p className="~text-lg/2xl font-bold">For You</p>
 								<HybridArticleRefetchBtn />
 							</div>

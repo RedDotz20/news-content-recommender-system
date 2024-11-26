@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import {
 	Dialog,
 	DialogContent,
@@ -11,56 +12,50 @@ import {
 } from '@/components/customui/DialogueBox';
 import { Button } from '@/components/ui/button';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import {
-	LoadingSpinner,
-	LoadingSpinnerWithText,
-} from '@/components/customui/LoadingSpinner';
+import { LoadingSpinnerWithText } from '@/components/customui/LoadingSpinner';
 import { wordFormmater } from '@/lib/utils';
 import { Plus } from 'lucide-react';
-import { useAction } from 'next-safe-action/hooks';
-import { useFetchCategories } from '../hooks/useFetchCategories';
-import { useState } from 'react';
-import { mutateCategoryAction } from '../server/actions/mutateCatActions';
 import { useGetSessionData } from '@/features/auth/hooks/useGetSessionData';
-import {
-	// useQuery,
-	useQueryClient,
-} from '@tanstack/react-query';
-// import { useMutation } from '@tanstack/react-query';
+import { useFetchCategories } from '../hooks/useFetchCategories';
+import { useMutateCatActions } from '../hooks/useMutateCatActions';
 
 export function CategoriesSelection() {
-	const queryClient = useQueryClient();
-	const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-
-	const { data, isPending, error, isFetching, isLoading } =
-		useFetchCategories();
-
 	const {
 		user: { id },
 	} = useGetSessionData();
 
-	const { execute, result, hasSucceeded, isExecuting } = useAction(
-		mutateCategoryAction,
-		{
-			onSuccess: () => {
-				console.log('newMutateCatActionss Successfully Executed');
-			},
-			onSettled: () => {
-				// isPreferencesExists
-				queryClient.invalidateQueries({ queryKey: ['isPreferencesExists'] });
-			},
-		}
-	);
+	const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-	if (result) {
-		console.log(result?.data);
+	const {
+		data: categoriesData,
+		isPending,
+		error,
+		isFetching,
+		isLoading,
+	} = useFetchCategories();
+
+	const {
+		mutate,
+		data: mutateData,
+		isPending: mutatePending,
+		isSuccess: mutateSuccess,
+		error: mutateError,
+	} = useMutateCatActions(id);
+
+	const loading = isPending || isFetching || isLoading || mutatePending;
+
+	if (error || mutateError) {
+		if (error) return `categories error occurred: ${error.message}`;
+		if (mutateError) return `mutation error occurred: ${mutateError.message}`;
 	}
 
-	if (hasSucceeded) {
+	if (mutateSuccess) {
 		console.log('newMutateCatActionss Successfully Executed');
 	}
 
-	if (error) return `An error has occurred: ${error.message}`;
+	if (mutateData) {
+		console.log(mutateData?.data);
+	}
 
 	const preferences = {
 		categories: selectedCategories.map((cat) => ({
@@ -68,13 +63,6 @@ export function CategoriesSelection() {
 			frequency: 12, // add 12 freqency Value
 		})),
 	};
-
-	// const { mutate } = useMutation({
-	// 	mutationFn: () => mutateCatActions(userId, selectedCatArr),
-	// 	onSuccess: () => {
-	// 		console.log('User Preference Categories Successfully Updated');
-	// 	},
-	// });
 
 	return (
 		<div className="flex flex-col justify-center h-[calc(100vh-80px)] px-4">
@@ -85,10 +73,10 @@ export function CategoriesSelection() {
 			<Dialog onOpenChange={(open) => !open && setSelectedCategories([])}>
 				<DialogTrigger asChild>
 					<Button
-						disabled={isLoading || isPending || isFetching}
+						disabled={loading}
 						variant="outline"
 					>
-						{isLoading || isPending || isFetching ? (
+						{loading ? (
 							<LoadingSpinnerWithText className="h-4 w-4" />
 						) : (
 							'Select Categories'
@@ -100,8 +88,13 @@ export function CategoriesSelection() {
 					<DialogHeader>
 						<DialogTitle>Choose Your Preferences</DialogTitle>
 						<DialogDescription>
-							Make a variety of selections of what do you want to see in your
-							feed. Click save when you're done.
+							<p>
+								Make a variety of selections of what do you want to see in your
+								feed. Click save when you're done.
+								<span className="font-bold text-yellow-500 opacity-80 italic block mt-1">
+									*Please Select at least 3 Categories*
+								</span>
+							</p>
 						</DialogDescription>
 					</DialogHeader>
 
@@ -109,11 +102,11 @@ export function CategoriesSelection() {
 						type="multiple"
 						value={selectedCategories}
 						onValueChange={setSelectedCategories}
-						className={`max-h-56 my-2 ${isLoading || isPending || isFetching ? 'justify-center overflow-y-hidden' : 'overflow-y-auto'}`}
+						className={`max-h-56 my-2 ${loading ? 'justify-center overflow-y-hidden' : 'overflow-y-auto'}`}
 					>
-						{data &&
-							'category' in data &&
-							data.category.map((item: string) => {
+						{categoriesData &&
+							'category' in categoriesData &&
+							categoriesData.category.map((item: string) => {
 								return (
 									<ToggleGroupItem
 										key={item}
@@ -130,11 +123,11 @@ export function CategoriesSelection() {
 
 					<DialogFooter>
 						<Button
-							disabled={isLoading || isPending || isFetching || isExecuting}
-							onClick={() => execute({ userId: id, preferences })}
+							disabled={loading || selectedCategories.length < 3}
+							onClick={() => mutate({ userId: id, preferences })}
 						>
-							{isLoading || isPending || isFetching || isExecuting ? (
-								<LoadingSpinner className="h-4 w-4" />
+							{loading ? (
+								<LoadingSpinnerWithText className="h-4 w-4" />
 							) : (
 								'Confirm'
 							)}

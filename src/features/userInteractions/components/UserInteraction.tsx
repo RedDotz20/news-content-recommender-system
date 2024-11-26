@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { ArticleCardProps } from '@/features/articles/types/articleCardType';
-import { useMutateInteraction } from '../hooks/useMutateInteraction';
+import { useMutateLikeInteract } from '../hooks/useMutateLikeInteract';
+import { useMutateClickInteract } from '../hooks/useMutateClickInteract';
 import { Button } from '@/components/ui/button';
 import {
 	// Bookmark,
@@ -10,8 +11,8 @@ import {
 } from 'lucide-react';
 
 export const ClickInteractLink = (props: ArticleCardProps) => {
-	const { userId, id: articleId, isLiked, category } = props;
-	const { mutate } = useMutateInteraction(userId),
+	const { userId, id: category } = props;
+	const { mutate } = useMutateClickInteract(userId),
 		frequencyVal: number = 2; // Set Frequency Value to increment w/ category
 
 	return (
@@ -21,7 +22,7 @@ export const ClickInteractLink = (props: ArticleCardProps) => {
 			rel="noopener noreferrer"
 			className="flex-1"
 			onClick={() => {
-				mutate({ isLiked, articleId, category, frequencyVal });
+				mutate({ category, frequencyVal });
 			}}
 		>
 			{props.children}
@@ -31,8 +32,8 @@ export const ClickInteractLink = (props: ArticleCardProps) => {
 
 export const LikeInteractButton = (props: ArticleCardProps) => {
 	const { userId, id: articleId, isLiked, category } = props,
-		{ mutate } = useMutateInteraction(userId),
-		frequencyVal: number = 12; // Set Frequency Value to increment w/ category
+		{ mutate } = useMutateLikeInteract(userId),
+		frequencyVal: number = 10; // Set Frequency Value to increment w/ category
 
 	return (
 		<Button

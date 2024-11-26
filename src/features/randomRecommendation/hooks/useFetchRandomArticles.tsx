@@ -2,7 +2,6 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { getArticles } from '../server/actions/fetchRandomArticlesAction';
-// import { getNewestArticles } from '../server/actions/fetchNewestArticles';
 
 export const useFetchRandomArticles = (userId: string) => {
 	return useQuery({

@@ -21,7 +21,7 @@ export default async function RandomLayoutComponent({
 	return (
 		// <HydrationBoundary state={dehydrate(queryClient)}>
 		<div className="lg:px-6 h-full w-full">
-			<div className="flex justify-between w-full mb-4 px-8">
+			<div className="flex justify-between w-full mb-2 px-6 sm:px-8 md:px-12">
 				<p className="~text-lg/2xl font-bold">Random News Article</p>
 				<RandomArticleRefetchBtn />
 			</div>

@@ -41,11 +41,6 @@ export async function GET(
 			select: { userId: true, preferences: true },
 		});
 
-		// const otherUsers = await prisma.userPreferences.findMany({
-		// 	where: { NOT: { userId: userId } },
-		// 	select: { userId: true, preferences: true },
-		// });
-
 		if (!otherUsers || otherUsers.length === 0) {
 			return NextResponse.json(
 				{ error: 'Other Users Not Found' },
@@ -72,7 +67,13 @@ export async function GET(
 		for (const { category, articles } of recommendedArticles) {
 			try {
 				const categoryArticles = await prisma.articles.findMany({
-					where: { category },
+					where: {
+						category,
+						link: { not: '' },
+						authors: { not: null },
+						headline: { not: '' },
+						short_description: { not: null },
+					},
 					take: articles,
 					// orderBy: { date: 'desc' }, // Optional: Adjust sorting logic
 				});
