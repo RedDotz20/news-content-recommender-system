@@ -1,12 +1,29 @@
-'use server';
+// Don't use 'use server' diretive for signals to work correctly.
 
+/**
+ * Handles the like interaction for a given article by a user.
+ *
+ * Depending on the `isLiked` status, it sends a POST or DELETE request to
+ * update the like status of an article. If the article is already liked, it
+ * will send a DELETE request to remove the like; otherwise, it will send a
+ * POST request to add a like.
+ *
+ * @param userId - The unique identifier of the user.
+ * @param isLiked - A boolean indicating if the article is currently liked.
+ * @param articleId - The unique identifier of the article.
+ * @param category - The category of the article.
+ * @param frequencyVal - The frequency value associated with the article.
+ * @param signal - An AbortSignal to allow canceling the request.
+ * @returns The data returned by the API if the request is successful.
+ * @throws Will throw an error if the request fails or is aborted.
+ */
 export const handleLikeInteraction = async (
 	userId: string,
 	isLiked: boolean,
 	articleId: string,
 	category: string,
-	frequencyVal: number
-	// signal?: AbortSignal //TODO: Optional AbortSignal for request cancellation
+	frequencyVal: number,
+	signal: AbortSignal
 ) => {
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL as string;
 
@@ -23,7 +40,7 @@ export const handleLikeInteraction = async (
 				category,
 				frequencyVal,
 			}),
-			// signal,
+			signal,
 		});
 
 		if (!response.ok) {

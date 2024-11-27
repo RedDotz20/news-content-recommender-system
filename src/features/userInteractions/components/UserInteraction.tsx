@@ -5,10 +5,8 @@ import { ArticleCardProps } from '@/features/articles/types/articleCardType';
 import { useMutateLikeInteract } from '../hooks/useMutateLikeInteract';
 import { useMutateClickInteract } from '../hooks/useMutateClickInteract';
 import { Button } from '@/components/ui/button';
-import {
-	// Bookmark,
-	Heart,
-} from 'lucide-react';
+import { Heart } from 'lucide-react';
+// import { Bookmark } from 'lucide-react';
 
 export const ClickInteractLink = (props: ArticleCardProps) => {
 	const { userId, id: category } = props;

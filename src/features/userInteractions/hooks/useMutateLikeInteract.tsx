@@ -22,21 +22,41 @@ export const useMutateLikeInteract = (userId: string) => {
 	const isHomePage = pathname === '/home';
 	const mutationQueryKey = isHomePage ? 'hybridArticles' : 'randomArticles';
 
+	// Store the current AbortController
+	let controller: AbortController | null = null;
+
 	return useMutation({
 		mutationKey: ['userLikeInteraction'],
-		mutationFn: ({
+		mutationFn: async ({
 			isLiked,
 			articleId,
 			category,
 			frequencyVal,
 		}: userInteractMutationType) => {
-			return handleLikeInteraction(
-				validatedUserId,
-				isLiked,
-				articleId,
-				category,
-				frequencyVal
-			);
+			// If there's an existing controller, abort the previous request
+			if (controller) controller.abort();
+
+			// Create a new AbortController for this mutation
+			controller = new AbortController();
+			const signal = controller.signal;
+
+			try {
+				return await handleLikeInteraction(
+					validatedUserId,
+					isLiked,
+					articleId,
+					category,
+					frequencyVal,
+					signal
+				);
+			} catch (error) {
+				const typedError = error as Error;
+				if (typedError.name === 'AbortError') {
+					console.error('Mutation was aborted');
+					return;
+				}
+				throw error;
+			}
 		},
 		// Optimistic update
 		onMutate: async ({ articleId, isLiked }) => {
@@ -68,6 +88,9 @@ export const useMutateLikeInteract = (userId: string) => {
 			// Return context for potential rollback
 			return { previousArticles };
 		},
+		onSuccess: () => {
+			console.log('Like Interaction recorded successfully');
+		},
 
 		// Roll back if the mutation fails
 		onError: (err, _, context) => {
@@ -79,10 +102,7 @@ export const useMutateLikeInteract = (userId: string) => {
 				);
 			}
 		},
-
-		// Revalidate data after mutation to ensure cache consistency
-		onSettled: () => {
-			// queryClient.invalidateQueries({ queryKey: [mutationQueryKey] });
-		},
+		// optional:
+		// add onSettled to invalidate the query cache after successful mutation
 	});
 };

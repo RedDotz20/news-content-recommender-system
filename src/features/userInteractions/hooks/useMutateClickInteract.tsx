@@ -20,14 +20,12 @@ export const useMutateClickInteract = (userId: string) => {
 			return handleClickInteraction(validatedUserId, category, frequencyVal);
 		},
 		onSuccess: () => {
-			console.log('User click interaction recorded successfully');
+			console.log('Click Interaction recorded successfully');
 		},
 		onError: (err) => {
 			if (err) console.error(err);
 		},
-
-		onSettled: () => {
-			// queryClient.invalidateQueries({ queryKey: [mutationQueryKey] });
-		},
+		// optional:
+		// add onSettled to invalidate the query cache after successful mutation
 	});
 };

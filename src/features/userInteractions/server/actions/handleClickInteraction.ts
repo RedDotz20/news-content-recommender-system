@@ -1,5 +1,17 @@
 'use server';
 
+/**
+ * Handles a user interaction by updating the user's preference categories.
+ *
+ * Sends a PUT request to update the user's preference categories.
+ *
+ * @param userId - The unique identifier of the user.
+ * @param category - The category of the article.
+ * @param frequencyVal - The frequency value associated with the article.
+ *
+ * @returns The data returned by the API if the request is successful.
+ * @throws Will throw an error if the request fails or is aborted.
+ */
 export const handleClickInteraction = async (
 	userId: string,
 	category: string,
