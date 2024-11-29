@@ -1,4 +1,4 @@
-import HomePageComponent from '@/features/pageRecommendation/pages/home';
+import HomePageComponent from '@/features/hybridRecommendation/pages';
 
 export default function HomePage() {
 	return <HomePageComponent />;

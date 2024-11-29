@@ -1,95 +1,102 @@
-export const dynamic = 'force-static';
-
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { hybridRecommendation } from '@/lib/algorithms/hybridRecommendation';
 import { fisherYatesShuffle } from '@/lib/algorithms';
-import {
-	CategorialCountType,
-	UserPreferenceType,
-	CategorialPreferenceType,
-} from '@/types';
+import { CategorialCountType, UserPreferenceType } from '@/types';
 
 export async function GET(
-	req: NextRequest,
+	request: NextRequest,
 	props: { params: Promise<{ userId: string }> }
 ) {
 	try {
 		const { userId } = await props.params;
-		const baseTarget = req.nextUrl.searchParams.get('baseTarget');
+		const searchparams = request.nextUrl.searchParams;
+		const baseTarget = searchparams.get('baseTarget');
 
-		if (!baseTarget) {
+		if (!baseTarget || !userId) {
+			const errorVar = !baseTarget ? 'BaseTarget' : 'User Id';
 			return NextResponse.json(
-				{ error: 'Base Target is required' },
-				{ status: 400 }
+				{ error: `${errorVar} Not Found` },
+				{ status: 404 }
 			);
 		}
 
-		if (!userId) {
+		const currentUser = await prisma.userPreferences.findFirst({
+			where: { userId: userId },
+			select: { userId: true, preferences: true },
+		});
+
+		if (!currentUser) {
 			return NextResponse.json(
-				{ error: 'User ID is required' },
-				{ status: 400 }
+				{ error: 'Current User Not Found' },
+				{ status: 404 }
 			);
 		}
 
-		const currentUser = await prisma.$queryRaw<CategorialPreferenceType[]>`
-      SELECT
-        jsonb_array_elements(preferences) ->> 'category' AS category,
-        (jsonb_array_elements(preferences) ->> 'frequency')::INT AS frequency
-      FROM public.user_preferences
-      WHERE user_id = ${userId};
-    `;
+		const otherUsers = await prisma.userPreferences.findMany({
+			where: {
+				NOT: { userId: userId },
+				preferences: { not: [] },
+			},
+			select: { userId: true, preferences: true },
+		});
 
-		const otherUsers = await prisma.$queryRaw<UserPreferenceType[]>`
-      SELECT user_id AS "userId", preferences
-      FROM public.user_preferences
-      WHERE user_id != ${userId};
-    `;
+		if (!otherUsers || otherUsers.length === 0) {
+			return NextResponse.json(
+				{ error: 'Other Users Not Found' },
+				{ status: 404 }
+			);
+		}
 
-		const parsedCurrUser = {
-			userId: userId,
-			preferences: currentUser.map((row) => JSON.parse(JSON.stringify(row))),
-		};
+		const parsedCurrentUser: UserPreferenceType = JSON.parse(
+			JSON.stringify(currentUser)
+		);
 
-		const parsedOtherUsers = otherUsers.map(({ userId, preferences }) => ({
-			userId,
-			preferences,
-		}));
+		const parsedOtherUsers: UserPreferenceType[] = JSON.parse(
+			JSON.stringify(otherUsers)
+		);
 
 		const recommendedArticles = hybridRecommendation(
 			parseInt(baseTarget),
-			parsedCurrUser,
+			parsedCurrentUser,
 			parsedOtherUsers
 		) as CategorialCountType[];
 
-		const queries = recommendedArticles.map(({ category, articles }) => {
-			return prisma.$queryRaw`
-		    SELECT *
-				FROM articles
-				WHERE category = ${category}
-				ORDER BY RANDOM()
-				LIMIT ${articles}
-			`;
-		});
+		const queries: any[] = [];
 
-		const results = await Promise.all(queries);
-		const articles: any[] = results.flat();
-		const shuffledArticles = fisherYatesShuffle(articles);
+		for (const { category, articles } of recommendedArticles) {
+			try {
+				const categoryArticles = await prisma.articles.findMany({
+					where: {
+						category,
+						link: { not: '' },
+						authors: { not: null },
+						headline: { not: '' },
+						short_description: { not: null },
+					},
+					take: articles,
+					// orderBy: { date: 'desc' }, // Optional: Adjust sorting logic
+				});
+				queries.push(...categoryArticles);
+			} catch (error) {
+				console.error(
+					`Error fetching articles for category ${category}:`,
+					error
+				);
+				// Continue to the next iteration even if one fetch fails
+			}
+		}
 
-		return NextResponse.json(
-			{ recommendedArticles: shuffledArticles },
-			{ status: 200 }
-		);
+		// Combine and shuffle the results
+		const allArticles = queries.flat();
+		const shuffledArticles = fisherYatesShuffle(allArticles);
+
+		return NextResponse.json({ data: shuffledArticles }, { status: 200 });
 	} catch (error: any) {
-		console.error('Error fetching articles:', error);
+		console.error('Error fetching hybrid recommended articles:', error);
 		return NextResponse.json(
-			{
-				error: 'Error fetching articles',
-				erroMessage: error.message,
-			},
+			{ error: 'Error fetching hybrid articles', errorMessage: error.message },
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }

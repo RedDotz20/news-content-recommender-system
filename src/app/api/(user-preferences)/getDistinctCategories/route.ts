@@ -14,17 +14,19 @@ export async function GET(): Promise<
 	NextResponse<CategoryResponse | ErrorResponse>
 > {
 	try {
-		const uniqueCategories = await prisma.articles.findMany({
-			distinct: ['category'],
-			select: { category: true },
-		});
+		const uniqueCategories = await prisma.$queryRaw<
+			Array<{ category: string }>
+		>`SELECT DISTINCT category FROM articles;`;
 
-		const categories = uniqueCategories.map((item) => item.category);
-
-		return NextResponse.json(
-			{ count: categories.length, category: categories },
-			{ status: 200 }
-		);
+		if (uniqueCategories.length > 0) {
+			const categories = uniqueCategories.map((item) => item.category);
+			return NextResponse.json(
+				{ count: categories.length, category: categories },
+				{ status: 200 }
+			);
+		} else {
+			return NextResponse.json({ count: 0, category: [] }, { status: 200 });
+		}
 	} catch (error: unknown) {
 		console.error(
 			'Error fetching categories:',
@@ -35,7 +37,5 @@ export async function GET(): Promise<
 			{ error: 'Error fetching categories' } as ErrorResponse,
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }

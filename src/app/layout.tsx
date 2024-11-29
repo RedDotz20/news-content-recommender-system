@@ -4,7 +4,7 @@ import './globals.css';
 
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 import { Toaster } from '@/components/ui/toaster';
-import { ThemeProvider } from '@/components/theme/theme-provider';
+import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import { ViewTransitions } from 'next-view-transitions';
 
 const chivo = Chivo({ subsets: ['latin'], display: 'swap' });

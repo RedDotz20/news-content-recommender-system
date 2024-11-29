@@ -27,7 +27,7 @@ export default function Home() {
 				/>
 				<div className="flex flex-col gap-4 items-center relative z-10 max-w-4xl mx-auto xs:px-6 text-center">
 					<AnimatedGradientText className="text-xs sm:text-sm">
-						🎉 Where every article expands your horizon
+						🎉 Where every news expands your horizon
 					</AnimatedGradientText>
 					<h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
 						Welcome to

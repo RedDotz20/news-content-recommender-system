@@ -24,7 +24,8 @@ const AcceptableUsePolicy = () => {
 						distributing malware.
 					</li>
 					<li className="mb-2">
-						Interfering with the operation of the app or others&apos; use of the app.
+						Interfering with the operation of the app or others&apos; use of the
+						app.
 					</li>
 					<li className="mb-2">
 						Posting or transmitting any content that is unlawful, defamatory, or

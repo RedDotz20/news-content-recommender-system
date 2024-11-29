@@ -13,8 +13,6 @@ export async function GET(
 			select: { preferences: true },
 		});
 
-		console.log(typeof preferences);
-
 		return NextResponse.json({ data: preferences }, { status: 200 });
 	} catch (error: any) {
 		console.error('Error fetching user preferences: ', error.message);
@@ -25,7 +23,5 @@ export async function GET(
 			},
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }

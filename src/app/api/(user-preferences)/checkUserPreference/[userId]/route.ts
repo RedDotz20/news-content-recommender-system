@@ -12,6 +12,7 @@ export async function GET(
 	props: { params: Promise<{ userId: string }> }
 ) {
 	const { userId } = await props.params;
+
 	try {
 		// Validate the userId parameter
 		if (!userId || typeof userId !== 'string' || userId.trim() === '') {
@@ -28,54 +29,85 @@ export async function GET(
 			);
 		}
 
-		const checkUserExists = await prisma.userPreferences.findUnique({
-			where: { userId },
-		});
-
-		if (!checkUserExists) {
-			return NextResponse.json(
-				{ error: 'User Preferences does not exist' },
-				{ status: 404 }
-			);
-		}
-
-		// Fetch user preferences from the database
 		const userPreferenceRecord = await prisma.userPreferences.findUnique({
 			where: { userId },
 			select: { preferences: true },
 		});
 
+		// Case when user preferences record is not found
 		if (!userPreferenceRecord) {
+			try {
+				const emptyUserPrefRecord = await prisma.userPreferences.create({
+					data: { userId: userId }, // already with default value of []
+				});
+
+				return NextResponse.json(
+					{
+						data: emptyUserPrefRecord,
+						message: 'User preferences successfully created with default value',
+						isEmpty: true, // default value []
+						isExists: true, // have [] but not null
+					},
+					{ status: 201 }
+				);
+			} catch (error) {
+				const errorMessage =
+					error instanceof Error ? error.message : 'Unknown error occurred';
+				// Handle the error and return an appropriate response
+				return NextResponse.json(
+					{ error: 'Failed to create user preferences', details: errorMessage },
+					{ status: 500 }
+				);
+			}
+		}
+
+		// Case when preferences are found
+		const userPreferences = userPreferenceRecord.preferences;
+
+		// Check if preferences are an empty array
+		if (Array.isArray(userPreferences) && userPreferences.length === 0) {
 			return NextResponse.json(
-				{ error: 'User Preferences does not exist' },
+				{
+					data: userPreferences,
+					message: 'User preferences are empty',
+					isEmpty: true, // default value []
+					isExists: true, // have [] but not null
+				},
+				{ status: 200 }
+			);
+		}
+
+		// Check if preferences are in object form or invalid
+		if (typeof userPreferences !== 'object' || userPreferences === null) {
+			return NextResponse.json(
+				{ error: 'No valid preferences found', isEmpty: true, isExists: true },
 				{ status: 404 }
 			);
 		}
 
-		// Extract preferences from the fetched record
-		const userPreferences = userPreferenceRecord?.preferences;
-
-		// Check if preferences exist and are in object format
-		if (!userPreferences || typeof userPreferences !== 'object') {
-			return NextResponse.json({ data: null }, { status: 404 });
-		}
-
 		// Get the number of preferences
 		const preferencesCount = Object.keys(userPreferences).length;
-		return NextResponse.json({ data: preferencesCount }, { status: 200 });
+
+		return NextResponse.json(
+			{
+				data: preferencesCount,
+				message: 'Preferences are loaded successfully',
+				isEmpty: false,
+				isExists: true,
+			},
+			{ status: 200 }
+		);
 	} catch (error) {
 		// Log the error and return a server error response
-		const errorMessage = error instanceof Error ? error.message : error;
+		const errorMessage =
+			error instanceof Error ? error.message : 'Unknown error occurred';
 		console.error(
-			`Error fetching user preferences for userId ${userId}: `,
-			errorMessage
+			`Error fetching user preferences for userId ${userId}: ${errorMessage}`
 		);
 
 		return NextResponse.json(
 			{ error: 'Error fetching user preferences', message: errorMessage },
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }

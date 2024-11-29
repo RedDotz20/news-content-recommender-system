@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { fisherYatesShuffle } from '@/lib/algorithms';
 import { prisma } from '@/lib/db';
 
 export async function GET(
@@ -33,14 +34,14 @@ export async function GET(
 				article.userInteractions[0].isLiked,
 		}));
 
-		return NextResponse.json({ data: articlesWithLikes }, { status: 200 });
+		const shuffledArticles = fisherYatesShuffle(articlesWithLikes);
+
+		return NextResponse.json({ data: shuffledArticles }, { status: 200 });
 	} catch (error) {
 		console.error('Error fetching articles:', error);
 		return NextResponse.json(
 			{ error: 'Error fetching articles' },
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }

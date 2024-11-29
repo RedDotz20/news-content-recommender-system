@@ -1,5 +1,24 @@
-import HomeLayoutComponent from '@/features/pageRecommendation/pages/home/layout';
+// import {
+// 	dehydrate,
+// 	HydrationBoundary,
+// 	QueryClient,
+// } from '@tanstack/react-query';
+import HomeLayoutComponent from '@/features/hybridRecommendation/pages/layout';
+// import { getDistinctCategories } from '@/features/categorySelection/server/actions/fetchCategories';
 
-export default function HomeLayout({ children }: React.PropsWithChildren) {
-	return <HomeLayoutComponent>{children}</HomeLayoutComponent>;
+export default async function HomeLayout({
+	children,
+}: React.PropsWithChildren) {
+	// const queryClient = new QueryClient();
+
+	// await queryClient.prefetchQuery({
+	// 	queryKey: ['distinctCategories'],
+	// 	queryFn: () => getDistinctCategories(),
+	// });
+
+	return (
+		// <HydrationBoundary state={dehydrate(queryClient)}>
+		<HomeLayoutComponent>{children}</HomeLayoutComponent>
+		// </HydrationBoundary>
+	);
 }
