@@ -31,7 +31,6 @@ export const handleClickInteraction = async (
 					categories: [{ category: category, frequency: frequencyVal }],
 				},
 			}),
-			// signal,
 		});
 
 		if (!response.ok) {

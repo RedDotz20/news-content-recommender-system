@@ -10,6 +10,14 @@ interface ErrorResponse {
 	error: string;
 }
 
+/**
+ * Handles GET requests to fetch distinct categories.
+ *
+ * Returns a JSON response containing a count of the number of distinct categories and an array of the categories.
+ *
+ * @returns A NextResponse object with a JSON payload.
+ * @throws Will return a server error response if the request fails.
+ */
 export async function GET(): Promise<
 	NextResponse<CategoryResponse | ErrorResponse>
 > {
@@ -27,14 +35,17 @@ export async function GET(): Promise<
 		} else {
 			return NextResponse.json({ count: 0, category: [] }, { status: 200 });
 		}
-	} catch (error: unknown) {
+	} catch (error) {
+		// Log the error and return a server error response
+		const errorMessage =
+			error instanceof Error ? error.message : 'Unknown error occurred';
 		console.error(
-			'Error fetching categories:',
+			'Error fetching distinct categories:',
 			error instanceof Error ? error.message : 'Unknown error'
 		);
 
 		return NextResponse.json(
-			{ error: 'Error fetching categories' } as ErrorResponse,
+			{ error: 'Error fetching distinct categories', message: errorMessage },
 			{ status: 500 }
 		);
 	}

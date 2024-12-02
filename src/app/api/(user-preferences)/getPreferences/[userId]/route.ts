@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 
+/**
+ * Handles GET requests to fetch user preferences based on user ID.
+ *
+ * @param req The NextRequest object.
+ * @param props An object containing the user ID as a string.
+ * @returns A NextResponse object with a JSON payload containing the user's preferences.
+ * @throws Will return a server error response if the request fails.
+ */
 export async function GET(
 	_req: NextRequest,
 	props: { params: Promise<{ userId: string }> }

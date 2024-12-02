@@ -9,7 +9,7 @@ import { Heart } from 'lucide-react';
 // import { Bookmark } from 'lucide-react';
 
 export const ClickInteractLink = (props: ArticleCardProps) => {
-	const { userId, id: category } = props;
+	const { userId, category } = props;
 	const { mutate } = useMutateClickInteract(userId),
 		frequencyVal: number = 2; // Set Frequency Value to increment w/ category
 

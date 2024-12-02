@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 // import { prisma } from '@/lib/db';
 import { adminAuthClient } from '@/utils/supabase/adminAuthClient';
 
+/**
+ * Handles GET requests to fetch a user by their id.
+ *
+ * @param req The NextRequest object.
+ * @param props An object with a `params` property containing a promise that resolves
+ * to an object with a `userId` property.
+ *
+ * @returns A NextResponse object with a JSON payload containing the user data.
+ * @throws Will throw an error if the request fails or is aborted.
+ */
 export async function GET(
 	_req: NextRequest,
 	props: { params: Promise<{ userId: string }> }

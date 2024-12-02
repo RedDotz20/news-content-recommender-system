@@ -2,6 +2,21 @@ import { prisma } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 import { updateArticleFreqSchema } from './schema';
 
+/**
+ * Handles a user interaction by updating the user's preference categories and
+ * creating a new interaction with the given article ID and category.
+ *
+ * If the interaction already exists, it will update the user's preference categories
+ * and update the interaction's timestamp. If the interaction does not exist, it will
+ * create a new interaction with the given article ID and category.
+ *
+ * @param req The NextRequest object.
+ * @param props An object with a `params` property containing a promise that resolves
+ * to an object with a `userId` property.
+ *
+ * @returns A NextResponse object with a JSON payload.
+ * @throws Will throw an error if the request fails or is aborted.
+ */
 export async function POST(
 	req: NextRequest,
 	props: { params: Promise<{ userId: string }> }
@@ -170,10 +185,16 @@ export async function POST(
 			}
 		}
 	} catch (error) {
+		// Log the error and return a server error response
 		const errorMessage =
 			error instanceof Error ? error.message : 'Unknown error occurred';
+		console.error(
+			'Error liking article:',
+			error instanceof Error ? error.message : 'Unknown error'
+		);
+
 		return NextResponse.json(
-			{ error: 'Error liking article', details: errorMessage },
+			{ error: 'Error liking article', message: errorMessage },
 			{ status: 500 }
 		);
 	}
@@ -253,8 +274,16 @@ export async function DELETE(
 			);
 		}
 	} catch (error) {
+		// Log the error and return a server error response
+		const errorMessage =
+			error instanceof Error ? error.message : 'Unknown error occurred';
+		console.error(
+			'Error disliking article:',
+			error instanceof Error ? error.message : 'Unknown error'
+		);
+
 		return NextResponse.json(
-			{ error: `Error disliking article ${error}` },
+			{ error: 'Error disliking article', message: errorMessage },
 			{ status: 500 }
 		);
 	}
