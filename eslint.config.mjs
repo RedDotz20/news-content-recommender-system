@@ -23,10 +23,6 @@ export default [
 		'eslint-config-next'
 	),
 	{
-		ecmaFeatures: {
-			jsx: true,
-			modules: true,
-		},
 		plugins: {
 			react,
 			tanstackQuery,

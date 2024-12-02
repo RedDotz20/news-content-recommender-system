@@ -1,95 +1,108 @@
-export const dynamic = 'force-static';
-
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { hybridRecommendation } from '@/lib/algorithms/hybridRecommendation';
 import { fisherYatesShuffle } from '@/lib/algorithms';
-import {
-	CategorialCountType,
-	UserPreferenceType,
-	CategorialPreferenceType,
-} from '@/types';
+import { CategorialCountType, UserPreferenceType } from '@/types';
+
+const fetchUserPreferences = async (userId: string) => {
+	const currentUser = await prisma.userPreferences.findFirst({
+		where: { userId },
+		select: { userId: true, preferences: true },
+	});
+
+	if (!currentUser) {
+		throw new Error('Current User Not Found');
+	}
+
+	const otherUsers = await prisma.userPreferences.findMany({
+		where: {
+			NOT: { userId },
+			preferences: { not: [] },
+		},
+		select: { userId: true, preferences: true },
+	});
+
+	if (!otherUsers.length) {
+		throw new Error('Other Users Not Found');
+	}
+
+	const parsedCurrentUser: UserPreferenceType = JSON.parse(
+		JSON.stringify(currentUser)
+	);
+
+	const parsedOtherUsers: UserPreferenceType[] = JSON.parse(
+		JSON.stringify(otherUsers)
+	);
+
+	return {
+		currentUser: parsedCurrentUser,
+		otherUsers: parsedOtherUsers,
+	};
+};
+
+const fetchArticlesByCategories = async (
+	recommendations: CategorialCountType[]
+) => {
+	const articlesPromises = recommendations.map(({ category, articles }) =>
+		prisma.articles.findMany({
+			where: {
+				category,
+				link: { not: '' },
+				authors: { not: null },
+				headline: { not: '' },
+				short_description: { not: null },
+			},
+			take: articles,
+		})
+	);
+
+	const articlesResults = await Promise.allSettled(articlesPromises);
+
+	return articlesResults
+		.filter(
+			(result): result is PromiseFulfilledResult<any[]> =>
+				result.status === 'fulfilled'
+		)
+		.flatMap((result) => result.value);
+};
 
 export async function GET(
-	req: NextRequest,
+	request: NextRequest,
 	props: { params: Promise<{ userId: string }> }
 ) {
 	try {
 		const { userId } = await props.params;
-		const baseTarget = req.nextUrl.searchParams.get('baseTarget');
+		const baseTarget = request.nextUrl.searchParams.get('baseTarget');
 
-		if (!baseTarget) {
+		if (!baseTarget || isNaN(Number(baseTarget))) {
 			return NextResponse.json(
-				{ error: 'Base Target is required' },
+				{ error: 'Invalid or missing BaseTarget' },
 				{ status: 400 }
 			);
 		}
 
-		if (!userId) {
-			return NextResponse.json(
-				{ error: 'User ID is required' },
-				{ status: 400 }
-			);
-		}
+		const { currentUser, otherUsers } = await fetchUserPreferences(userId);
 
-		const currentUser = await prisma.$queryRaw<CategorialPreferenceType[]>`
-      SELECT
-        jsonb_array_elements(preferences) ->> 'category' AS category,
-        (jsonb_array_elements(preferences) ->> 'frequency')::INT AS frequency
-      FROM public.user_preferences
-      WHERE user_id = ${userId};
-    `;
-
-		const otherUsers = await prisma.$queryRaw<UserPreferenceType[]>`
-      SELECT user_id AS "userId", preferences
-      FROM public.user_preferences
-      WHERE user_id != ${userId};
-    `;
-
-		const parsedCurrUser = {
-			userId: userId,
-			preferences: currentUser.map((row) => JSON.parse(JSON.stringify(row))),
-		};
-
-		const parsedOtherUsers = otherUsers.map(({ userId, preferences }) => ({
-			userId,
-			preferences,
-		}));
-
-		const recommendedArticles = hybridRecommendation(
-			parseInt(baseTarget),
-			parsedCurrUser,
-			parsedOtherUsers
+		const recommendations = hybridRecommendation(
+			parseInt(baseTarget, 10),
+			currentUser,
+			otherUsers
 		) as CategorialCountType[];
 
-		const queries = recommendedArticles.map(({ category, articles }) => {
-			return prisma.$queryRaw`
-		    SELECT *
-				FROM articles
-				WHERE category = ${category}
-				ORDER BY RANDOM()
-				LIMIT ${articles}
-			`;
-		});
+		const articles = await fetchArticlesByCategories(recommendations);
 
-		const results = await Promise.all(queries);
-		const articles: any[] = results.flat();
 		const shuffledArticles = fisherYatesShuffle(articles);
 
-		return NextResponse.json(
-			{ recommendedArticles: shuffledArticles },
-			{ status: 200 }
-		);
-	} catch (error: any) {
-		console.error('Error fetching articles:', error);
+		return NextResponse.json({ data: shuffledArticles }, { status: 200 });
+	} catch (error) {
+		console.error('Error fetching hybrid articles:', error);
+
 		return NextResponse.json(
 			{
-				error: 'Error fetching articles',
-				erroMessage: error.message,
+				error: 'Failed to fetch hybrid recommended articles',
+				message: error instanceof Error ? error.message : 'Unknown error',
 			},
 			{ status: 500 }
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }

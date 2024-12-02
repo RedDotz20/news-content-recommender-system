@@ -1,4 +1,4 @@
-const AcceptableUsePolicy = () => {
+export default function AcceptableUsePolicy() {
 	return (
 		<div className="max-w-4xl mx-auto py-8 px-4">
 			<h1 className="text-2xl font-bold mb-4">Acceptable Use Policy</h1>
@@ -24,7 +24,8 @@ const AcceptableUsePolicy = () => {
 						distributing malware.
 					</li>
 					<li className="mb-2">
-						Interfering with the operation of the app or others&apos; use of the app.
+						Interfering with the operation of the app or others&apos; use of the
+						app.
 					</li>
 					<li className="mb-2">
 						Posting or transmitting any content that is unlawful, defamatory, or
@@ -55,6 +56,4 @@ const AcceptableUsePolicy = () => {
 			</footer>
 		</div>
 	);
-};
-
-export default AcceptableUsePolicy;
+}
