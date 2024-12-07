@@ -16,6 +16,24 @@ import {
 } from '@radix-ui/react-icons';
 import { Button } from '@/components/ui/button';
 
+const features = [
+	{
+		title: 'Responsive Design',
+		description:
+			'Stay connected on-the-go! ArticleHorizon adapts to any screen size, ensuring a smooth experience on any device.',
+	},
+	{
+		title: 'Curated Feed',
+		description:
+			'Dive into content that matters. Our smart algorithms analyze your reading habits to deliver personalized recommendations.',
+	},
+	{
+		title: 'Diverse Content',
+		description:
+			'Expand your horizons with a wide range of topics. Discover new interests and stay informed across various fields and topics.',
+	},
+];
+
 export default function Home() {
 	return (
 		<div className="min-h-screen">
@@ -62,41 +80,21 @@ export default function Home() {
 						Our Core Features
 					</h2>
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-						<Card className="transform transition-transform duration-500 hover:translate-y-[-4px] hover:scale-105 hover:select-none hover:cursor-default">
-							<CardHeader>
-								<CardTitle className="text-xl xs:text-2xl sm:text-xl md:text-2xl hover:select-none hover:cursor-default">
-									Responsive Design
-								</CardTitle>
-								<CardDescription className="text-sm xs:text-base hover:select-none hover:cursor-default">
-									Stay connected on-the-go! ArticleHorizon adapts to any screen
-									size, ensuring a smooth experience on any device.
-								</CardDescription>
-							</CardHeader>
-						</Card>
-
-						<Card className="transform transition-transform duration-500 hover:translate-y-[-4px] hover:scale-105 hover:select-none hover:cursor-default">
-							<CardHeader>
-								<CardTitle className="text-xl xs:text-2xl sm:text-xl md:text-2xl hover:select-none hover:cursor-default">
-									Curated Feed
-								</CardTitle>
-								<CardDescription className="text-sm xs:text-base hover:select-none hover:cursor-default">
-									Dive into content that matters. Our smart algorithms analyze
-									your reading habits to deliver personalized recommendations.
-								</CardDescription>
-							</CardHeader>
-						</Card>
-
-						<Card className="transform transition-transform duration-500 hover:translate-y-[-4px] hover:scale-105 hover:select-none hover:cursor-default">
-							<CardHeader>
-								<CardTitle className="text-xl xs:text-2xl sm:text-xl md:text-2xl hover:select-none hover:cursor-default">
-									Diverse Content
-								</CardTitle>
-								<CardDescription className="text-sm xs:text-base hover:select-none hover:cursor-default">
-									Expand your horizons with a wide range of topics. Discover new
-									interests and stay informed across various fields and topics.
-								</CardDescription>
-							</CardHeader>
-						</Card>
+						{features.map((feature, index) => (
+							<Card
+								key={index}
+								className="transform transition-transform duration-500 hover:translate-y-[-4px] hover:scale-105 hover:select-none hover:cursor-default"
+							>
+								<CardHeader>
+									<CardTitle className="text-xl xs:text-2xl sm:text-xl md:text-2xl hover:select-none hover:cursor-default">
+										{feature.title}
+									</CardTitle>
+									<CardDescription className="text-sm xs:text-base hover:select-none hover:cursor-default">
+										{feature.description}
+									</CardDescription>
+								</CardHeader>
+							</Card>
+						))}
 					</div>
 				</div>
 			</section>

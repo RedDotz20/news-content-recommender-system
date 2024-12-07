@@ -10,6 +10,20 @@ import {
 import { calRemaining } from '../helper';
 import { medDist } from './medDist';
 
+/**
+ * Hybrid Recommendation Algorithm
+ *
+ * The hybrid algorithm combines both content-based filtering and collaborative filtering to generate article recommendations.
+ * The algorithm first applies content-based filtering to the target user's preferences, and then applies collaborative filtering
+ * to the other users' preferences. The results are then merged and distributed evenly to allocate articles evenly. If the total
+ * number of articles allocated is less than the baseTarget, the algorithm increases the number of articles allocated to the
+ * top categories until the baseTarget is met.
+ *
+ * @param baseTarget - The target number of articles to recommend.
+ * @param targetUserPreferences - The target user's preferences.
+ * @param otherUserPreferences - An array of other users' preferences.
+ * @returns An array of recommended articles, each containing a category and the number of articles to recommend in that category.
+ */
 export function hybridRecommendation(
 	baseTarget: number,
 	targetUserPreferences: UserPreferenceType,

@@ -1,8 +1,8 @@
 import react from 'eslint-plugin-react';
 import tanstackQuery from '@tanstack/eslint-plugin-query';
+import js from '@eslint/js';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -13,7 +13,7 @@ const compat = new FlatCompat({
 	allConfig: js.configs.all,
 });
 
-export default [
+const config = [
 	...compat.extends(
 		'plugin:@tanstack/query/recommended',
 		'next/core-web-vitals',
@@ -36,7 +36,8 @@ export default [
 				ecmaFeatures: {
 					jsx: true,
 				},
-
+				ecmaVersion: 'latest',
+				sourceType: 'module',
 				project: './tsconfig.json',
 			},
 		},
@@ -63,3 +64,5 @@ export default [
 		},
 	},
 ];
+
+export default config;
