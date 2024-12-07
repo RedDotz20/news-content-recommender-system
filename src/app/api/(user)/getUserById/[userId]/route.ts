@@ -12,27 +12,18 @@ import { adminAuthClient } from '@/utils/supabase/adminAuthClient';
  * @returns A NextResponse object with a JSON payload containing the user data.
  * @throws Will throw an error if the request fails or is aborted.
  */
-export async function GET(
-	_req: NextRequest,
-	props: { params: Promise<{ userId: string }> }
-) {
-	try {
-		const { userId } = await props.params;
-		const { data, error } = await adminAuthClient.getUserById(userId);
+export async function GET(_req: NextRequest, props: { params: Promise<{ userId: string }> }) {
+  try {
+    const { userId } = await props.params;
+    const { data, error } = await adminAuthClient.getUserById(userId);
 
-		if (error) {
-			console.error('Error FETCHING user id:', error);
-			return NextResponse.json(
-				{ error: 'Error FETCHING user id' },
-				{ status: 500 }
-			);
-		}
-		return NextResponse.json({ user: data.user }, { status: 200 });
-	} catch (error: any) {
-		console.error('Unexpected error fetching user id:', error);
-		return NextResponse.json(
-			{ error: 'Unexpected error fetching user id' },
-			{ status: 500 }
-		);
-	}
+    if (error) {
+      console.error('Error FETCHING user id:', error);
+      return NextResponse.json({ error: 'Error FETCHING user id' }, { status: 500 });
+    }
+    return NextResponse.json({ user: data.user }, { status: 200 });
+  } catch (error: any) {
+    console.error('Unexpected error fetching user id:', error);
+    return NextResponse.json({ error: 'Unexpected error fetching user id' }, { status: 500 });
+  }
 }

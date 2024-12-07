@@ -11,16 +11,16 @@ import { updateArticleFreqSchema, updateArticleFreqResType } from './schema';
  * @returns A NextResponse object with a JSON payload.
  */
 export async function PUT(
-	req: NextRequest,
-	props: { params: Promise<{ userId: string }> }
+  req: NextRequest,
+  props: { params: Promise<{ userId: string }> }
 ): Promise<updateArticleFreqResType> {
-	const { userId } = await props.params;
+  const { userId } = await props.params;
 
-	try {
-		const body: typeof updateArticleFreqSchema = await req.json();
-		const { category, frequencyVal } = updateArticleFreqSchema.parse(body);
+  try {
+    const body: typeof updateArticleFreqSchema = await req.json();
+    const { category, frequencyVal } = updateArticleFreqSchema.parse(body);
 
-		await prisma.$executeRaw`
+    await prisma.$executeRaw`
       UPDATE public.user_preferences
       SET
         preferences = (
@@ -37,18 +37,15 @@ export async function PUT(
       WHERE user_id = ${userId}::uuid;
     `;
 
-		return NextResponse.json(
-			{
-				message: 'frequency value successfully udpated',
-			},
-			{ status: 200 }
-		);
-	} catch (error: any) {
-		console.error('Error fetching categories:', error.message || error);
+    return NextResponse.json(
+      {
+        message: 'frequency value successfully udpated'
+      },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    console.error('Error fetching categories:', error.message || error);
 
-		return NextResponse.json(
-			{ error: 'Error fetching categories' },
-			{ status: 500 }
-		);
-	}
+    return NextResponse.json({ error: 'Error fetching categories' }, { status: 500 });
+  }
 }

@@ -17,26 +17,22 @@ import { updateArticleFreqSchema } from './schema';
  * @returns A NextResponse object with a JSON payload.
  * @throws Will throw an error if the request fails or is aborted.
  */
-export async function POST(
-	req: NextRequest,
-	props: { params: Promise<{ userId: string }> }
-) {
-	try {
-		const { userId } = await props.params;
+export async function POST(req: NextRequest, props: { params: Promise<{ userId: string }> }) {
+  try {
+    const { userId } = await props.params;
 
-		const body = await req.json();
-		const { articleId, category, frequencyVal } =
-			updateArticleFreqSchema.parse(body);
+    const body = await req.json();
+    const { articleId, category, frequencyVal } = updateArticleFreqSchema.parse(body);
 
-		const existingInteraction = await prisma.userInteractions.findFirst({
-			where: { userId: userId, articleId: articleId },
-			select: { id: true },
-		});
+    const existingInteraction = await prisma.userInteractions.findFirst({
+      where: { userId: userId, articleId: articleId },
+      select: { id: true }
+    });
 
-		if (existingInteraction) {
-			const interactionId = existingInteraction.id;
+    if (existingInteraction) {
+      const interactionId = existingInteraction.id;
 
-			const updatePrefOnly = await prisma.$executeRaw`
+      const updatePrefOnly = await prisma.$executeRaw`
 				UPDATE public.user_preferences
 				SET
 					preferences = COALESCE(
@@ -77,40 +73,37 @@ export async function POST(
 				WHERE user_id = ${userId}::uuid;
 			`;
 
-			if (updatePrefOnly) {
-				const updateTimestamp = await prisma.userInteractions.update({
-					where: { id: interactionId },
-					data: { updatedAt: new Date() },
-				});
+      if (updatePrefOnly) {
+        const updateTimestamp = await prisma.userInteractions.update({
+          where: { id: interactionId },
+          data: { updatedAt: new Date() }
+        });
 
-				if (updateTimestamp) {
-					return NextResponse.json(
-						{
-							message:
-								'Interactions already exists, preferences successfully updated',
-						},
-						{ status: 200 }
-					);
-				} else {
-					return NextResponse.json(
-						{
-							error:
-								'Interactions already exists, preferences updated, error updating timestamp',
-						},
-						{ status: 500 }
-					);
-				}
-			} else {
-				return NextResponse.json(
-					{
-						error:
-							'Interactions already exists, error updating preferences and timestamp',
-					},
-					{ status: 500 }
-				);
-			}
-		} else {
-			const preferenceUpdateResult = await prisma.$executeRaw`
+        if (updateTimestamp) {
+          return NextResponse.json(
+            {
+              message: 'Interactions already exists, preferences successfully updated'
+            },
+            { status: 200 }
+          );
+        } else {
+          return NextResponse.json(
+            {
+              error: 'Interactions already exists, preferences updated, error updating timestamp'
+            },
+            { status: 500 }
+          );
+        }
+      } else {
+        return NextResponse.json(
+          {
+            error: 'Interactions already exists, error updating preferences and timestamp'
+          },
+          { status: 500 }
+        );
+      }
+    } else {
+      const preferenceUpdateResult = await prisma.$executeRaw`
 				UPDATE public.user_preferences
 				SET
 					preferences =
@@ -157,69 +150,64 @@ export async function POST(
 				WHERE user_id = ${userId}::uuid;
 			`;
 
-			if (preferenceUpdateResult) {
-				const newInteraction = await prisma.userInteractions.create({
-					data: { userId, articleId, category },
-				});
+      if (preferenceUpdateResult) {
+        const newInteraction = await prisma.userInteractions.create({
+          data: { userId, articleId, category }
+        });
 
-				if (newInteraction) {
-					return NextResponse.json(
-						{ message: 'POST: Interaction & Pref Update Success' },
-						{ status: 201 }
-					);
-				} else {
-					return NextResponse.json(
-						{
-							error: 'POST: Update Failed, No interaction CREATED',
-						},
-						{ status: 500 }
-					);
-				}
-			} else {
-				return NextResponse.json(
-					{
-						message: 'POST: Update Failed, No preferences updated',
-					},
-					{ status: 404 }
-				);
-			}
-		}
-	} catch (error) {
-		// Log the error and return a server error response
-		const errorMessage =
-			error instanceof Error ? error.message : 'Unknown error occurred';
-		console.error(
-			'Error liking article:',
-			error instanceof Error ? error.message : 'Unknown error'
-		);
+        if (newInteraction) {
+          return NextResponse.json(
+            { message: 'POST: Interaction & Pref Update Success' },
+            { status: 201 }
+          );
+        } else {
+          return NextResponse.json(
+            {
+              error: 'POST: Update Failed, No interaction CREATED'
+            },
+            { status: 500 }
+          );
+        }
+      } else {
+        return NextResponse.json(
+          {
+            message: 'POST: Update Failed, No preferences updated'
+          },
+          { status: 404 }
+        );
+      }
+    }
+  } catch (error) {
+    // Log the error and return a server error response
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    console.error(
+      'Error liking article:',
+      error instanceof Error ? error.message : 'Unknown error'
+    );
 
-		return NextResponse.json(
-			{ error: 'Error liking article', message: errorMessage },
-			{ status: 500 }
-		);
-	}
+    return NextResponse.json(
+      { error: 'Error liking article', message: errorMessage },
+      { status: 500 }
+    );
+  }
 }
 
-export async function DELETE(
-	req: NextRequest,
-	props: { params: Promise<{ userId: string }> }
-) {
-	try {
-		const { userId } = await props.params;
+export async function DELETE(req: NextRequest, props: { params: Promise<{ userId: string }> }) {
+  try {
+    const { userId } = await props.params;
 
-		const body = await req.json();
-		const { articleId, category, frequencyVal } =
-			updateArticleFreqSchema.parse(body);
+    const body = await req.json();
+    const { articleId, category, frequencyVal } = updateArticleFreqSchema.parse(body);
 
-		const existingInteraction = await prisma.userInteractions.findFirst({
-			where: { userId: userId, articleId: articleId },
-			select: { id: true },
-		});
+    const existingInteraction = await prisma.userInteractions.findFirst({
+      where: { userId: userId, articleId: articleId },
+      select: { id: true }
+    });
 
-		if (existingInteraction) {
-			const interactionId = existingInteraction.id;
+    if (existingInteraction) {
+      const interactionId = existingInteraction.id;
 
-			const preferenceUpdateResult = await prisma.$executeRaw`
+      const preferenceUpdateResult = await prisma.$executeRaw`
 				UPDATE public.user_preferences
 				SET
 					preferences = (
@@ -245,46 +233,42 @@ export async function DELETE(
 				WHERE user_id = ${userId}::uuid;
 			`;
 
-			if (preferenceUpdateResult) {
-				const deletedInteraction = await prisma.userInteractions.delete({
-					where: { id: interactionId },
-				});
+      if (preferenceUpdateResult) {
+        const deletedInteraction = await prisma.userInteractions.delete({
+          where: { id: interactionId }
+        });
 
-				if (deletedInteraction) {
-					return NextResponse.json(
-						{ error: 'DELETE: Interaction & Delete Success' },
-						{ status: 200 }
-					);
-				} else {
-					return NextResponse.json(
-						{ error: 'DELETE: Update Failed, No interaction DELETED' },
-						{ status: 404 }
-					);
-				}
-			} else {
-				return NextResponse.json(
-					{ error: 'DELETE: Interaction Exists, Preference Update Failed' },
-					{ status: 404 }
-				);
-			}
-		} else {
-			return NextResponse.json(
-				{ error: 'DELETE: Interaction Not found' },
-				{ status: 404 }
-			);
-		}
-	} catch (error) {
-		// Log the error and return a server error response
-		const errorMessage =
-			error instanceof Error ? error.message : 'Unknown error occurred';
-		console.error(
-			'Error disliking article:',
-			error instanceof Error ? error.message : 'Unknown error'
-		);
+        if (deletedInteraction) {
+          return NextResponse.json(
+            { error: 'DELETE: Interaction & Delete Success' },
+            { status: 200 }
+          );
+        } else {
+          return NextResponse.json(
+            { error: 'DELETE: Update Failed, No interaction DELETED' },
+            { status: 404 }
+          );
+        }
+      } else {
+        return NextResponse.json(
+          { error: 'DELETE: Interaction Exists, Preference Update Failed' },
+          { status: 404 }
+        );
+      }
+    } else {
+      return NextResponse.json({ error: 'DELETE: Interaction Not found' }, { status: 404 });
+    }
+  } catch (error) {
+    // Log the error and return a server error response
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    console.error(
+      'Error disliking article:',
+      error instanceof Error ? error.message : 'Unknown error'
+    );
 
-		return NextResponse.json(
-			{ error: 'Error disliking article', message: errorMessage },
-			{ status: 500 }
-		);
-	}
+    return NextResponse.json(
+      { error: 'Error disliking article', message: errorMessage },
+      { status: 500 }
+    );
+  }
 }

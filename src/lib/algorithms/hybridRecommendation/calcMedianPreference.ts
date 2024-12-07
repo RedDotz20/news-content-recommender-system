@@ -12,73 +12,68 @@ import { CategorialPreferenceType, LowerAndMedianPrefsType } from '@/types';
  * Space Complexity: O(n) - A new array is created for sortedPreferences, requiring O(n) space.
  */
 export function calcMedianPreference(
-	baseTarget: number,
-	preferences: CategorialPreferenceType[]
+  baseTarget: number,
+  preferences: CategorialPreferenceType[]
 ): LowerAndMedianPrefsType {
-	// Handle case when preferences array is empty
-	if (preferences.length === 0) {
-		throw new Error('Preferences array cannot be empty');
-	}
+  // Handle case when preferences array is empty
+  if (preferences.length === 0) {
+    throw new Error('Preferences array cannot be empty');
+  }
 
-	// Sort preferences array by frequency
-	const sortedPreferences = [...preferences].sort(
-		(a, b) => a.frequency - b.frequency
-	);
-	const totalPreferences = sortedPreferences.length;
-	const midIndex = Math.floor(totalPreferences / 2);
+  // Sort preferences array by frequency
+  const sortedPreferences = [...preferences].sort((a, b) => a.frequency - b.frequency);
+  const totalPreferences = sortedPreferences.length;
+  const midIndex = Math.floor(totalPreferences / 2);
 
-	let lowestCandidates: CategorialPreferenceType[] = [];
-	let medianCandidates: CategorialPreferenceType[] = [];
+  let lowestCandidates: CategorialPreferenceType[] = [];
+  let medianCandidates: CategorialPreferenceType[] = [];
 
-	// Determine the number of medians based on the totalPreferences count
-	if (totalPreferences <= 7) {
-		// Return one median
-		medianCandidates.push(sortedPreferences[midIndex]);
+  // Determine the number of medians based on the totalPreferences count
+  if (totalPreferences <= 7) {
+    // Return one median
+    medianCandidates.push(sortedPreferences[midIndex]);
 
-		lowestCandidates = sortedPreferences.slice(
-			0,
-			sortedPreferences.indexOf(sortedPreferences[midIndex])
-		);
-	} else if (totalPreferences === 8) {
-		// Return two medians
-		medianCandidates.push(
-			sortedPreferences[midIndex - 1],
-			sortedPreferences[midIndex]
-		);
+    lowestCandidates = sortedPreferences.slice(
+      0,
+      sortedPreferences.indexOf(sortedPreferences[midIndex])
+    );
+  } else if (totalPreferences === 8) {
+    // Return two medians
+    medianCandidates.push(sortedPreferences[midIndex - 1], sortedPreferences[midIndex]);
 
-		lowestCandidates = sortedPreferences.slice(
-			0,
-			sortedPreferences.indexOf(sortedPreferences[midIndex - 1])
-		);
-	} else if (totalPreferences >= 9 && totalPreferences <= 15) {
-		// Return three medians
-		medianCandidates.push(
-			sortedPreferences[midIndex - 1],
-			sortedPreferences[midIndex],
-			sortedPreferences[midIndex + 1]
-		);
+    lowestCandidates = sortedPreferences.slice(
+      0,
+      sortedPreferences.indexOf(sortedPreferences[midIndex - 1])
+    );
+  } else if (totalPreferences >= 9 && totalPreferences <= 15) {
+    // Return three medians
+    medianCandidates.push(
+      sortedPreferences[midIndex - 1],
+      sortedPreferences[midIndex],
+      sortedPreferences[midIndex + 1]
+    );
 
-		lowestCandidates = sortedPreferences.slice(
-			0,
-			sortedPreferences.indexOf(sortedPreferences[midIndex - 1])
-		);
-	} else if (totalPreferences >= 16) {
-		// Return four medians
-		medianCandidates.push(
-			sortedPreferences[midIndex - 1],
-			sortedPreferences[midIndex],
-			sortedPreferences[midIndex + 1],
-			sortedPreferences[midIndex + 2]
-		);
+    lowestCandidates = sortedPreferences.slice(
+      0,
+      sortedPreferences.indexOf(sortedPreferences[midIndex - 1])
+    );
+  } else if (totalPreferences >= 16) {
+    // Return four medians
+    medianCandidates.push(
+      sortedPreferences[midIndex - 1],
+      sortedPreferences[midIndex],
+      sortedPreferences[midIndex + 1],
+      sortedPreferences[midIndex + 2]
+    );
 
-		lowestCandidates = sortedPreferences.slice(
-			0,
-			sortedPreferences.indexOf(sortedPreferences[midIndex - 1])
-		);
-	}
+    lowestCandidates = sortedPreferences.slice(
+      0,
+      sortedPreferences.indexOf(sortedPreferences[midIndex - 1])
+    );
+  }
 
-	return {
-		lowestBracket: lowestCandidates, // 0.1
-		median: medianCandidates, // 0.2
-	};
+  return {
+    lowestBracket: lowestCandidates, // 0.1
+    median: medianCandidates // 0.2
+  };
 }

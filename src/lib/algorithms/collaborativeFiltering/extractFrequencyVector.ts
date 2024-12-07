@@ -9,21 +9,19 @@ import { PreferenceVectorType } from '@/types';
  * @throws Error if the input is not valid.
  */
 export function extractFrequencyVector(
-	prefVector: PreferenceVectorType,
-	allCategories: string[]
+  prefVector: PreferenceVectorType,
+  allCategories: string[]
 ): number[] {
-	if (!prefVector || !Array.isArray(allCategories)) {
-		throw new Error(
-			'Invalid input: prefVector must be an object and allCategories must be an array.'
-		);
-	}
+  if (!prefVector || !Array.isArray(allCategories)) {
+    throw new Error(
+      'Invalid input: prefVector must be an object and allCategories must be an array.'
+    );
+  }
 
-	return allCategories.map((category) => {
-		if (typeof category !== 'string') {
-			throw new Error(
-				'Invalid category type: allCategories must contain only strings.'
-			);
-		}
-		return prefVector[category] || 0;
-	});
+  return allCategories.map((category) => {
+    if (typeof category !== 'string') {
+      throw new Error('Invalid category type: allCategories must contain only strings.');
+    }
+    return prefVector[category] || 0;
+  });
 }
