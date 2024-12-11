@@ -67,11 +67,6 @@ const config: Config = {
             transform: 'perspective(150px) rotateX(180deg) rotateY(180deg)'
           }
         }
-        // 'l3-2': {
-        // 	'0%': { background: 'var(--tw-gradient-stops)' },
-        // 	'33%': { background: '#f03355' },
-        // 	'66%': { background: '#25b09b' },
-        // },
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

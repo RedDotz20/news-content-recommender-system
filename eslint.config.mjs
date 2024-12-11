@@ -35,7 +35,6 @@ const config = [
     languageOptions: {
       ecmaVersion: 5,
       sourceType: 'script',
-
       parserOptions: {
         ecmaFeatures: {
           2021: true,
@@ -43,7 +42,8 @@ const config = [
         },
         ecmaVersion: 'latest',
         sourceType: 'module',
-        project: './tsconfig.json'
+        project: './tsconfig.json',
+        warnOnUnsupportedTypeScriptVersion: false
       }
     },
     settings: {
