@@ -1,6 +1,6 @@
 'use client';
 
-import { Link } from 'next-view-transitions';
+import Link from 'next/link';
 import { navigationLinks } from '../constants/NavigationConst';
 import { usePathname } from 'next/navigation';
 
