@@ -75,13 +75,13 @@ export function CategoriesSelection() {
           <DialogHeader>
             <DialogTitle>Choose Your Preferences</DialogTitle>
             <DialogDescription>
-              <p>
+              <>
                 Make a variety of selections of what do you want to see in your feed. Click save
                 when you're done.
                 <span className="mt-1 block font-bold italic text-yellow-500 opacity-80">
                   *Please Select at least 3 Categories*
                 </span>
-              </p>
+              </>
             </DialogDescription>
           </DialogHeader>
 

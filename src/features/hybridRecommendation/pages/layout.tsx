@@ -17,7 +17,7 @@ export default function HomeLayoutComponent({ children }: React.PropsWithChildre
           <UserPreferenceBoundary>
             {isHomePage && (
               <div className="mb-4 flex w-full items-center justify-between px-8">
-                <p className="font-bold ~text-lg/2xl">For You</p>
+                <p className="font-bold ~text-lg/2xl">Recommended</p>
                 <HybridArticleRefetchBtn />
               </div>
             )}

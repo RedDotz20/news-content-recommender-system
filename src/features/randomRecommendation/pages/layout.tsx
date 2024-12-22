@@ -20,7 +20,7 @@ export default async function RandomLayoutComponent({ children }: PropsWithChild
     // <HydrationBoundary state={dehydrate(queryClient)}>
     <div className="h-full w-full lg:px-6">
       <div className="mb-2 flex w-full justify-between px-6 sm:px-8 md:px-12">
-        <p className="font-bold ~text-lg/2xl">Random News Article</p>
+        <p className="font-bold ~text-lg/2xl">News Feed</p>
         <RandomArticleRefetchBtn />
       </div>
       {children}

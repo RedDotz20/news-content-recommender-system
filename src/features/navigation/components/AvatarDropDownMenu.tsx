@@ -6,15 +6,15 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuItem
+  DropdownMenuSeparator
+  // DropdownMenuItem
 } from '@/components/ui/dropdown-menu';
 
 import { Button } from '@/components/ui/button';
-import { avatarDropdownItems } from '../constants/NavigationConst';
 import { useGetSessionData } from '@/features/auth/hooks/useGetSessionData';
 import { SignOutButton } from '@/features/auth/components/SignOutButton';
-import { Separator } from '@/components/ui/separator';
+// import { avatarDropdownItems } from '../constants/NavigationConst';
+// import { Separator } from '@/components/ui/separator';
 
 export const AvatarDropDownMenu = () => {
   const {
@@ -48,15 +48,15 @@ export const AvatarDropDownMenu = () => {
           <h4 className="text-xs font-light">{email}</h4>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {avatarDropdownItems.map((item, index) => {
+        {/* {avatarDropdownItems.map((item, index) => {
           return (
             <DropdownMenuItem key={index} className={`cursor-pointer`}>
               {item.icon}
               {item.name}
             </DropdownMenuItem>
           );
-        })}
-        <Separator className="my-1" />
+        })} */}
+        {/* <Separator className="my-1" /> */}
         <SignOutButton />
       </DropdownMenuContent>
     </DropdownMenu>
