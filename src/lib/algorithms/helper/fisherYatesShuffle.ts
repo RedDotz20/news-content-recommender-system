@@ -15,26 +15,26 @@ import { Articles as ArticleTypes } from '@prisma/client';
  */
 
 export function fisherYatesShuffle(inputArray: ArticleTypes[]): ArticleTypes[] {
-	// Validate the input: must be a non-empty array
-	if (!Array.isArray(inputArray) || inputArray.length === 0) {
-		throw new Error('Input must be a non-empty array of NewsItem objects.');
-	}
+  // Validate the input: must be a non-empty array
+  if (!Array.isArray(inputArray) || inputArray.length === 0) {
+    throw new Error('Input must be a non-empty array of NewsItem objects.');
+  }
 
-	// Create a copy of the input array to avoid modifying the original array
-	const shuffledArray = [...inputArray];
-	const arrayLength = shuffledArray.length;
+  // Create a copy of the input array to avoid modifying the original array
+  const shuffledArray = [...inputArray];
+  const arrayLength = shuffledArray.length;
 
-	// Shuffle the array using the Fisher-Yates algorithm
-	for (let currentIndex = arrayLength - 1; currentIndex > 0; currentIndex--) {
-		// Generate a random index within the range of the current index
-		const randomIndex = Math.floor(Math.random() * (currentIndex + 1));
+  // Shuffle the array using the Fisher-Yates algorithm
+  for (let currentIndex = arrayLength - 1; currentIndex > 0; currentIndex--) {
+    // Generate a random index within the range of the current index
+    const randomIndex = Math.floor(Math.random() * (currentIndex + 1));
 
-		// Swap the current element with the randomly selected element
-		[shuffledArray[currentIndex], shuffledArray[randomIndex]] = [
-			shuffledArray[randomIndex],
-			shuffledArray[currentIndex],
-		];
-	}
+    // Swap the current element with the randomly selected element
+    [shuffledArray[currentIndex], shuffledArray[randomIndex]] = [
+      shuffledArray[randomIndex],
+      shuffledArray[currentIndex]
+    ];
+  }
 
-	return shuffledArray;
+  return shuffledArray;
 }

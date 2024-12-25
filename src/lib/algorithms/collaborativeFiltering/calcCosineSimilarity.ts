@@ -12,29 +12,21 @@
  * @throws Error if the input arrays do not have the same length.
  */
 export function calcCosineSimilarity(
-	vectorA: number[],
-	vectorB: number[],
-	decimals: number = 4 // defaults at 4 decimal places
+  vectorA: number[],
+  vectorB: number[],
+  decimals: number = 4 // defaults at 4 decimal places
 ): number {
-	if (vectorA.length !== vectorB.length) {
-		throw new Error('Input arrays must have the same length.');
-	}
+  if (vectorA.length !== vectorB.length) {
+    throw new Error('Input arrays must have the same length.');
+  }
 
-	const dotProduct = vectorA.reduce(
-		(sum, value, index) => sum + value * vectorB[index],
-		0
-	);
+  const dotProduct = vectorA.reduce((sum, value, index) => sum + value * vectorB[index], 0);
 
-	const magnitudeA = Math.sqrt(
-		vectorA.reduce((sum, value) => sum + value * value, 0)
-	);
-	const magnitudeB = Math.sqrt(
-		vectorB.reduce((sum, value) => sum + value * value, 0)
-	);
+  const magnitudeA = Math.sqrt(vectorA.reduce((sum, value) => sum + value * value, 0));
+  const magnitudeB = Math.sqrt(vectorB.reduce((sum, value) => sum + value * value, 0));
 
-	const similarity =
-		magnitudeA && magnitudeB ? dotProduct / (magnitudeA * magnitudeB) : 0;
-	const factor = Math.pow(10, decimals);
+  const similarity = magnitudeA && magnitudeB ? dotProduct / (magnitudeA * magnitudeB) : 0;
+  const factor = Math.pow(10, decimals);
 
-	return Math.round(similarity * factor) / factor;
+  return Math.round(similarity * factor) / factor;
 }

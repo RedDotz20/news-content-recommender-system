@@ -7,102 +7,92 @@ import { usePathname } from 'next/navigation';
 import { z } from 'zod';
 
 type userInteractMutationType = {
-	isLiked: boolean;
-	articleId: string;
-	category: string;
-	frequencyVal: number;
+  isLiked: boolean;
+  articleId: string;
+  category: string;
+  frequencyVal: number;
 };
 
 const userIdSchema = z.string().min(1, 'User ID must not be empty').uuid();
 
 export const useMutateLikeInteract = (userId: string) => {
-	const validatedUserId = userIdSchema.parse(userId);
-	const queryClient = useQueryClient();
-	const pathname = usePathname();
-	const isHomePage = pathname === '/home';
-	const mutationQueryKey = isHomePage ? 'hybridArticles' : 'randomArticles';
+  const validatedUserId = userIdSchema.parse(userId);
+  const queryClient = useQueryClient();
+  const pathname = usePathname();
+  const isHomePage = pathname === '/home';
+  const mutationQueryKey = isHomePage ? 'hybridArticles' : 'randomArticles';
 
-	// Store the current AbortController
-	let controller: AbortController | null = null;
+  // Store the current AbortController
+  let controller: AbortController | null = null;
 
-	return useMutation({
-		mutationKey: ['userLikeInteraction'],
-		mutationFn: async ({
-			isLiked,
-			articleId,
-			category,
-			frequencyVal,
-		}: userInteractMutationType) => {
-			// If there's an existing controller, abort the previous request
-			if (controller) controller.abort();
+  return useMutation({
+    mutationKey: ['userLikeInteraction'],
+    mutationFn: async ({
+      isLiked,
+      articleId,
+      category,
+      frequencyVal
+    }: userInteractMutationType) => {
+      // If there's an existing controller, abort the previous request
+      if (controller) controller.abort();
 
-			// Create a new AbortController for this mutation
-			controller = new AbortController();
-			const signal = controller.signal;
+      // Create a new AbortController for this mutation
+      controller = new AbortController();
+      const signal = controller.signal;
 
-			try {
-				return await handleLikeInteraction(
-					validatedUserId,
-					isLiked,
-					articleId,
-					category,
-					frequencyVal,
-					signal
-				);
-			} catch (error) {
-				const typedError = error as Error;
-				if (typedError.name === 'AbortError') {
-					console.error('Mutation was aborted');
-					return;
-				}
-				throw error;
-			}
-		},
-		// Optimistic update
-		onMutate: async ({ articleId, isLiked }) => {
-			// Cancel outgoing refetches
-			await queryClient.cancelQueries({
-				queryKey: [mutationQueryKey, validatedUserId],
-			});
+      try {
+        return await handleLikeInteraction(
+          validatedUserId,
+          isLiked,
+          articleId,
+          category,
+          frequencyVal,
+          signal
+        );
+      } catch (error) {
+        const typedError = error as Error;
+        if (typedError.name === 'AbortError') {
+          console.error('Mutation was aborted');
+          return;
+        }
+        throw error;
+      }
+    },
+    // Optimistic update
+    onMutate: async ({ articleId, isLiked }) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({
+        queryKey: [mutationQueryKey, validatedUserId]
+      });
 
-			// Snapshot previous articles
-			const previousArticles = queryClient.getQueryData<getArticlesType[]>([
-				mutationQueryKey,
-			]);
+      // Snapshot previous articles
+      const previousArticles = queryClient.getQueryData<getArticlesType[]>([mutationQueryKey]);
 
-			// Optimistically update the specific article's isLiked state
-			queryClient.setQueryData(
-				[mutationQueryKey, validatedUserId],
-				(old: getArticlesType[]) => {
-					if (Array.isArray(old)) {
-						return old.map((article) =>
-							article.id === articleId
-								? { ...article, isLiked: !isLiked }
-								: article
-						);
-					}
-					return old;
-				}
-			);
+      // Optimistically update the specific article's isLiked state
+      queryClient.setQueryData([mutationQueryKey, validatedUserId], (old: getArticlesType[]) => {
+        if (Array.isArray(old)) {
+          return old.map((article) =>
+            article.id === articleId ? { ...article, isLiked: !isLiked } : article
+          );
+        }
+        return old;
+      });
 
-			// Return context for potential rollback
-			return { previousArticles };
-		},
-		onSuccess: () => {
-			console.log('Like Interaction recorded successfully');
-		},
+      // Return context for potential rollback
+      return { previousArticles };
+    },
+    onSuccess: () => {
+      console.log('Like Interaction recorded successfully');
+    },
 
-		// Roll back if the mutation fails
-		onError: (err, _, context) => {
-			if (err) console.error(err);
-			if (context?.previousArticles) {
-				queryClient.setQueryData(
-					[mutationQueryKey, validatedUserId],
-					context.previousArticles
-				);
-			}
-		},
-		// optional:
-		// add onSettled to invalidate the query cache after successful mutation
-	});
+    // Roll back if the mutation fails
+    onError: (err, _, context) => {
+      if (err) console.error(err);
+      if (context?.previousArticles) {
+        queryClient.setQueryData([mutationQueryKey, validatedUserId], context.previousArticles);
+      }
+    }
+    // optional:
+    // add onSettled to invalidate the query cache after successful mutation
+  });
 };

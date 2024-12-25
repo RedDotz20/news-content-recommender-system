@@ -7,26 +7,24 @@ import { PropsWithChildren } from 'react';
 import { RandomArticleRefetchBtn } from '../components/RefetchRandomArticles';
 // import { getNewestArticles } from './server/actions/fetchNewestArticles';
 
-export default async function RandomLayoutComponent({
-	children,
-}: PropsWithChildren) {
-	// const queryClient = new QueryClient();
+export default async function RandomLayoutComponent({ children }: PropsWithChildren) {
+  // const queryClient = new QueryClient();
 
-	// await queryClient.prefetchQuery({
-	// 	queryKey: ['newestArticles'],
-	// 	queryFn: () => getNewestArticles(),
-	// 	staleTime: Infinity,
-	// });
+  // await queryClient.prefetchQuery({
+  // 	queryKey: ['newestArticles'],
+  // 	queryFn: () => getNewestArticles(),
+  // 	staleTime: Infinity,
+  // });
 
-	return (
-		// <HydrationBoundary state={dehydrate(queryClient)}>
-		<div className="lg:px-6 h-full w-full">
-			<div className="flex justify-between w-full mb-2 px-6 sm:px-8 md:px-12">
-				<p className="~text-lg/2xl font-bold">Random News Article</p>
-				<RandomArticleRefetchBtn />
-			</div>
-			{children}
-		</div>
-		// </HydrationBoundary>
-	);
+  return (
+    // <HydrationBoundary state={dehydrate(queryClient)}>
+    <div className="h-full w-full lg:px-6">
+      <div className="mb-2 flex w-full justify-between px-6 sm:px-8 md:px-12">
+        <p className="font-bold ~text-lg/2xl">News Feed</p>
+        <RandomArticleRefetchBtn />
+      </div>
+      {children}
+    </div>
+    // </HydrationBoundary>
+  );
 }

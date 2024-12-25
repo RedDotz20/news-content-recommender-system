@@ -5,16 +5,16 @@ import { checkUserPref } from '../server/actions/checkUserPref';
 import { useGetSessionData } from '@/features/auth/hooks/useGetSessionData';
 
 export const useCheckUserPref = () => {
-	const {
-		user: { id },
-	} = useGetSessionData();
+  const {
+    user: { id }
+  } = useGetSessionData();
 
-	return useQuery({
-		queryKey: ['isPreferencesExists', id],
-		queryFn: () => checkUserPref(id),
-		enabled: !!id,
-		refetchOnMount: false,
-		refetchOnWindowFocus: false,
-		refetchOnReconnect: true,
-	});
+  return useQuery({
+    queryKey: ['isPreferencesExists', id],
+    queryFn: () => checkUserPref(id),
+    enabled: !!id,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true
+  });
 };

@@ -7,21 +7,18 @@ import { LoadingSpinner } from '@/components/customui/LoadingSpinner';
 import { Chrome } from 'lucide-react';
 
 export const GoogleSignInButton = () => {
-	const { execute, isExecuting } = useAction(signInWithGoogle);
+  const { execute, isExecuting } = useAction(signInWithGoogle);
 
-	return (
-		<Button
-			disabled={isExecuting}
-			onClick={() => execute()}
-		>
-			{isExecuting ? (
-				<LoadingSpinner className="w-5 mr-2" />
-			) : (
-				<>
-					<Chrome className="mr-2 h-4 w-4" />
-					Sign in with Google
-				</>
-			)}
-		</Button>
-	);
+  return (
+    <Button disabled={isExecuting} onClick={() => execute()}>
+      {isExecuting ? (
+        <LoadingSpinner className="mr-2 w-5" />
+      ) : (
+        <>
+          <Chrome className="mr-2 h-4 w-4" />
+          Sign in with Google
+        </>
+      )}
+    </Button>
+  );
 };

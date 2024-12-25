@@ -2,18 +2,29 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { updatePerfsArrSchema } from './schema';
 
-export async function PUT(
-	request: NextRequest,
-	props: { params: Promise<{ userId: string }> }
-) {
-	const { userId } = await props.params;
+/**
+ * Updates the user's preference categories by incrementing the frequency
+ * of existing categories and adding new categories if they don't exist.
+ *
+ * @param request - The NextRequest object containing the request information.
+ * @param props - An object containing a promise that resolves to an object
+ *                with a `userId` property.
+ *
+ * @returns A NextResponse object with a JSON payload indicating the success
+ *          or failure of the operation.
+ * @throws Will return a server error response if the update operation fails.
+ */
+export async function PUT(request: NextRequest, props: { params: Promise<{ userId: string }> }) {
+  const { userId } = await props.params;
 
-	try {
-		const body = await request.json();
-		const preferences = updatePerfsArrSchema.parse(body.pref);
-		const categoriesJson = JSON.stringify(preferences.categories);
+  try {
+    const body = await request.json();
+    const preferences = updatePerfsArrSchema.parse(body.pref);
+    const categoriesJson = JSON.stringify(preferences.categories);
 
-		await prisma.$executeRaw`
+    console.log(body);
+
+    await prisma.$executeRaw`
 			WITH new_categories AS (
 				SELECT jsonb_array_elements(${categoriesJson}::jsonb) AS new_value
 			)
@@ -60,19 +71,18 @@ export async function PUT(
 			WHERE user_id = ${userId}::uuid;
 		`;
 
-		return NextResponse.json(
-			{
-				message: 'Frequency value successfully updated',
-			},
-			{ status: 200 }
-		);
-	} catch (error) {
-		console.error('Error fetching articles:', error);
-		const errorMessage =
-			error instanceof Error ? error.message : 'An unknown error occurred.';
-		return NextResponse.json(
-			{ error: `Error fetching categories ${errorMessage}` },
-			{ status: 500 }
-		);
-	}
+    return NextResponse.json(
+      {
+        message: 'Frequency value successfully updated'
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+    return NextResponse.json(
+      { error: `Error fetching categories ${errorMessage}` },
+      { status: 500 }
+    );
+  }
 }

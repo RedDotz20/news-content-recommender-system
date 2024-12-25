@@ -5,9 +5,9 @@ import { insertionSort } from './helper/insertionSort';
 import { pctContentDist } from './contentBasedFiltering/pctContentDist';
 
 export {
-	collaborativeFiltering,
-	contentBasedFiltering,
-	fisherYatesShuffle,
-	insertionSort,
-	pctContentDist,
+  collaborativeFiltering,
+  contentBasedFiltering,
+  fisherYatesShuffle,
+  insertionSort,
+  pctContentDist
 };
