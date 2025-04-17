@@ -1,36 +1,146 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🧠 Hybrid Recommendation Algorithm
 
-## Getting Started
+A full-stack web application implementing a hybrid article recommendation engine using **Content-Based Filtering** and **Collaborative Filtering**, built with **Next.js**, **TypeScript**, **Prisma**, **Supabase**, and **TailwindCSS**.
 
-First, run the development server:
+---
+
+## 🚀 Project Setup
+
+### ✅ Prerequisites
+
+- Node.js v18+
+- Supabase account with PostgreSQL
+- Git
+- Bun (or npm/yarn/pnpm)
+- Recommended: Visual Studio Code (for `REACT_EDITOR` integration)
+
+---
+
+### 📦 Installation
+
+1. **Clone the repository**
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/RedDotz20/news-content-recommender-system.git
+cd news-content-recommender-system
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Install dependencies**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+bun install
+# or npm install / yarn install / pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+3. **Create and configure environment variables**
+Copy .env.example and fill in .env.local:
+```bash
+cp .env.example .env.local
+```
+Fill out all necessary fields:
+```bash
+# Supabase Database URL
+DATABASE_URL=
 
-## Learn More
+# Supabase Env
+NEXT_PUBLIC_SITE_URL=
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
 
-To learn more about Next.js, take a look at the following resources:
+# Oauth Google Provider
+AUTH_GOOGLE_ID=
+AUTH_GOOGLE_SECRET=
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Facebook OAuth Provider
+AUTH_FACEBOOK_ID=
+AUTH_FACEBOOK_SECRET=
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+# API Route Secret Key
+API_SECRET_KEY=
 
-## Deploy on Vercel
+# React editor integration (local only)
+REACT_EDITOR=code
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### 🛠️ Database Setup (Prisma + Supabase)
+1. Generate Prisma client
+```bash
+npx prisma generate
+```
+
+3. Run migrations:
+```bash
+npx prisma migrate dev --name init
+```
+
+5. (Optional) seed database if applicable:
+```bash
+npx prisma db seed
+```
+
+### 🧪 Running the Application
+```bash
+bun run dev
+# or npm run dev / yarn dev / pnpm dev
+```
+
+### 🗂️ Project Structure
+```bash
+src/
+├── app/                    # App Router (Next.js 14+)
+│   ├── (auth)/             # Authentication pages
+│   ├── api/                # API routes (Next.js handlers)
+│   ├── home/               # Homepage
+│   ├── legal/              # Terms, privacy pages
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── loading.tsx
+│   ├── not-found.tsx
+│   └── page.tsx
+│
+├── components/             # Shared UI components (buttons, cards, etc.)
+├── features/               # Feature-specific logic
+├── hooks/                  # Custom React hooks
+│
+├── lib/
+│   ├── algorithms/         # Core recommendation logic
+│   │   ├── collaborativeFiltering/     # CF logic
+│   │   ├── contentBasedFiltering/      # CBF logic
+│   │   ├── hybridRecommendation/       # Combines CF + CBF
+│   │   └── helper/                     # Utility functions (similarity, normalization)
+│   ├── db.ts               # Prisma DB connection
+│   ├── index.ts
+│   ├── safe-action.ts      # Safe action pattern for server actions
+│   └── utils.ts
+│
+├── types/                  # Global TS types/interfaces
+└── middleware.ts           # Auth + protected routes
+```
+
+### ⚙️ Environment File Reference
+| File    | Description |
+| -------- | ------- |
+| `.env.local`  | Development-only configuration |
+| `.env.production` | Production deployment configuration |
+| `.env.example`    | Template showing required keys|
+
+### 🧠 Algorithm Architecture
+All algorithmic logic is encapsulated in `lib/algorithms/`:
+- Content-Based Filtering: 
+Recommends based on article keywords, category, and matching user preferences.
+
+- Collaborative Filtering: 
+Suggests based on interaction patterns of similar users (likes, clicks, bookmarks).
+
+- Hybrid Recommendation: 
+Smartly merges both approaches with weight-based control.
+
+- Helpers: 
+Utility functions for computing cosine similarity, vector scores, and merging results.
+
+### 📌 Developer Notes
+- Use `REACT_EDITOR=code` in `.env.local` for better stack traces
+- You can extend the recommendation logic in `lib/algorithms/hybridRecommendation/`
+- Secure API routes using the secret key in `API_SECRET_KEY`
